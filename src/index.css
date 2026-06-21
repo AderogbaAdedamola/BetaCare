@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  /* BetaCare palette — clinical trust + human warmth, not the cream/terracotta or near-black defaults */
+  --color-paper: #F4F7F5;        /* background — pale sage-white, calmer than stark white */
+  --color-ink: #122620;          /* primary text — deep teal-black */
+  --color-teal-900: #0F4C45;     /* primary brand — trust, medical */
+  --color-teal-700: #1B6B61;
+  --color-teal-100: #DCEAE6;
+  --color-clay: #C8704A;         /* warm accent — used sparingly (Why? reveals, human touches) */
+  --color-clay-100: #F4E3D8;
+  --color-sage: #6B9080;         /* severity: chemist (mild) */
+  --color-sage-100: #E4ECE7;
+  --color-amber: #C98A2B;        /* severity: clinic (moderate) */
+  --color-amber-100: #F5E8D2;
+  --color-rust: #B5482A;         /* severity: hospital (urgent) — earthy, not alarm-red */
+  --color-rust-100: #F3DDD4;
+  --color-line: #DDE5E1;         /* hairline borders */
+
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+  }
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
