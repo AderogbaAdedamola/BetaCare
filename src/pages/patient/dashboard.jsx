@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Bell } from "lucide-react";
 import Layout from "../../components/shared/Layout";
 import SymptomInput from "../../components/SymptomChecker/SymptomInput";
 import TriageResult from "../../components/SymptomChecker/TriageResult";
 import ReminderCard from "../../components/ReminderCard";
-import EmptyState, { BellIcon } from "../../components/shared/EmptyState";
+import EmptyState from "../../components/shared/EmptyState";
 import { SkeletonList } from "../../components/shared/Skeleton";
 import { api } from "../../lib/api";
 
@@ -29,12 +30,23 @@ export default function PatientDashboard() {
     setCheckError("");
     setResult(null);
     try {
+      // Backend expects { text }, not { symptoms } — see /api/patient/symptom-check
       const data = await api.post("/patient/symptom-check", { text });
       setResult(data);
     } catch (err) {
       setCheckError(err.message || "Couldn't check your symptoms right now. Try again.");
     } finally {
       setChecking(false);
+    }
+  }
+
+  async function handleDeleteReminder(reminderId) {
+    const prev = reminders;
+    setReminders((r) => r.filter((item) => item.id !== reminderId));
+    try {
+      await api.delete(`/patient/reminders/${reminderId}`);
+    } catch {
+      setReminders(prev); // roll back on failure
     }
   }
 
@@ -68,14 +80,14 @@ export default function PatientDashboard() {
             <SkeletonList count={2} />
           ) : reminders.length === 0 ? (
             <EmptyState
-              icon={<BellIcon />}
+              icon={Bell}
               title="You're all caught up"
               detail="Nothing needs your attention right now. Check your symptoms above any time and we'll keep you on track."
             />
           ) : (
             <div className="space-y-3">
               {reminders.map((r) => (
-                <ReminderCard key={r.id} reminder={r} />
+                <ReminderCard key={r.id} reminder={r} onDelete={handleDeleteReminder} />
               ))}
             </div>
           )}

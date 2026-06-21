@@ -5,7 +5,7 @@ import { api, setSession } from "../lib/api";
 
 export default function Login({ portal = "patient" }) {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ phone: "", email: "", identifier: "", password: "" });
+  const [form, setForm] = useState({ identifier: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -19,10 +19,13 @@ export default function Login({ portal = "patient" }) {
     setLoading(true);
     try {
       const path = portal === "doctor" ? "/auth/doctor/login" : "/auth/patient/login";
-      const identifierField = portal === "doctor" ? { email: form.email, password: form.password } : { phone: form.phone, password: form.password };
-      console.log("Submitting login form:", identifierField); // Debug log
-      const data = await api.post(path, identifierField);
-      setSession(data.token, data.role, data.patient?.id || data.doctor?.id);
+      console.log("Submitting login to", path, "with form", { email: form.identifier, password: form.password });
+      const body = portal === "doctor"
+        ? { email: form.identifier, password: form.password }
+        : { phone: form.identifier, password: form.password };
+      const data = await api.post(path, body);
+      console.log("Login successful, received data", data); 
+      setSession(data.token, data.role);
       navigate(data.role === "doctor" ? "/doctor/patients" : "/patient/dashboard");
     } catch (err) {
       setError(err.message || "Couldn't log you in. Check your details and try again.");
@@ -32,8 +35,6 @@ export default function Login({ portal = "patient" }) {
   }
 
   const isDoctor = portal === "doctor";
-  const identifierLabel = isDoctor ? "Email" : "Phone";
-  
 
   return (
     <Layout>
@@ -47,15 +48,15 @@ export default function Login({ portal = "patient" }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor={identifierLabel.toLowerCase()} className="block text-sm font-medium text-ink/70 mb-1">
+            <label htmlFor="identifier" className="block text-sm font-medium text-ink/70 mb-1">
               {isDoctor ? "Email" : "Phone number"}
             </label>
             <input
-              id={identifierLabel.toLowerCase()}
+              id="identifier"
               type={isDoctor ? "email" : "tel"}
               required
-              value={form[identifierLabel]}
-              onChange={update(identifierLabel.toLowerCase())}
+              value={form.identifier}
+              onChange={update("identifier")}
               className="w-full rounded-xl border border-line bg-white px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent"
             />
           </div>

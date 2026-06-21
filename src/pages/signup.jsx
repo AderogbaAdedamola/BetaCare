@@ -5,7 +5,7 @@ import { api, setSession } from "../lib/api";
 
 export default function Signup() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", phone: "", password: "", dob: "" });
+  const [form, setForm] = useState({ name: "", phone: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ export default function Signup() {
     setLoading(true);
     try {
       const data = await api.post("/auth/patient/signup", form);
-      setSession(data.token, data.role, data.patient?.id || data.doctor?.id);
+      setSession(data.token, data.role);
       navigate("/patient/dashboard");
     } catch (err) {
       setError(err.message || "Couldn't create your account. Try again.");
@@ -75,20 +75,6 @@ export default function Signup() {
               minLength={6}
               value={form.password}
               onChange={update("password")}
-              className="w-full rounded-xl border border-line bg-white px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent"
-            />
-          </div> 
-          
-          <div>
-            <label htmlFor="dob" className="block text-sm font-medium text-ink/70 mb-1">
-              Date of birth
-            </label>
-            <input
-              id="dob"
-              type="date"
-              required
-              value={form.dob}
-              onChange={update("dob")}
               className="w-full rounded-xl border border-line bg-white px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent"
             />
           </div>

@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 import { clearSession, getRole, isAuthenticated } from "../../lib/api";
 
 export default function Layout({ children }) {
@@ -23,8 +24,9 @@ export default function Layout({ children }) {
               <span className="text-ink/50 capitalize">{role} portal</span>
               <button
                 onClick={handleLogout}
-                className="text-teal-900 hover:text-clay transition-colors font-medium"
+                className="inline-flex items-center gap-1.5 text-teal-900 hover:text-clay transition-colors font-medium"
               >
+                <LogOut size={14} />
                 Log out
               </button>
             </div>

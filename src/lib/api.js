@@ -1,34 +1,32 @@
-// Small fetch wrapper. No heavy client needed at this scale.
-// JWT is kept in memory (module-level) — survives route changes, cleared on full reload.
-// This trades "stay logged in on refresh" for not putting a token in localStorage.
-// Fine for a hackathon demo; swap for httpOnly cookies if this goes further.
+import axios from "axios";
+
+// Axios-based API client.
+// JWT is kept in sessionStorage — survives a refresh mid-demo, clears on tab close.
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
 
-const STORAGE_KEY = import.meta.env.VITE_API_STORAGE_KEY || "session";
+const STORAGE_KEY = "betacare_session";
 
 function readStoredSession() {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { token: null, role: null, id: null };
+    return raw ? JSON.parse(raw) : { token: null, role: null };
   } catch {
-    return { token: null, role: null, id: null };
+    return { token: null, role: null };
   }
 }
 
-let { token, role, id } = readStoredSession();
+let { token, role } = readStoredSession();
 
-export function setSession(nextToken, nextRole, nextId) {
+export function setSession(nextToken, nextRole) {
   token = nextToken;
   role = nextRole;
-  id = nextId;
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ token, role, id }));
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ token, role }));
 }
 
 export function clearSession() {
   token = null;
   role = null;
-  id = null;
   sessionStorage.removeItem(STORAGE_KEY);
 }
 
@@ -36,46 +34,48 @@ export function getRole() {
   return role;
 }
 
-export function getId() {
-  return id;
-}
-
 export function isAuthenticated() {
   return Boolean(token);
 }
 
-async function request(path, { method = "GET", body, headers = {} } = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...headers,
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+const client = axios.create({
+  baseURL: API_BASE,
+  headers: { "Content-Type": "application/json" },
+});
 
-  if (res.status === 401) {
-    clearSession();
+// Attach the JWT to every outgoing request.
+client.interceptors.request.use((config) => {
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+  return config;
+});
 
-  let data = null;
+// Clear the session on 401 so AuthGuard redirects to login on the next render.
+client.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response?.status === 401) {
+      clearSession();
+    }
+    return Promise.reject(error);
+  }
+);
+
+async function request(path, { method = "GET", body } = {}) {
   try {
-    data = await res.json();
-  } catch {
-    // no body
-  }
-
-  if (!res.ok) {
-    const message = data?.message || `Request failed (${res.status})`;
+    const res = await client.request({ url: path, method, data: body });
+    return res.data;
+  } catch (error) {
+    const message =
+      error.response?.data?.message || error.message || "Request failed";
     throw new Error(message);
   }
-
-  return data;
 }
 
 export const api = {
   get: (path) => request(path),
   post: (path, body) => request(path, { method: "POST", body }),
   patch: (path, body) => request(path, { method: "PATCH", body }),
+  delete: (path) => request(path, { method: "DELETE" }),
 };
