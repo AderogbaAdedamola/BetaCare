@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Landing from "./pages/landing";
+import Landing from "./pages/landing/index";
 import Signup from "./pages/signup";
 import Login from "./pages/login";
 import PatientDashboard from "./pages/patient/dashboard";
