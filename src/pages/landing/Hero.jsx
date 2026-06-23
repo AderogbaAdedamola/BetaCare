@@ -1,169 +1,201 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowRight, Stethoscope } from "lucide-react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { useEffect, useRef } from "react";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.1 },
-  }),
-};
+const COLS = 4;
+const ROWS = 5;
+const TILES = Array.from({ length: COLS * ROWS }, (_, i) => i);
+
+function DicedImage({ src }) {
+  return (
+    <div
+      className="relative w-full h-full"
+      style={{ display: "grid", gridTemplateColumns: `repeat(${COLS}, 1fr)`, gridTemplateRows: `repeat(${ROWS}, 1fr)` }}
+    >
+      {TILES.map((i) => {
+        const col = i % COLS;
+        const row = Math.floor(i / COLS);
+        const delay = (row + col) * 0.055;
+        return (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 1.08 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              backgroundImage: `url(${src})`,
+              backgroundSize: `${COLS * 100}% ${ROWS * 100}%`,
+              backgroundPosition: `${(col / (COLS - 1)) * 100}% ${(row / (ROWS - 1)) * 100}%`,
+              overflow: "hidden",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function ParallaxPhoto({ src }) {
+  const ref = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 60, damping: 20 });
+  const sy = useSpring(y, { stiffness: 60, damping: 20 });
+
+  useEffect(() => {
+    function onMove(e) {
+      const { innerWidth, innerHeight } = window;
+      x.set(((e.clientX / innerWidth) - 0.5) * 18);
+      y.set(((e.clientY / innerHeight) - 0.5) * 12);
+    }
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [x, y]);
+
+  return (
+    <motion.div ref={ref} style={{ x: sx, y: sy }} className="absolute inset-0 will-change-transform">
+      <DicedImage src={src} />
+    </motion.div>
+  );
+}
+
+const PHOTO = "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=900&q=80&fit=crop";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-teal-900 text-white">
-      {/* subtle radial glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(27,107,97,0.7) 0%, transparent 70%)",
-        }}
-      />
-      {/* grid texture */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.6) 1px,transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
+    <section className="relative min-h-screen flex flex-col lg:flex-row overflow-hidden bg-ink">
 
-      <div className="relative max-w-5xl mx-auto px-6 pt-28 pb-24 flex flex-col items-center text-center">
-        {/* badge */}
+      {/* LEFT: text */}
+      <div className="relative z-10 flex flex-col justify-center px-8 sm:px-12 lg:px-16 pt-28 pb-16 lg:py-0 lg:w-[52%] xl:w-[48%]">
+
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={0}
-          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-mono uppercase tracking-widest text-white/70 mb-8 backdrop-blur-sm"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="inline-flex items-center self-start gap-2 rounded-full border border-white/15 bg-white/8 px-3.5 py-1.5 text-[10px] font-mono uppercase tracking-[0.15em] text-white/50 mb-10"
         >
-          <Stethoscope size={12} />
-          AI in Medicine · Oyo State, July 2026
+          <span className="h-1.5 w-1.5 rounded-full bg-clay animate-pulse" />
+          AI in Medicine · Oyo State, 2026
         </motion.div>
 
-        {/* headline */}
-        <motion.h1
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={1}
-          className="text-4xl sm:text-5xl lg:text-6xl font-display font-semibold leading-tight max-w-3xl mb-6"
-        >
-          One doctor per{" "}
-          <span className="relative inline-block">
-            <span className="relative z-10 text-clay">3,474 people.</span>
-            <span
-              aria-hidden
-              className="absolute inset-x-0 bottom-1 h-3 bg-clay/20 rounded-sm -z-0"
-            />
-          </span>
-          <br />
-          We're making every one count.
-        </motion.h1>
+        <div className="overflow-hidden mb-3">
+          <motion.p
+            initial={{ y: "105%" }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.75, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[11px] font-mono uppercase tracking-[0.2em] text-white/35 mb-4"
+          >
+            The waiting room problem
+          </motion.p>
+        </div>
 
-        {/* sub */}
+        {["One doctor.", "3,474 people.", "One line."].map((line, i) => (
+          <div key={line} className="overflow-hidden">
+            <motion.h1
+              initial={{ y: "105%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.75, delay: 0.25 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className={`font-display font-semibold leading-[1.0] tracking-tight text-white ${
+                i === 1 ? "text-clay" : ""
+              } text-5xl sm:text-6xl xl:text-7xl`}
+            >
+              {line}
+            </motion.h1>
+          </div>
+        ))}
+
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.6, delay: 0.62, ease: [0.22, 1, 0.36, 1] }}
+          style={{ originX: 0 }}
+          className="h-px w-16 bg-white/20 my-8"
+        />
+
         <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={2}
-          className="text-base sm:text-lg text-white/60 max-w-xl leading-relaxed mb-10"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="text-base text-white/50 leading-relaxed max-w-sm mb-10"
         >
-          BetaCare puts AI-powered triage in the hands of patients across WhatsApp,
-          USSD, voice, and web — so the doctors we have can reach further than ever before.
+          The WHO says 1 doctor per 600. Nigeria sits at 1 per 3,474.
+          BetaCare extends every doctor's reach — across WhatsApp, USSD, voice, and web.
         </motion.p>
 
-        {/* CTAs */}
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={3}
-          className="flex flex-col sm:flex-row items-center gap-3"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.82 }}
+          className="flex flex-col sm:flex-row gap-3"
         >
           <Link
             to="/signup"
-            className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-teal-900 hover:bg-teal-100 transition-colors"
+            className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-ink hover:bg-teal-100 transition-colors"
           >
-            Get started free <ArrowRight size={16} />
+            Get started
+            <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
           </Link>
           <Link
             to="/doctor/login"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/20 px-6 py-3 text-sm font-medium text-white/80 hover:bg-white/10 transition-colors"
+            className="inline-flex items-center justify-center rounded-xl border border-white/15 px-6 py-3 text-sm font-medium text-white/70 hover:bg-white/8 transition-colors"
           >
-            Doctor log in
+            Doctor portal
           </Link>
         </motion.div>
 
-        {/* app mockup */}
         <motion.div
-          initial={{ opacity: 0, y: 48 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
-          className="mt-20 w-full max-w-2xl mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1.1 }}
+          className="flex items-center gap-8 mt-16 pt-8 border-t border-white/10"
         >
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden shadow-2xl">
-            {/* fake browser bar */}
-            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-white/10 bg-white/5">
-              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-              <span className="ml-3 flex-1 rounded-md bg-white/10 h-5 max-w-xs text-[10px] font-mono text-white/30 flex items-center px-2">
-                betacare.app/patient/dashboard
-              </span>
+          {[
+            { n: "1:3,474", l: "Doctor ratio" },
+            { n: "74.7%", l: "Out of pocket" },
+            { n: "98%+", l: "AI diagnostic accuracy" },
+          ].map((s) => (
+            <div key={s.n}>
+              <p className="text-lg font-display font-semibold text-white">{s.n}</p>
+              <p className="text-[11px] text-white/35 font-mono mt-0.5">{s.l}</p>
             </div>
-            {/* mock dashboard content */}
-            <div className="p-6 space-y-4">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-8 w-8 rounded-lg bg-teal-700/60 flex items-center justify-center">
-                  <Stethoscope size={14} className="text-white/70" />
-                </div>
-                <div className="h-4 w-28 rounded bg-white/15" />
-              </div>
+          ))}
+        </motion.div>
+      </div>
 
-              <div className="rounded-xl bg-white/8 border border-white/10 p-4">
-                <div className="h-3 w-24 rounded bg-white/20 mb-3" />
-                <div className="rounded-lg bg-white/10 p-3 space-y-1.5">
-                  <div className="h-2.5 w-full rounded bg-white/15" />
-                  <div className="h-2.5 w-4/5 rounded bg-white/15" />
-                  <div className="h-2.5 w-3/5 rounded bg-white/10" />
-                </div>
-                <div className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-teal-700/70 px-4 py-2">
-                  <div className="h-2.5 w-20 rounded bg-white/40" />
-                </div>
-              </div>
+      {/* RIGHT: diced photo */}
+      <div className="relative lg:w-[48%] xl:w-[52%] h-[55vw] lg:h-auto">
+        <div className="absolute inset-0 overflow-hidden">
+          <ParallaxPhoto src={PHOTO} />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/30 to-transparent lg:block hidden" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink to-transparent" />
+          <div className="absolute inset-0 bg-ink/25" />
+        </div>
 
-              <div className="rounded-xl bg-amber-100/10 border border-amber/20 p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="h-2 w-2 rounded-full bg-amber" />
-                  <div className="h-3 w-24 rounded bg-white/25" />
-                </div>
-                <div className="space-y-1.5">
-                  <div className="h-2.5 w-full rounded bg-white/10" />
-                  <div className="h-2.5 w-3/4 rounded bg-white/10" />
-                </div>
-                <div className="mt-3 h-2.5 w-10 rounded bg-clay/30" />
-              </div>
-
-              <div className="flex gap-2 pt-1">
-                {["WhatsApp", "USSD", "Voice", "Web"].map((ch) => (
-                  <span
-                    key={ch}
-                    className="rounded-full border border-white/10 bg-white/8 px-2.5 py-1 text-[10px] font-mono text-white/40"
-                  >
-                    {ch}
-                  </span>
-                ))}
-              </div>
-            </div>
+        {/* floating stat card */}
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.65, delay: 1.3, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute bottom-10 right-8 z-10 rounded-2xl border border-white/10 bg-ink/70 backdrop-blur-md px-5 py-4 max-w-[200px]"
+        >
+          <p className="text-2xl font-display font-semibold text-white mb-0.5">5× below</p>
+          <p className="text-xs text-white/45 leading-relaxed">the WHO-recommended doctor ratio</p>
+          <div className="mt-3 flex gap-1">
+            {[1,2,3,4,5].map((i) => (
+              <div
+                key={i}
+                className={`h-1.5 flex-1 rounded-full ${i === 1 ? "bg-teal-500" : "bg-white/15"}`}
+              />
+            ))}
           </div>
         </motion.div>
+      </div>
+
+      {/* mobile bg */}
+      <div className="absolute inset-0 lg:hidden -z-0 opacity-30">
+        <img src={PHOTO} alt="Hospital waiting room" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/80 to-ink" />
       </div>
     </section>
   );

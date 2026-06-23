@@ -4,64 +4,66 @@ import { Filter, ClipboardCheck, Radio } from "lucide-react";
 const PILLARS = [
   {
     icon: Filter,
-    label: "01",
+    n: "01",
     title: "AI triage, before the queue",
-    body: "Patients describe symptoms in plain language. BetaCare decides what needs a clinic, what needs a hospital, and what just needs rest — instantly, on any channel.",
+    body: "Patients describe symptoms in plain language across any channel. BetaCare classifies urgency instantly — clinic, hospital, or just rest. The queue shrinks before it forms.",
   },
   {
     icon: ClipboardCheck,
-    label: "02",
-    title: "Structured history for doctors",
-    body: "By the time a patient reaches a doctor, their symptom history, channel interactions, and AI notes are already there. No starting from scratch. Every minute counts.",
+    n: "02",
+    title: "Structured history, ready on arrival",
+    body: "When a patient finally reaches a doctor, their full symptom history is already there — cross-channel, structured, searchable. No starting from scratch. Every minute counts.",
   },
   {
     icon: Radio,
-    label: "03",
-    title: "Built for real constraints",
-    body: "WhatsApp, USSD, voice, and web — because data is expensive and power cuts happen. Not a Silicon Valley product dropped into a different market. Designed for it.",
+    n: "03",
+    title: "Built for real infrastructure",
+    body: "WhatsApp, USSD, voice call, and web. Not because it's clever — because data is expensive, power cuts happen, and the patients who need this most are the ones a standard app misses.",
   },
 ];
 
 export default function HowItHelps() {
   return (
-    <section className="bg-teal-900 text-white">
-      <div className="max-w-5xl mx-auto px-6 py-24">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-14"
-        >
-          <p className="text-xs font-mono uppercase tracking-widest text-white/40 mb-3">
-            How it works
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white max-w-xl leading-snug">
-            Three things that make the difference.
-          </h2>
-        </motion.div>
+    <section className="bg-ink overflow-hidden">
+      <div className="max-w-5xl mx-auto px-8 py-28">
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="flex items-end justify-between mb-16">
+          <div>
+            <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-white/30 mb-4">
+              How it works
+            </p>
+            <h2 className="text-4xl font-display font-semibold text-white leading-tight max-w-sm">
+              Three moves. Real impact.
+            </h2>
+          </div>
+          <p className="hidden lg:block text-sm text-white/35 max-w-xs text-right leading-relaxed">
+            Each one addresses a specific failure point in the current system.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/8 rounded-2xl overflow-hidden">
           {PILLARS.map((p, i) => {
             const Icon = p.icon;
             return (
               <motion.div
-                key={p.label}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                key={p.n}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                className="rounded-2xl border border-white/10 bg-white/5 p-6 flex flex-col gap-5 hover:bg-white/8 transition-colors"
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="bg-ink p-8 flex flex-col gap-8 group hover:bg-teal-900/40 transition-colors duration-300"
               >
                 <div className="flex items-start justify-between">
-                  <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center text-white/70">
-                    <Icon size={20} strokeWidth={1.75} />
+                  <div className="h-11 w-11 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/60 group-hover:border-teal-700/50 group-hover:text-white/90 transition-colors">
+                    <Icon size={20} strokeWidth={1.6} />
                   </div>
-                  <span className="text-xs font-mono text-white/25">{p.label}</span>
+                  <span className="text-[11px] font-mono text-white/20">{p.n}</span>
                 </div>
                 <div>
-                  <h3 className="text-base font-display font-semibold text-white mb-2">{p.title}</h3>
-                  <p className="text-sm text-white/55 leading-relaxed">{p.body}</p>
+                  <h3 className="text-base font-display font-semibold text-white mb-3 leading-snug">
+                    {p.title}
+                  </h3>
+                  <p className="text-sm text-white/45 leading-relaxed">{p.body}</p>
                 </div>
               </motion.div>
             );

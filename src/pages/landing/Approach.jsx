@@ -1,72 +1,72 @@
 import { motion } from "framer-motion";
 
-const POINTS = [
-  {
-    label: "Not a replacement",
-    body: "BetaCare filters and extends. The doctor remains the decision-maker — AI handles the queue before it forms.",
-  },
-  {
-    label: "Inclusion is infrastructure",
-    body: "Every channel (USSD, voice, WhatsApp) exists because a smartphone with stable data isn't a guarantee. That's a design constraint, not a feature.",
-  },
-  {
-    label: "Evidence-led, not hype-led",
-    body: "We cite numbers because the numbers are compelling enough. 98% TB detection accuracy. 74.7% out-of-pocket. These speak for themselves.",
-  },
-];
-
 export default function Approach() {
   return (
-    <section className="max-w-5xl mx-auto px-6 py-24">
-      <div className="rounded-3xl border border-line bg-white overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="px-8 py-12 border-b lg:border-b-0 lg:border-r border-line"
-          >
-            <p className="text-xs font-mono uppercase tracking-widest text-clay mb-5">
-              Our approach
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-display font-semibold text-ink leading-snug mb-5">
-              Inclusion as a design constraint, not an afterthought.
-            </h2>
-            <p className="text-sm text-ink/60 leading-relaxed">
-              Solutions can't be Silicon Valley designs dropped into a market where power is
-              intermittent and internet is a luxury. Every architectural decision in BetaCare
-              reflects that reality — because the patients who need this most are the ones
-              a standard app would miss.
-            </p>
-          </motion.div>
+    <section className="bg-paper">
+      <div className="max-w-5xl mx-auto px-8 py-28">
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-            className="px-8 py-12 space-y-8"
-          >
-            {POINTS.map((pt, i) => (
-              <motion.div
-                key={pt.label}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.15 + i * 0.08 }}
-                className="flex gap-4"
-              >
-                <span className="mt-1 h-5 w-5 shrink-0 rounded-full bg-teal-100 flex items-center justify-center">
-                  <span className="h-1.5 w-1.5 rounded-full bg-teal-900" />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-ink mb-1">{pt.label}</p>
-                  <p className="text-sm text-ink/55 leading-relaxed">{pt.body}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-clay mb-4">
+            Our approach
+          </p>
+          <h2 className="text-4xl font-display font-semibold text-ink max-w-xl leading-snug">
+            Inclusion as infrastructure, not an afterthought.
+          </h2>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative rounded-2xl overflow-hidden h-64 sm:h-80 mb-16"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&q=80&fit=crop"
+            alt="Healthcare workers"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-teal-900/80 to-transparent" />
+          <div className="absolute inset-0 flex items-center px-10">
+            <p className="text-2xl sm:text-3xl font-display font-semibold text-white max-w-sm leading-snug">
+              "Solutions can't be Silicon Valley designs dropped into a different reality."
+            </p>
+          </div>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+          {[
+            {
+              label: "Not a replacement",
+              body: "AI handles the filtering. The doctor remains the decision-maker — their time just reaches more people.",
+            },
+            {
+              label: "Channels as access",
+              body: "USSD and voice aren't fallbacks — they're the primary channel for millions who don't have reliable data or smartphones.",
+            },
+            {
+              label: "Evidence-led",
+              body: "98% TB detection accuracy. 74.7% out-of-pocket. 1:3,474 doctors. The numbers make the case — not adjectives.",
+            },
+          ].map((pt, i) => (
+            <motion.div
+              key={pt.label}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="border-t-2 border-teal-900 pt-5"
+            >
+              <p className="text-sm font-semibold text-ink mb-2">{pt.label}</p>
+              <p className="text-sm text-ink/55 leading-relaxed">{pt.body}</p>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
