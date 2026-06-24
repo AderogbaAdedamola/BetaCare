@@ -90,7 +90,7 @@ export default function Hero() {
           </motion.p>
         </div>
 
-        {["One doctor.", "3,474 people.", "One line."].map((line, i) => (
+        {["Describe how you feel.", "Get a clear next step."].map((line, i) => (
           <div key={line} className="overflow-hidden">
             <motion.h1
               initial={{ y: "105%" }}
@@ -119,8 +119,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.7 }}
           className="text-base text-white/50 leading-relaxed max-w-sm mb-10"
         >
-          The WHO says 1 doctor per 600. Nigeria sits at 1 per 3,474.
-          BetaCare extends every doctor's reach — across WhatsApp, USSD, voice, and web.
+          BetaCare listens to your symptoms, checks them against your health history, and tells you exactly what to do next; rest at home, see a chemist, visit a clinic, or go to a hospital. The longer you use it, the smarter it gets about you.
         </motion.p>
 
         <motion.div
