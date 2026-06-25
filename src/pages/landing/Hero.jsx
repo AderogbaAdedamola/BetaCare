@@ -110,16 +110,16 @@ export default function Hero() {
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.6, delay: 0.62, ease: [0.22, 1, 0.36, 1] }}
           style={{ originX: 0 }}
-          className="h-px w-16 bg-white/20 my-8"
+          className="h-px w-16 bg-white/20 my-6 sm:my-8"
         />
 
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7 }}
-          className="text-base text-white/50 leading-relaxed max-w-sm mb-10"
+          className="text-base text-white/50 leading-relaxed max-w-sm mb-5"
         >
-          BetaCare listens to your symptoms, checks them against your health history, and tells you exactly what to do next; rest at home, see a chemist, visit a clinic, or go to a hospital. The longer you use it, the smarter it gets about you.
+          Our AI-powered triage system helps you get the right care faster, without the long wait times.The longer you use it, the smarter it gets about you.
         </motion.p>
 
         <motion.div
