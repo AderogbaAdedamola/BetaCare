@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router";
 import { Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Footer() {
   const navigate = useNavigate();
   const links = {
-    Product: ["How It Works", "Features", "Security", "Pricing"],
-    Portals: ["Patient Login", "Doctor Login", "Hospital Login", "Register"],
-    Company: ["About Us", "Blog", "Careers", "Press"],
-    Legal: ["Privacy Policy", "Terms of Service", "NDPR Compliance"],
+    Product: [{ label: "How It Works", link: "#how-it-works" }, { label: "Features", link: "#features" }, { label: "Security", link: "#" }, { label: "Pricing", link: "#" }],
+    Portals: [{ label: "Patient Login", link: "/patient/login" }, { label: "Doctor Login", link: "/doctor/login" }, { label: "Hospital Login", link: "/hospital/login" }, { label: "Register", link: "/register" }],
+    Company: [{ label: "About Us", link: "#" }, { label: "Blog", link: "#" }, { label: "Careers", link: "#" }, { label: "Press", link: "#" }],
+    Legal: [{ label: "Privacy Policy", link: "#" }, { label: "Terms of Service", link: "/terms" }, { label: "NDPR Compliance", link: "#" }],
   };
   return (
     <footer className="bg-foreground text-card pt-14 pb-8 overflow-hidden">
@@ -31,10 +32,10 @@ export function Footer() {
               <p className="text-xs font-semibold text-card/40 uppercase tracking-wider mb-3">{category}</p>
               <ul className="flex flex-col gap-2">
                 {items.map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-sm text-card/65 hover:text-card transition-colors">
-                      {item}
-                    </a>
+                  <li key={item.label}>
+                    <Link to={item.link} className="text-sm text-card/65 hover:text-card transition-colors">
+                      {item.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
