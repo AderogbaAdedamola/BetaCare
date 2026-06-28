@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { useNavigate } from "react-router";
 import { Heart, ArrowRight } from "lucide-react";
 import { MagneticButton } from "../../../components/common/MagneticButton";
-import { BetaCareLogo } from "../../../components/common/BetaCareLogo";
+import { BetaCareLogo } from "../../../components/icons/BetaCareLogo";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },

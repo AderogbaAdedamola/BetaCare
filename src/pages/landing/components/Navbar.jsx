@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate, useLocation } from "react-router";
-import { BetaCareLogo } from "../../../components/common/BetaCareLogo";
+import { BetaCareLogo } from "../../../components/icons/BetaCareLogo";
 import {
   Heart,
   ChevronDown,

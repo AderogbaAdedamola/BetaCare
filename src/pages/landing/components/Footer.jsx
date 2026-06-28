@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { BetaCareLogo } from "../../../components/icons/BetaCareLogo";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -16,8 +17,8 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-12 border-b border-card/10">
           <div className="col-span-2 md:col-span-1">
             <button onClick={() => navigate("/")} className="flex items-center gap-2.5 mb-4 cursor-pointer">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <Heart size={16} className="text-primary-foreground fill-current" />
+              <div className="w-8 h-8 rounded-lg bg-card/85 flex items-center justify-center">
+                {BetaCareLogo("size-6")}
               </div>
               <span className="font-bold text-lg text-card" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 Beta<span className="text-primary">Care</span>

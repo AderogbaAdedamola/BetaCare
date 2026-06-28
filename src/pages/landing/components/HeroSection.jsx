@@ -117,7 +117,7 @@ export function HeroSection({ onGetStarted }) {
           </motion.div>
 
           {/* Value pillars */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.05, duration: 0.5 }}
@@ -140,7 +140,7 @@ export function HeroSection({ onGetStarted }) {
                 <p className="text-[10px] text-muted-foreground mt-0.5">{p.sub}</p>
               </motion.div>
             ))}
-          </motion.div>
+          </motion.div> */}
         </motion.div>
 
         {/* Right — floating mockup */}
