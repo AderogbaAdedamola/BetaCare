@@ -1,1 +1,2 @@
-BetaCare is a full health ecosystem built for everyone — from a doctor at a university teaching hospital to a grandmother in a rural village with a basic phone. It places one patient health profile at the center, accessible across five channels
+
+  # BetaCare Landing Page Design
