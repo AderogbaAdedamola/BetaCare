@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { Eye, EyeOff, Loader2, Stethoscope } from "lucide-react";
-import { AuthLayout } from "../../components/auth/AuthLayout";
-import { MagneticButton } from "../../components/common/MagneticButton";
-import { api, setSession } from "../../lib/api";
+import { AuthLayout } from "../../../components/auth/AuthLayout";
+import { MagneticButton } from "../../../components/common/MagneticButton";
+import { DoctorLoginPanel } from "../../../components/auth/AuthSidePanel";
+import { api, setSession } from "../../../lib/api";
 
 export default function DoctorLogin() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function DoctorLogin() {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout sidePanel={<DoctorLoginPanel />} panelVisible={true}>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-semibold mb-5">
           <Stethoscope size={12} /> Doctor Portal

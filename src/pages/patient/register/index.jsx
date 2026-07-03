@@ -5,130 +5,19 @@ import {
   Loader2, ArrowRight, CheckCircle2,
   Plus, X, Stethoscope,
 } from "lucide-react";
-import { AuthLayout } from "../../components/auth/AuthLayout";
-import { MagneticButton } from "../../components/common/MagneticButton";
-import { BetaCareLogo } from "../../components/common/BetaCareLogo";
-import { api } from "../../lib/api";
+import { AuthLayout } from "../../../components/auth/AuthLayout";
+import { MagneticButton } from "../../../components/common/MagneticButton";
+import { BetaCareLogo } from "../../../components/common/BetaCareLogo";
+import { PatientRegisterPanel } from "../../../components/auth/AuthSidePanel";
+import { api } from "../../../lib/api";
+import { TagInput } from "./components/TagInput"
+import { MedicationList } from "./components/MedicationList"
 
-// ── Left panel ───────────────────────────────────────────────────────────────
-function RegisterSidePanel() {
-  return (
-    <div className="relative h-full min-h-screen w-full bg-foreground overflow-hidden">
-      <img
-        src="https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=900&q=80&fit=crop"
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover opacity-25"
-      />
-      <div className="absolute inset-0 bg-gradient-to-br from-foreground/97 via-foreground/85 to-foreground/60" />
 
-      <div className="relative flex flex-col h-full min-h-screen p-10">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 flex items-center justify-center">{BetaCareLogo()}</div>
-          <span
-            className="font-bold text-lg text-card"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-          >
-            Beta<span className="text-primary">Care</span>
-          </span>
-        </div>
 
-        <div className="flex-1 flex items-center">
-          <div>
-            <h2
-              className="text-3xl font-extrabold text-card leading-tight mb-4"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-            >
-              Your health story,
-              <br />
-              <span className="text-primary">finally organised.</span>
-            </h2>
-            <p className="text-card/50 text-sm leading-relaxed mb-8 max-w-[270px]">
-              Create once. Your records follow you — not the hospital.
-            </p>
-            <ul className="flex flex-col gap-3">
-              {[
-                "Free forever — no credit card needed",
-                "Works on WhatsApp, SMS & web",
-                "NDPR compliant & end-to-end encrypted",
-                "AI health agent keeps you on track",
-              ].map((p) => (
-                <li key={p} className="flex items-center gap-3">
-                  <CheckCircle2 size={14} className="text-primary shrink-0" />
-                  <span className="text-card/60 text-sm">{p}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
 
-        <div className="bg-white/8 backdrop-blur-sm border border-white/10 rounded-2xl p-5">
-          <p className="text-xl font-bold text-card mb-0.5">Secure by design.</p>
-          <p className="text-xs text-card/40 leading-relaxed">
-            Encrypted at rest and in transit. Your data belongs to you — always.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-// ── Sub-components ────────────────────────────────────────────────────────────
 
-function TagInput({ tags, onAdd, onRemove, placeholder }) {
-  const [input, setInput] = useState("");
-  function add() {
-    const val = input.trim();
-    if (val && !tags.includes(val)) {
-      onAdd(val);
-      setInput("");
-    }
-  }
-  return (
-    <div>
-      {tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mb-2.5">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium"
-            >
-              {tag}
-              <button
-                type="button"
-                onClick={() => onRemove(tag)}
-                className="hover:text-red-500 transition-colors ml-0.5"
-              >
-                <X size={10} />
-              </button>
-            </span>
-          ))}
-        </div>
-      )}
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              add();
-            }
-          }}
-          placeholder={placeholder}
-          className="flex-1 px-3 py-2.5 bg-muted rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
-        />
-        <button
-          type="button"
-          onClick={add}
-          className="px-3 py-2.5 bg-primary/10 text-primary text-sm rounded-xl font-medium hover:bg-primary/20 transition-colors border border-primary/20"
-        >
-          Add
-        </button>
-      </div>
-    </div>
-  );
-}
 
 function PillSelect({ label, value, onChange, options }) {
   return (
@@ -204,88 +93,6 @@ function ConditionToggle({ label, checked, onChange }) {
       </div>
       {label}
     </button>
-  );
-}
-
-function MedicationList({ medications, onChange }) {
-  const FREQS = [
-    { value: "once_daily", label: "Once daily" },
-    { value: "twice_daily", label: "Twice daily" },
-    { value: "three_daily", label: "3× daily" },
-    { value: "as_needed", label: "As needed" },
-    { value: "weekly", label: "Weekly" },
-  ];
-  const inputCls =
-    "w-full px-3 py-2.5 bg-muted rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground";
-
-  function add() {
-    onChange([...medications, { name: "", dosage: "", frequency: "once_daily" }]);
-  }
-  function update(i, field, val) {
-    const next = [...medications];
-    next[i] = { ...next[i], [field]: val };
-    onChange(next);
-  }
-  function remove(i) {
-    onChange(medications.filter((_, idx) => idx !== i));
-  }
-
-  return (
-    <div className="flex flex-col gap-3">
-      {medications.map((med, i) => (
-        <div
-          key={i}
-          className="bg-muted/50 border border-border rounded-xl p-4"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-              Medication {i + 1}
-            </p>
-            <button
-              type="button"
-              onClick={() => remove(i)}
-              className="text-muted-foreground hover:text-red-500 transition-colors"
-            >
-              <X size={15} />
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mb-2">
-            <input
-              value={med.name}
-              onChange={(e) => update(i, "name", e.target.value)}
-              placeholder="Drug name"
-              className={inputCls}
-            />
-            <input
-              value={med.dosage}
-              onChange={(e) => update(i, "dosage", e.target.value)}
-              placeholder="e.g. 500mg"
-              className={inputCls}
-            />
-          </div>
-          <select
-            value={med.frequency}
-            onChange={(e) => update(i, "frequency", e.target.value)}
-            className={`${inputCls} appearance-none cursor-pointer`}
-          >
-            {FREQS.map((f) => (
-              <option key={f.value} value={f.value}>
-                {f.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      ))}
-      {medications.length < 8 && (
-        <button
-          type="button"
-          onClick={add}
-          className="flex items-center justify-center gap-2 py-3.5 border-2 border-dashed border-border rounded-xl text-sm text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors"
-        >
-          <Plus size={16} /> Add medication
-        </button>
-      )}
-    </div>
   );
 }
 
@@ -540,7 +347,7 @@ export default function PatientRegister() {
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
     <AuthLayout
-      sidePanel={<RegisterSidePanel />}
+      sidePanel={<PatientRegisterPanel />}
       panelVisible={panelVisible}
       currentStep={step}
     >

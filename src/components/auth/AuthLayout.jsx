@@ -3,9 +3,11 @@ import { motion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { BetaCareLogo } from "../common/BetaCareLogo";
 
+const PANEL_W = 440;
+
 /**
  * Auth layout wrapper.
- * sidePanel     — JSX to render in the left panel (desktop only)
+ * sidePanel     — JSX to render in the left panel (desktop only, fixed)
  * panelVisible  — controls the slide-in/out animation (false = collapsed to 0)
  * steps         — array of step label strings for progress bar
  * currentStep   — index of the current active step
@@ -18,25 +20,28 @@ export function AuthLayout({
   currentStep = 0,
 }) {
   return (
-    <div className="min-h-screen flex overflow-hidden">
+    <div className="min-h-screen bg-background">
 
-      {/* ── Left panel: animates width 440 → 0 when panelVisible changes ── */}
+      {/* ── Left panel: FIXED to viewport, never scrolls ── */}
       {sidePanel && (
         <motion.div
-          className="hidden lg:block shrink-0 overflow-hidden"
-          animate={{ width: panelVisible ? 440 : 0, opacity: panelVisible ? 1 : 0 }}
+          className="hidden lg:block fixed top-0 left-0 h-screen overflow-hidden z-20"
+          animate={{ width: panelVisible ? PANEL_W : 0, opacity: panelVisible ? 1 : 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          style={{ pointerEvents: panelVisible ? "auto" : "none" }}
         >
-          {/* Fixed-width inner so content doesn't squish — outer clips it */}
-          <div style={{ width: 440 }} className="h-full min-h-screen">
+          <div style={{ width: PANEL_W }} className="h-full">
             {sidePanel}
           </div>
         </motion.div>
       )}
 
-      {/* ── Right panel: flex-1 expands naturally as left collapses ── */}
-      <div className="flex-1 flex flex-col bg-background min-h-screen">
-
+      {/* ── Right panel: offset by panel width, scrolls normally ── */}
+      <motion.div
+        className="flex flex-col min-h-screen"
+        animate={{ marginLeft: sidePanel && panelVisible ? PANEL_W : 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      >
         {/* Top bar */}
         <div className="flex items-center justify-between px-6 sm:px-10 h-[68px] border-b border-border shrink-0">
           <Link to="/" className="flex items-center gap-2">
@@ -81,10 +86,10 @@ export function AuthLayout({
         )}
 
         {/* Form content */}
-        <div className="flex-1 flex items-start justify-center px-6 sm:px-10 py-10 overflow-y-auto">
+        <div className="flex-1 flex items-start justify-center px-6 sm:px-10 py-10">
           <div className="w-full max-w-[480px]">{children}</div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
