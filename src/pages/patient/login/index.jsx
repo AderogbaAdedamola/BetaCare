@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Loader2, ArrowRight, CheckCircle2, Phone, Mail } from "lucide-react";
 import { AuthLayout } from "../../../components/auth/AuthLayout";
 import { MagneticButton } from "../../../components/common/MagneticButton";
-import PatientLoginPanel from "./components/LoginSidePanel"; 
+import { PatientLoginPanel } from "../../../components/auth/AuthSidePanel"; 
 
 
 import { api, setSession } from "../../../lib/api";

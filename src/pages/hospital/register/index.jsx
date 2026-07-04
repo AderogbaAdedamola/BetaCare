@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Eye, EyeOff, Loader2, ArrowRight, Building2, Clock } from "lucide-react";
-import { AuthLayout } from "../../components/auth/AuthLayout";
-import { MagneticButton } from "../../components/common/MagneticButton";
-import { api } from "../../lib/api";
+import { AuthLayout } from "../../../components/auth/AuthLayout";
+import { MagneticButton } from "../../../components/common/MagneticButton";
+import { HospitalRegisterPanel } from "../../../components/auth/AuthSidePanel";
+import { api } from "../../../lib/api";
 
 const STEPS = ["Hospital details", "Admin account", "Verification", "Submitted"];
 
@@ -50,8 +51,15 @@ export default function HospitalRegister() {
   const inputClass = "w-full px-4 py-3 bg-muted rounded-xl border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all";
   const selectClass = `${inputClass} appearance-none cursor-pointer`;
 
+  const panelVisible = step < 3;
+
   return (
-    <AuthLayout steps={STEPS} currentStep={step}>
+    <AuthLayout
+      steps={STEPS}
+      currentStep={step}
+      sidePanel={<HospitalRegisterPanel />}
+      panelVisible={panelVisible}
+    >
       <AnimatePresence mode="wait">
 
         {/* STEP 0 — Hospital details */}

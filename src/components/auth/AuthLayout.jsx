@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
@@ -19,6 +20,20 @@ export function AuthLayout({
   steps = null,
   currentStep = 0,
 }) {
+  const [isLargeScreen, setIsLargeScreen] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia("(min-width: 1024px)").matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const listener = (e) => setIsLargeScreen(e.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
 
@@ -26,9 +41,9 @@ export function AuthLayout({
       {sidePanel && (
         <motion.div
           className="hidden lg:block fixed top-0 left-0 h-screen overflow-hidden z-20"
-          animate={{ width: panelVisible ? PANEL_W : 0, opacity: panelVisible ? 1 : 0 }}
+          animate={{ width: panelVisible && isLargeScreen ? PANEL_W : 0, opacity: panelVisible && isLargeScreen ? 1 : 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          style={{ pointerEvents: panelVisible ? "auto" : "none" }}
+          style={{ pointerEvents: panelVisible && isLargeScreen ? "auto" : "none" }}
         >
           <div style={{ width: PANEL_W }} className="h-full">
             {sidePanel}
@@ -39,7 +54,7 @@ export function AuthLayout({
       {/* ── Right panel: offset by panel width, scrolls normally ── */}
       <motion.div
         className="flex flex-col min-h-screen"
-        animate={{ marginLeft: sidePanel && panelVisible ? PANEL_W : 0 }}
+        animate={{ marginLeft: sidePanel && panelVisible && isLargeScreen ? PANEL_W : 0 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       >
         {/* Top bar */}
@@ -61,29 +76,6 @@ export function AuthLayout({
           </Link>
         </div>
 
-        {/* Step progress */}
-        {steps && steps.length > 0 && (
-          <div className="px-6 sm:px-10 pt-6 max-w-[520px] shrink-0">
-            <div className="flex items-center gap-1.5">
-              {steps.map((_, i) => (
-                <div
-                  key={i}
-                  className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                    i < currentStep
-                      ? "bg-primary"
-                      : i === currentStep
-                      ? "bg-primary/40"
-                      : "bg-border"
-                  }`}
-                />
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Step {currentStep + 1} of {steps.length} —{" "}
-              <span className="text-foreground font-medium">{steps[currentStep]}</span>
-            </p>
-          </div>
-        )}
 
         {/* Form content */}
         <div className="flex-1 flex items-start justify-center px-6 sm:px-10 py-10">

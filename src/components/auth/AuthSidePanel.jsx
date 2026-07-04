@@ -368,3 +368,147 @@ export function PatientRegisterPanel() {
     />
   );
 }
+
+// ─── ILLUSTRATION 5: Hospital Login — modern hospital building facade ─────────
+function HospitalLoginIllustration() {
+  const ink = "var(--foreground)";
+  const green = "var(--primary)";
+  const faint = "var(--border)";
+
+  return (
+    <svg viewBox="0 0 320 280" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-[290px] mx-auto" aria-label="Hospital dashboard integration">
+
+      {/* Ground */}
+      <L d="M20 230 Q160 224 300 230" stroke={faint} sw={2} delay={0} dur={0.7} op={1} />
+
+      {/* Main tower of Hospital */}
+      <L d="M110 220 L110 90 Q110 84 116 84 L204 84 Q210 84 210 90 L210 220" stroke={ink} sw={1.8} delay={0.1} dur={1.1} op={0.65} />
+
+      {/* Left wing */}
+      <L d="M50 222 L50 140 Q50 134 56 134 L110 134" stroke={ink} sw={1.8} delay={0.3} dur={0.8} op={0.65} />
+
+      {/* Right wing */}
+      <L d="M210 134 L264 134 Q270 134 270 140 L270 222" stroke={ink} sw={1.8} delay={0.4} dur={0.8} op={0.65} />
+
+      {/* Medical Cross in center of main tower */}
+      <L d="M160 110 L160 134" stroke={green} sw={2.8} delay={1.0} dur={0.6} op={0.9} />
+      <L d="M148 122 L172 122" stroke={green} sw={2.8} delay={1.1} dur={0.6} op={0.9} />
+
+      {/* Main entrance door */}
+      <L d="M142 220 L142 195 Q142 190 148 190 L172 190 Q178 190 178 195 L178 220" stroke={ink} sw={1.5} delay={0.8} dur={0.6} op={0.5} />
+
+      {/* Wing Windows */}
+      {[156, 178, 200].map((y, i) => (
+        <g key={y}>
+          {/* Left wing windows */}
+          <L d={`M68 ${y} L86 ${y}`} stroke={faint} sw={1.2} delay={0.6 + i * 0.1} dur={0.4} op={0.8} />
+          {/* Right wing windows */}
+          <L d={`M234 ${y} L252 ${y}`} stroke={faint} sw={1.2} delay={0.7 + i * 0.1} dur={0.4} op={0.8} />
+        </g>
+      ))}
+
+      {/* Main tower windows grid */}
+      {[152, 172].map((y, i) => (
+        <g key={y}>
+          <L d={`M124 ${y} L138 ${y}`} stroke={faint} sw={1.2} delay={0.9 + i * 0.1} dur={0.4} op={0.8} />
+          <L d={`M182 ${y} L196 ${y}`} stroke={faint} sw={1.2} delay={1.0 + i * 0.1} dur={0.4} op={0.8} />
+        </g>
+      ))}
+
+      {/* Pulse / network wave radiating from hospital */}
+      <L d="M102 70 Q70 65 60 90 Q50 115 80 120" stroke={green} sw={1.2} delay={1.5} dur={1.0} op={0.4} strokeDasharray="3 3" />
+      <L d="M218 70 Q250 65 260 90 Q270 115 240 120" stroke={green} sw={1.2} delay={1.6} dur={1.0} op={0.4} strokeDasharray="3 3" />
+
+      {/* Floating badge: "Enterprise" */}
+      <motion.g initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2.0, duration: 0.55, ease: "easeOut" }}>
+        <rect x="96" y="24" width="128" height="28" rx="14"
+          fill="var(--background)" stroke="var(--border)" strokeWidth="1.5" />
+        <text x="160" y="42" textAnchor="middle" fill="var(--primary)"
+          fontSize="10" fontFamily="'Plus Jakarta Sans',sans-serif" fontWeight="700">
+          ✦ Enterprise Portal
+        </text>
+      </motion.g>
+
+      <Dot cx={30} cy={60} delay={2.1} /><Dot cx={292} cy={80} delay={2.2} /><Dot cx={26} cy={242} delay={2.3} />
+    </svg>
+  );
+}
+
+// ─── ILLUSTRATION 6: Hospital Register — hospital building + verification checklist ─
+function HospitalRegisterIllustration() {
+  const ink = "var(--foreground)";
+  const green = "var(--primary)";
+  const faint = "var(--border)";
+
+  return (
+    <svg viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-[290px] mx-auto" aria-label="Hospital verification and credential checks">
+
+      {/* Ground */}
+      <L d="M20 260 Q160 254 300 260" stroke={faint} sw={2} delay={0} dur={0.7} op={1} />
+
+      {/* Document / CAC License on left */}
+      <L d="M50 100 L50 244 Q50 250 56 250 L164 250 Q170 250 170 244 L170 100 Q170 94 164 94 L56 94 Q50 94 50 100Z" stroke={ink} sw={1.7} delay={0.2} dur={1.1} op={0.65} />
+      {/* Document lines */}
+      <L d="M66 116 L154 116" stroke={faint} sw={1.3} delay={0.6} dur={0.4} op={1} />
+      <L d="M66 132 L154 132" stroke={faint} sw={1.1} delay={0.7} dur={0.4} op={1} />
+      <L d="M66 148 L122 148" stroke={faint} sw={1.1} delay={0.8} dur={0.4} op={1} />
+      <L d="M66 164 L138 164" stroke={faint} sw={1.1} delay={0.9} dur={0.4} op={1} />
+
+      {/* Big verification stamp on document */}
+      <C cx={138} cy={206} r={20} stroke={green} sw={1.5} delay={1.1} dur={0.6} op={0.8} />
+      <L d="M126 206 L134 214 L152 196" stroke={green} sw={2.4} delay={1.5} dur={0.7} op={0.95} />
+
+      {/* Hospital icon/building on the right side, partially behind/next to document */}
+      <L d="M196 250 L196 150 Q196 144 202 144 L268 144 Q274 144 274 150 L274 250" stroke={ink} sw={1.6} delay={0.4} dur={0.9} op={0.5} />
+      {/* Medical cross on right-side building */}
+      <L d="M235 166 L235 186" stroke={green} sw={2.2} delay={1.2} dur={0.5} op={0.8} />
+      <L d="M225 176 L245 176" stroke={green} sw={2.2} delay={1.3} dur={0.5} op={0.8} />
+      {/* Windows on right-side building */}
+      <L d="M210 210 L224 210" stroke={faint} sw={1} delay={1.0} dur={0.3} op={0.7} />
+      <L d="M246 210 L260 210" stroke={faint} sw={1} delay={1.1} dur={0.3} op={0.7} />
+      <L d="M210 230 L224 230" stroke={faint} sw={1} delay={1.2} dur={0.3} op={0.7} />
+      <L d="M246 230 L260 230" stroke={faint} sw={1} delay={1.3} dur={0.3} op={0.7} />
+
+      {/* Floating checkmarks / stars */}
+      <Dot cx={30} cy={70} delay={1.8} />
+      <Dot cx={296} cy={110} delay={1.9} />
+      <Dot cx={286} cy={230} delay={2.0} />
+
+      {/* Floating badge */}
+      <motion.g initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2.2, duration: 0.55, ease: "easeOut" }}>
+        <rect x="80" y="24" width="160" height="28" rx="14"
+          fill="var(--background)" stroke="var(--border)" strokeWidth="1.5" />
+        <text x="160" y="42" textAnchor="middle" fill="var(--primary)"
+          fontSize="10" fontFamily="'Plus Jakarta Sans',sans-serif" fontWeight="700">
+          ✦ Secured Verification
+        </text>
+      </motion.g>
+    </svg>
+  );
+}
+
+export function HospitalLoginPanel() {
+  return (
+    <PanelShell
+      headline={"Your dashboard.\nYour network."}
+      sub="Manage patients, staff, and integrations."
+      Illustration={HospitalLoginIllustration}
+    />
+  );
+}
+
+export function HospitalRegisterPanel() {
+  return (
+    <PanelShell
+      headline={"Integrate once.\nScale care digitally."}
+      Illustration={HospitalRegisterIllustration}
+      steps={[
+        { num: "01", label: "Details" },
+        { num: "02", label: "Admin" },
+        { num: "03", label: "CAC" },
+      ]}
+    />
+  );
+}
