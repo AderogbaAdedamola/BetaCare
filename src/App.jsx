@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router";
 
 import LandingPage from "./pages/landing";
 import ContactPage from "./pages/contact";
@@ -8,6 +8,13 @@ import TermsPage from "./pages/terms";
 
 import PatientLogin from "./pages/patient/login";
 import PatientRegister from "./pages/patient/register";
+import PatientDashboard from "./pages/patient/dashboard";
+import PatientRecords from "./pages/patient/records";
+import PatientConsent from "./pages/patient/consent";
+import { PatientProvider } from "./context/PatientContext";
+import { PatientLayout } from "./components/layout/PatientLayout";
+import { isAuthenticated, getRole } from "./lib/api";
+import { Toaster } from "sonner";
 
 import DoctorLogin from "./pages/doctor/login";
 import DoctorRegister from "./pages/doctor/register";
@@ -31,10 +38,18 @@ const fontStyle = `
 // Auth pages manage their own layout — no public navbar
 const AUTH_ROUTES = [
   "/patient/login", "/patient/register",
+  "/patient/dashboard", "/patient/records", "/patient/consent",
   "/doctor/login", "/doctor/register",
   "/hospital/login", "/hospital/register",
   "/hospital/dashboard", "*"
 ];
+
+function PatientProtectedRoute({ children }) {
+  if (!isAuthenticated() || getRole() !== "patient") {
+    return <Navigate to="/patient/login" replace />;
+  }
+  return <PatientProvider>{children}</PatientProvider>;
+}
 
 function AnimatedRoutes({ onGetStarted }) {
   const location = useLocation();
@@ -62,6 +77,38 @@ function AnimatedRoutes({ onGetStarted }) {
             <Route path="/patient/login" element={<PatientLogin />} />
             <Route path="/patient/register" element={<PatientRegister />} />
 
+            {/* Patient Protected Portal */}
+            <Route
+              path="/patient/dashboard"
+              element={
+                <PatientProtectedRoute>
+                  <PatientLayout>
+                    <PatientDashboard />
+                  </PatientLayout>
+                </PatientProtectedRoute>
+              }
+            />
+            <Route
+              path="/patient/records"
+              element={
+                <PatientProtectedRoute>
+                  <PatientLayout>
+                    <PatientRecords />
+                  </PatientLayout>
+                </PatientProtectedRoute>
+              }
+            />
+            <Route
+              path="/patient/consent"
+              element={
+                <PatientProtectedRoute>
+                  <PatientLayout>
+                    <PatientConsent />
+                  </PatientLayout>
+                </PatientProtectedRoute>
+              }
+            />
+
             {/* Doctor auth */}
             <Route path="/doctor/login" element={<DoctorLogin />} />
             <Route path="/doctor/register" element={<DoctorRegister />} />
@@ -87,6 +134,7 @@ export default function App() {
     <BrowserRouter>
       <style>{fontStyle}</style>
       <div className="min-h-screen bg-background">
+        <Toaster position="top-right" richColors />
         <ScrollProgressBar />
         <AnimatedRoutes onGetStarted={() => setPortalOpen(true)} />
         <AnimatePresence>
