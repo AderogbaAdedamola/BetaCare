@@ -63,7 +63,7 @@ export function Navbar({ onGetStarted }) {
             whileHover={{ scale: 1.1, rotate: 5 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
-            {BetaCareLogo()}
+            {BetaCareLogo("w-8 h-8")}
             {/* <Heart size={16} className="text-primary-foreground fill-current" /> */}
           </motion.div>
           <span

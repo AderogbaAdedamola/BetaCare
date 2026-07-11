@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Link } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
 import {
   Activity,
@@ -13,13 +13,20 @@ import {
   FileText,
   UserCheck,
   Calendar,
-  AlertCircle
+  AlertCircle,
+  CheckCircle2,
+  Bot
 } from "lucide-react";
 import { usePatient } from "../../../context/PatientContext";
 import { TiltCard } from "../../../components/common/TiltCard";
+import { toast } from "sonner";
 
 export default function PatientDashboard() {
   const { patient, profile, records, consents, loading, error, refreshData } = usePatient();
+  const navigate = useNavigate();
+
+  // Medication adherence tracking state
+  const [takenMeds, setTakenMeds] = useState({});
 
   // Trigger sync on load
   useEffect(() => {
@@ -73,6 +80,16 @@ export default function PatientDashboard() {
     }
   };
 
+  const handleToggleMed = (med) => {
+    setTakenMeds((prev) => {
+      const newState = { ...prev, [med]: !prev[med] };
+      toast.success(`${med.split(" ")[0]} marked as ${newState[med] ? "taken ✓" : "pending"}`);
+      return newState;
+    });
+  };
+
+
+
   if (loading && !patient) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
@@ -85,6 +102,9 @@ export default function PatientDashboard() {
   // Format baseline vitals
   const vitals = profile?.profile?.recent_vitals || { systolic: 120, diastolic: 80, pulse: 72 };
   const bio = profile?.profile || { conditions: [], medications: [] };
+
+  // Allergy warning computation
+  const allergies = profile?.profile?.allergies || (patient?.id === "mock-patient-123" ? ["Penicillin", "Peanuts"] : []);
 
   return (
     <div className="space-y-10">
@@ -113,6 +133,19 @@ export default function PatientDashboard() {
         </button>
       </div>
 
+      {/* Allergy Alert Banner */}
+      {allergies && allergies.length > 0 && (
+        <div className="flex items-start gap-3 p-4 bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 rounded-2xl text-sm shadow-sm">
+          <AlertCircle size={18} className="shrink-0 mt-0.5 text-amber-600" />
+          <div className="flex-1">
+            <p className="font-semibold">Allergy Warning</p>
+            <p className="text-xs mt-1 opacity-90">
+              Your health profile indicates sensitivity to: <span className="font-bold">{allergies.join(", ")}</span>. Please communicate this to clinical staff during consultations.
+            </p>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm">
           <AlertCircle size={18} className="shrink-0 mt-0.5" />
@@ -131,7 +164,7 @@ export default function PatientDashboard() {
             <div>
               <p className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">Active Shared Access</p>
               <h3 className="text-3xl font-black text-foreground mt-2 tracking-tight">
-                {activeConsentsCount} <span className="text-sm font-medium text-muted-foreground">Hospitals</span>
+                {activeConsentsCount} <span className="text-sm font-medium text-muted-foreground">Entities</span>
               </h3>
             </div>
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
@@ -183,132 +216,238 @@ export default function PatientDashboard() {
       {/* ── Main Layout Split ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Left Column: Health Profile 3D Card */}
-        <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            Biometrics & Vital Sign Profile
-          </h2>
+        {/* Left Column: Health Profile 3D Card & Medication Reminders */}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Biometrics & Vital Sign Profile
+            </h2>
 
-          <TiltCard className="bg-gradient-to-br from-card to-secondary/20 border border-border rounded-3xl p-8 relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-            
-            <div className="flex flex-col gap-6">
-              {/* Blood pressure & heart rate readout */}
-              <div className="flex flex-wrap items-center gap-8 pb-6 border-b border-border">
-                <div>
-                  <p className="text-xs text-muted-foreground font-semibold">Blood Pressure</p>
-                  <p className="text-3xl font-black tracking-tight text-foreground mt-1">
-                    {vitals.systolic}/{vitals.diastolic} <span className="text-sm font-medium text-muted-foreground">mmHg</span>
-                  </p>
-                  <span className="text-[10px] uppercase font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Normal BP</span>
-                </div>
-                <div className="w-px h-12 bg-border hidden sm:block" />
-                <div>
-                  <p className="text-xs text-muted-foreground font-semibold">Pulse / Heart Rate</p>
-                  <p className="text-3xl font-black tracking-tight text-foreground mt-1">
-                    {vitals.pulse || 72} <span className="text-sm font-medium text-muted-foreground">bpm</span>
-                  </p>
-                  <span className="text-[10px] uppercase font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Stable</span>
-                </div>
-              </div>
-
-              {/* Physical measurements */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="bg-background/50 p-4 border border-border/80 rounded-2xl">
-                  <span className="text-xs text-muted-foreground">Biological Sex</span>
-                  <p className="text-lg font-bold text-foreground mt-1 capitalize">{profile?.profile?.sex || "Not specified"}</p>
-                </div>
-                <div className="bg-background/50 p-4 border border-border/80 rounded-2xl">
-                  <span className="text-xs text-muted-foreground">Blood Type</span>
-                  <p className="text-lg font-bold text-foreground mt-1">{profile?.profile?.blood_type || "Unknown"}</p>
-                </div>
-                <div className="bg-background/50 p-4 border border-border/80 rounded-2xl">
-                  <span className="text-xs text-muted-foreground">Height</span>
-                  <p className="text-lg font-bold text-foreground mt-1">{profile?.profile?.height_cm ? `${profile.profile.height_cm} cm` : "Not set"}</p>
-                </div>
-                <div className="bg-background/50 p-4 border border-border/80 rounded-2xl">
-                  <span className="text-xs text-muted-foreground">Weight</span>
-                  <p className="text-lg font-bold text-foreground mt-1">{profile?.profile?.weight_kg ? `${profile.profile.weight_kg} kg` : "Not set"}</p>
-                </div>
-              </div>
-
-              {/* Chronic conditions and medication summary */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-border">
-                <div>
-                  <span className="text-xs text-muted-foreground font-semibold">Conditions Logged</span>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {bio.conditions && bio.conditions.length > 0 ? (
-                      bio.conditions.map((c) => (
-                        <span key={c} className="text-xs bg-primary/8 text-primary border border-primary/20 px-2.5 py-1 rounded-xl font-medium">
-                          {c}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">No chronic conditions declared</span>
-                    )}
+            <TiltCard className="bg-gradient-to-br from-card to-secondary/20 border border-border rounded-3xl p-8 relative overflow-hidden shadow-sm">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex flex-col gap-6">
+                {/* Blood pressure & heart rate readout */}
+                <div className="flex flex-wrap items-center gap-8 pb-6 border-b border-border">
+                  <div>
+                    <p className="text-xs text-muted-foreground font-semibold">Blood Pressure</p>
+                    <p className="text-3xl font-black tracking-tight text-foreground mt-1">
+                      {vitals.systolic}/{vitals.diastolic} <span className="text-sm font-medium text-muted-foreground">mmHg</span>
+                    </p>
+                    <span className="text-[10px] uppercase font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Normal BP</span>
+                  </div>
+                  <div className="w-px h-12 bg-border hidden sm:block" />
+                  <div>
+                    <p className="text-xs text-muted-foreground font-semibold">Pulse / Heart Rate</p>
+                    <p className="text-3xl font-black tracking-tight text-foreground mt-1">
+                      {vitals.pulse || 72} <span className="text-sm font-medium text-muted-foreground">bpm</span>
+                    </p>
+                    <span className="text-[10px] uppercase font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Stable</span>
                   </div>
                 </div>
-                <div>
-                  <span className="text-xs text-muted-foreground font-semibold">Current Medications</span>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {bio.medications && bio.medications.length > 0 ? (
-                      bio.medications.map((m) => (
-                        <span key={m} className="text-xs bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 px-2.5 py-1 rounded-xl font-medium">
-                          {m}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">No active prescriptions logged</span>
-                    )}
+
+                {/* Physical measurements */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="bg-background/50 p-4 border border-border/80 rounded-2xl">
+                    <span className="text-xs text-muted-foreground">Biological Sex</span>
+                    <p className="text-lg font-bold text-foreground mt-1 capitalize">{profile?.profile?.sex || "Not specified"}</p>
+                  </div>
+                  <div className="bg-background/50 p-4 border border-border/80 rounded-2xl">
+                    <span className="text-xs text-muted-foreground">Blood Type</span>
+                    <p className="text-lg font-bold text-foreground mt-1">{profile?.profile?.blood_type || "Unknown"}</p>
+                  </div>
+                  <div className="bg-background/50 p-4 border border-border/80 rounded-2xl">
+                    <span className="text-xs text-muted-foreground">Height</span>
+                    <p className="text-lg font-bold text-foreground mt-1">{profile?.profile?.height_cm ? `${profile.profile.height_cm} cm` : "Not set"}</p>
+                  </div>
+                  <div className="bg-background/50 p-4 border border-border/80 rounded-2xl">
+                    <span className="text-xs text-muted-foreground">Weight</span>
+                    <p className="text-lg font-bold text-foreground mt-1">{profile?.profile?.weight_kg ? `${profile.profile.weight_kg} kg` : "Not set"}</p>
                   </div>
                 </div>
+
+                {/* Chronic conditions and medication summary */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-border">
+                  <div>
+                    <span className="text-xs text-muted-foreground font-semibold">Conditions Logged</span>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {bio.conditions && bio.conditions.length > 0 ? (
+                        bio.conditions.map((c) => (
+                          <span key={c} className="text-xs bg-primary/8 text-primary border border-primary/20 px-2.5 py-1 rounded-xl font-medium">
+                            {c}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-xs text-muted-foreground italic">No chronic conditions declared</span>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground font-semibold">Current Medications</span>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {bio.medications && bio.medications.length > 0 ? (
+                        bio.medications.map((m) => (
+                          <span key={m} className="text-xs bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 px-2.5 py-1 rounded-xl font-medium">
+                            {m}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-xs text-muted-foreground italic">No active prescriptions logged</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
               </div>
+            </TiltCard>
+          </div>
 
-            </div>
-          </TiltCard>
-        </div>
-
-        {/* Right Column: WhatsApp Proactive Action Card */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            BetaCare Channel
-          </h2>
-
-          <div className="bg-emerald-900/90 text-white rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between h-[360px] shadow-sm">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-800/50 rounded-full blur-2xl pointer-events-none" />
-            
-            <div className="relative z-10">
-              <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white mb-6">
-                <MessageSquare size={22} />
+          {/* Medication Reminders Card */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Medication Schedule
+            </h2>
+            <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-4">
+              <div className="flex justify-between items-center pb-3 border-b border-border">
+                <div>
+                  <h3 className="font-bold text-base text-foreground leading-snug">Daily Medication Reminders</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">Tick off your daily doses as you take them</p>
+                </div>
+                <div className="px-3 py-1 bg-primary/10 border border-primary/20 text-primary text-xs font-bold rounded-full">
+                  {Object.values(takenMeds).filter(Boolean).length} / {bio.medications?.length || 0} Taken
+                </div>
               </div>
-              <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                WhatsApp-First Care
-              </h3>
-              <p className="text-sm text-emerald-100/90 leading-relaxed mt-2.5">
-                No need to open web portals day-to-day. You can chat with BetaCare AI, log symptoms, get reminders, and request summaries directly on WhatsApp.
-              </p>
-            </div>
-
-            <div className="relative z-10 space-y-4">
-              <div className="bg-white/10 p-3 rounded-2xl flex items-center gap-3 border border-white/10">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                <span className="text-xs text-emerald-100 font-semibold truncate">
-                  AI Agent Status: Active & Monitoring
-                </span>
-              </div>
-              <a
-                href="https://wa.me/2348030000000?text=Hello%20BetaCare"
-                target="_blank"
-                rel="noreferrer"
-                className="w-full flex items-center justify-center gap-2 bg-white text-emerald-900 font-semibold px-4 py-3 rounded-xl hover:bg-emerald-50 transition-colors text-sm shadow-sm"
-              >
-                Launch WhatsApp Chat <ArrowRight size={14} />
-              </a>
+              
+              {bio.medications && bio.medications.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {bio.medications.map((med) => {
+                    const isTaken = !!takenMeds[med];
+                    return (
+                      <div
+                        key={med}
+                        onClick={() => handleToggleMed(med)}
+                        className={`flex items-center justify-between p-4 rounded-2xl border transition-all cursor-pointer select-none ${
+                          isTaken 
+                            ? "bg-primary/5 border-primary/20 text-foreground" 
+                            : "bg-muted/40 border-border/80 text-muted-foreground hover:border-primary/25 hover:bg-secondary/10"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                            isTaken ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
+                          }`}>
+                            {isTaken && <CheckCircle2 size={12} />}
+                          </div>
+                          <span className={`text-xs font-semibold ${isTaken ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                            {med}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-secondary text-primary">
+                          {isTaken ? "Taken" : "Pending"}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground italic py-3 text-center">No active prescriptions registered.</p>
+              )}
             </div>
           </div>
         </div>
 
+        {/* Right Column: Quick AI Chat & WhatsApp Channel */}
+        <div className="space-y-8">
+          
+          {/* Quick AI Chat Navigation Card */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Quick AI Consultation
+            </h2>
+            <div className="bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+              
+              {/* Header */}
+              <div className="flex items-center gap-3 pb-4 border-b border-border mb-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <Bot size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-foreground">BetaCare Clinical Agent</h3>
+                  <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                    Active &amp; Ready
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+                Ask about symptoms, medications, diet, exercise, or general health guidance. Tap a topic below to start a conversation.
+              </p>
+
+              {/* Quick Action Chips */}
+              <div className="flex flex-wrap gap-2 mb-5">
+                {["Feeling feverish", "Nausea issues", "Headache query", "Medication question", "Blood pressure tips", "Diet advice"].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    onClick={() => navigate(`/patient/ai-chat?message=${encodeURIComponent(suggestion)}`)}
+                    className="text-[10px] font-semibold bg-secondary text-primary hover:bg-primary hover:text-primary-foreground px-2.5 py-1.5 rounded-full border border-primary/10 transition-colors cursor-pointer"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+
+              {/* Open Chat Button */}
+              <Link
+                to="/patient/ai-chat"
+                className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold px-4 py-3 rounded-xl hover:bg-primary/90 transition-colors text-sm shadow-sm cursor-pointer"
+              >
+                Open AI Chat <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+
+          {/* BetaCare WhatsApp Channel */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              BetaCare Channel
+            </h2>
+
+            <div className="bg-emerald-900/90 text-white rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between h-[360px] shadow-sm">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-800/50 rounded-full blur-2xl pointer-events-none" />
+              
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white mb-6">
+                  <MessageSquare size={22} />
+                </div>
+                <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  WhatsApp-First Care
+                </h3>
+                <p className="text-sm text-emerald-100/90 leading-relaxed mt-2.5">
+                  No need to open web portals day-to-day. You can chat with BetaCare AI, log symptoms, get reminders, and request summaries directly on WhatsApp.
+                </p>
+              </div>
+
+              <div className="relative z-10 space-y-4">
+                <div className="bg-white/10 p-3 rounded-2xl flex items-center gap-3 border border-white/10">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="text-xs text-emerald-100 font-semibold truncate">
+                    AI Agent Status: Active & Monitoring
+                  </span>
+                </div>
+                <a
+                  href="https://wa.me/2348030000000?text=Hello%20BetaCare"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full flex items-center justify-center gap-2 bg-white text-emerald-900 font-semibold px-4 py-3 rounded-xl hover:bg-emerald-50 transition-colors text-sm shadow-sm cursor-pointer"
+                >
+                  Launch WhatsApp Chat <ArrowRight size={14} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ── Recent Records Section ── */}

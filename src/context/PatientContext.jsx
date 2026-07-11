@@ -140,13 +140,14 @@ export function PatientProvider({ children }) {
     }
   }, [getUserIdFromToken]);
 
-  // Grant access to a hospital
+  // Grant access to a hospital or doctor
   const grantConsent = useCallback(async (hospitalId, scope, durationDays) => {
     const userId = getUserIdFromToken();
     if (!userId) return;
 
     const hospital = INTEGRATED_HOSPITALS.find((h) => h.id === hospitalId);
-    if (!hospital) throw new Error("Selected hospital is invalid.");
+    const doctor = !hospital ? MOCK_DOCTORS.find((d) => d.id === hospitalId) : null;
+    if (!hospital && !doctor) throw new Error("Selected hospital or doctor is invalid.");
 
     const expiresAt = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
 
@@ -165,7 +166,8 @@ export function PatientProvider({ children }) {
       const newConsent = {
         id: res.consent_id || `consent_${Date.now()}`,
         hospital_id: hospitalId,
-        hospital_name: hospital.name,
+        hospital_name: hospital ? hospital.name : `${doctor.name} (${doctor.specialty})`,
+        is_doctor: !!doctor,
         scope,
         granted_at: new Date().toISOString(),
         expires_at: expiresAt,
@@ -177,7 +179,7 @@ export function PatientProvider({ children }) {
         return updated;
       });
     } catch (err) {
-      throw new Error(err.message || "Could not grant hospital access.");
+      throw new Error(err.message || "Could not grant access.");
     }
   }, [getUserIdFromToken]);
 

@@ -10,6 +10,7 @@ import {
   X,
   Bell,
   LineChart,
+  Bot,
 } from "lucide-react";
 import { usePatient } from "../../context/PatientContext";
 import { BetaCareLogo } from "../icons/BetaCareLogo";
@@ -23,6 +24,7 @@ export function PatientLayout({ children }) {
     { name: "Dashboard", href: "/patient/dashboard", icon: LayoutDashboard },
     { name: "Medical Records", href: "/patient/records", icon: ClipboardList },
     { name: "Track Health", href: "/patient/health-tracker", icon: LineChart },
+    { name: "AI Assistant", href: "/patient/ai-chat", icon: Bot },
     { name: "Notifications", href: "/patient/notifications", icon: Bell },
     { name: "Manage Access", href: "/patient/consent", icon: ShieldCheck },
   ];

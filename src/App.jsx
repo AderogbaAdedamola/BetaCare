@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router";
 
 import LandingPage from "./pages/landing";
@@ -11,6 +11,9 @@ import PatientRegister from "./pages/patient/register";
 import PatientDashboard from "./pages/patient/dashboard";
 import PatientRecords from "./pages/patient/records";
 import PatientConsent from "./pages/patient/consent";
+import PatientNotifications from "./pages/patient/notifications";
+import PatientHealthTracker from "./pages/patient/health-tracker";
+import PatientAIChat from "./pages/patient/ai-chat";
 import { PatientProvider } from "./context/PatientContext";
 import { PatientLayout } from "./components/layout/PatientLayout";
 import { isAuthenticated, getRole } from "./lib/api";
@@ -25,7 +28,6 @@ import HospitalDashboard from "./pages/hospital/dashboard";
 
 import NotFoundPages from "./pages/NotFoundPage";
 
-import { ScrollProgressBar } from "./components/common/ScrollProgressBar";
 import { Navbar } from "./pages/landing/components/Navbar";
 import { PortalModal } from "./pages/landing/components/PortalModal";
 
@@ -39,6 +41,7 @@ const fontStyle = `
 const AUTH_ROUTES = [
   "/patient/login", "/patient/register",
   "/patient/dashboard", "/patient/records", "/patient/consent",
+  "/patient/notifications", "/patient/health-tracker", "/patient/ai-chat",
   "/doctor/login", "/doctor/register",
   "/hospital/login", "/hospital/register",
   "/hospital/dashboard", "*"
@@ -59,70 +62,92 @@ function AnimatedRoutes({ onGetStarted }) {
     <>
       {!isAuthRoute && <Navbar onGetStarted={onGetStarted} />}
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -16 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <Routes location={location}>
-            {/* Public */}
-            <Route path="/" element={<LandingPage onGetStarted={onGetStarted} />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/terms" element={<TermsPage />} />
+      <div>
+        <Routes location={location}>
+          {/* Public */}
+          <Route path="/" element={<LandingPage onGetStarted={onGetStarted} />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/terms" element={<TermsPage />} />
 
-            {/* Patient auth */}
-            <Route path="/patient/login" element={<PatientLogin />} />
-            <Route path="/patient/register" element={<PatientRegister />} />
+          {/* Patient auth */}
+          <Route path="/patient/login" element={<PatientLogin />} />
+          <Route path="/patient/register" element={<PatientRegister />} />
 
-            {/* Patient Protected Portal */}
-            <Route
-              path="/patient/dashboard"
-              element={
-                <PatientProtectedRoute>
-                  <PatientLayout>
-                    <PatientDashboard />
-                  </PatientLayout>
-                </PatientProtectedRoute>
-              }
-            />
-            <Route
-              path="/patient/records"
-              element={
-                <PatientProtectedRoute>
-                  <PatientLayout>
-                    <PatientRecords />
-                  </PatientLayout>
-                </PatientProtectedRoute>
-              }
-            />
-            <Route
-              path="/patient/consent"
-              element={
-                <PatientProtectedRoute>
-                  <PatientLayout>
-                    <PatientConsent />
-                  </PatientLayout>
-                </PatientProtectedRoute>
-              }
-            />
+          {/* Patient Protected Portal */}
+          <Route
+            path="/patient/dashboard"
+            element={
+              <PatientProtectedRoute>
+                <PatientLayout>
+                  <PatientDashboard />
+                </PatientLayout>
+              </PatientProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/records"
+            element={
+              <PatientProtectedRoute>
+                <PatientLayout>
+                  <PatientRecords />
+                </PatientLayout>
+              </PatientProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/health-tracker"
+            element={
+              <PatientProtectedRoute>
+                <PatientLayout>
+                  <PatientHealthTracker />
+                </PatientLayout>
+              </PatientProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/notifications"
+            element={
+              <PatientProtectedRoute>
+                <PatientLayout>
+                  <PatientNotifications />
+                </PatientLayout>
+              </PatientProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/consent"
+            element={
+              <PatientProtectedRoute>
+                <PatientLayout>
+                  <PatientConsent />
+                </PatientLayout>
+              </PatientProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/ai-chat"
+            element={
+              <PatientProtectedRoute>
+                <PatientLayout>
+                  <PatientAIChat />
+                </PatientLayout>
+              </PatientProtectedRoute>
+            }
+          />
 
-            {/* Doctor auth */}
-            <Route path="/doctor/login" element={<DoctorLogin />} />
-            <Route path="/doctor/register" element={<DoctorRegister />} />
+          {/* Doctor auth */}
+          <Route path="/doctor/login" element={<DoctorLogin />} />
+          <Route path="/doctor/register" element={<DoctorRegister />} />
 
-            {/* Hospital auth + dashboard */}
-            <Route path="/hospital/login" element={<HospitalLogin />} />
-            <Route path="/hospital/register" element={<HospitalRegister />} />
-            <Route path="/hospital/dashboard" element={<HospitalDashboard />} />
+          {/* Hospital auth + dashboard */}
+          <Route path="/hospital/login" element={<HospitalLogin />} />
+          <Route path="/hospital/register" element={<HospitalRegister />} />
+          <Route path="/hospital/dashboard" element={<HospitalDashboard />} />
 
-            {/* catch non exixting routes */}
-            <Route path="*" element={<NotFoundPages/>}/>
-          </Routes>
-        </motion.div>
-      </AnimatePresence>
+          {/* catch non exixting routes */}
+          <Route path="*" element={<NotFoundPages/>}/>
+        </Routes>
+      </div>
     </>
   );
 }
@@ -135,7 +160,6 @@ export default function App() {
       <style>{fontStyle}</style>
       <div className="min-h-screen bg-background">
         <Toaster position="top-right" richColors />
-        <ScrollProgressBar />
         <AnimatedRoutes onGetStarted={() => setPortalOpen(true)} />
         <AnimatePresence>
           {portalOpen && (
