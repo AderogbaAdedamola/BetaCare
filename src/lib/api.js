@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleMockRequest } from "../data/mockData";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
 const STORAGE_KEY = "betacare_session";
@@ -42,6 +43,10 @@ client.interceptors.response.use(
 );
 
 async function request(path, { method = "GET", body } = {}) {
+  // Simulate network delay of 300 milliseconds
+  await new Promise(resolve => setTimeout(resolve, 300));
+
+  /*
   try {
     const res = await client.request({ url: path, method, data: body });
     return res.data;
@@ -49,6 +54,9 @@ async function request(path, { method = "GET", body } = {}) {
     const message = error.response?.data?.message || error.message || "Request failed";
     throw new Error(message);
   }
+  */
+
+  return handleMockRequest(path, method, body);
 }
 
 export const api = {

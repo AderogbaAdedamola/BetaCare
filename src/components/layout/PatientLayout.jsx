@@ -8,10 +8,11 @@ import {
   LogOut,
   Menu,
   X,
-  User,
-  HeartPulse
+  Bell,
+  LineChart,
 } from "lucide-react";
 import { usePatient } from "../../context/PatientContext";
+import { BetaCareLogo } from "../icons/BetaCareLogo";
 
 export function PatientLayout({ children }) {
   const { patient, logout } = usePatient();
@@ -21,13 +22,13 @@ export function PatientLayout({ children }) {
   const navigation = [
     { name: "Dashboard", href: "/patient/dashboard", icon: LayoutDashboard },
     { name: "Medical Records", href: "/patient/records", icon: ClipboardList },
-    { name: "Consent Management", href: "/patient/consent", icon: ShieldCheck },
+    { name: "Track Health", href: "/patient/health-tracker", icon: LineChart },
+    { name: "Notifications", href: "/patient/notifications", icon: Bell },
+    { name: "Manage Access", href: "/patient/consent", icon: ShieldCheck },
   ];
 
-  // Helper to check if a route is active
   const isActive = (path) => location.pathname === path;
 
-  // Simple initials generator for Avatar
   const getInitials = () => {
     if (patient?.full_name) {
       const parts = patient.full_name.split(" ");
@@ -43,14 +44,12 @@ export function PatientLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row text-foreground">
-      
+
       {/* ── Desktop Sidebar ── */}
       <aside className="hidden lg:flex flex-col w-72 bg-card border-r border-border shrink-0 z-30 h-screen sticky top-0">
         {/* Brand header */}
-        <div className="h-[76px] flex items-center gap-3 px-8 border-b border-border">
-          <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-            <HeartPulse size={20} />
-          </div>
+        <div className="h-[76px] flex items-center gap-3 px-6 border-b border-border">
+          <BetaCareLogo className="w-9 h-9 object-contain" />
           <span
             className="font-bold text-lg text-foreground tracking-tight"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
@@ -61,7 +60,7 @@ export function PatientLayout({ children }) {
         </div>
 
         {/* Navigation list */}
-        <nav className="flex-1 px-4 py-6 space-y-1.5">
+        <nav className="flex-1 px-4 py-6 space-y-1">
           {navigation.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
@@ -82,8 +81,6 @@ export function PatientLayout({ children }) {
                   }`}
                 />
                 {item.name}
-                
-                {/* Subtle hover pill indicator for inactive items */}
                 {!active && (
                   <motion.div
                     className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r"
@@ -124,10 +121,8 @@ export function PatientLayout({ children }) {
 
       {/* ── Mobile Top Header ── */}
       <header className="lg:hidden h-[68px] flex items-center justify-between px-6 bg-card border-b border-border z-40 sticky top-0">
-        <Link to="/patient/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-            <HeartPulse size={18} />
-          </div>
+        <Link to="/patient/dashboard" className="flex items-center gap-2.5">
+          <BetaCareLogo className="w-8 h-8 object-contain" />
           <span
             className="font-bold text-base text-foreground"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
@@ -147,7 +142,6 @@ export function PatientLayout({ children }) {
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.4 }}
@@ -155,7 +149,6 @@ export function PatientLayout({ children }) {
               onClick={() => setMobileMenuOpen(false)}
               className="lg:hidden fixed inset-0 bg-black z-30"
             />
-            {/* Slide menu */}
             <motion.div
               variants={menuVariants}
               initial="closed"
@@ -163,12 +156,10 @@ export function PatientLayout({ children }) {
               exit="closed"
               className="lg:hidden fixed top-[68px] left-0 bottom-0 w-80 bg-card border-r border-border p-6 z-30 flex flex-col"
             >
-              {/* Menu title */}
               <p className="text-xs uppercase tracking-widest font-semibold text-muted-foreground mb-4">
                 Portal Menu
               </p>
-              {/* Navigation list */}
-              <nav className="flex-1 space-y-1.5">
+              <nav className="flex-1 space-y-1">
                 {navigation.map((item) => {
                   const active = isActive(item.href);
                   const Icon = item.icon;
@@ -190,7 +181,6 @@ export function PatientLayout({ children }) {
                 })}
               </nav>
 
-              {/* User logout controls */}
               <div className="border-t border-border pt-6 mt-auto">
                 <div className="flex items-center gap-3 p-2 border border-border bg-muted/40 rounded-xl mb-4">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary font-bold text-sm flex items-center justify-center shrink-0">
@@ -206,10 +196,7 @@ export function PatientLayout({ children }) {
                   </div>
                 </div>
                 <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    logout();
-                  }}
+                  onClick={() => { setMobileMenuOpen(false); logout(); }}
                   className="w-full flex items-center justify-center gap-2 py-3 border border-border hover:border-destructive hover:bg-destructive/5 text-muted-foreground hover:text-destructive text-sm font-semibold rounded-xl transition-all cursor-pointer"
                 >
                   <LogOut size={16} />

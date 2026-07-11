@@ -32,6 +32,16 @@ export const INTEGRATED_HOSPITALS = [
   { id: "hosp_evercare", name: "Evercare Hospital Lekki", state: "Lagos", type: "Private" },
 ];
 
+// Private doctors available for direct access grants
+export const MOCK_DOCTORS = [
+  { id: "doc_001", name: "Dr. Adewale Yusuf", specialty: "Cardiologist", state: "Lagos", type: "Private" },
+  { id: "doc_002", name: "Dr. Jane Nwachukwu", specialty: "General Practitioner", state: "Abuja", type: "Private" },
+  { id: "doc_003", name: "Dr. Emeka Okafor", specialty: "Endocrinologist", state: "Lagos", type: "Private" },
+  { id: "doc_004", name: "Dr. Fatima Bello", specialty: "Nephrologist", state: "Kano", type: "Private" },
+  { id: "doc_005", name: "Dr. Chukwuemeka Eze", specialty: "Internist", state: "Enugu", type: "Private" },
+];
+
+
 export function PatientProvider({ children }) {
   const navigate = useNavigate();
   const [patient, setPatient] = useState(null);

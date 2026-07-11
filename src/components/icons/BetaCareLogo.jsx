@@ -1,9 +1,7 @@
 import logo from "../../assets/BetaCare-logo.png";
 
-export function BetaCareLogo(size = "size-8") {
+export function BetaCareLogo({ className = "w-8 h-8" }) {
   return (
-    <div className={size}>
-      <img src={logo} alt="logo" className="size-full object-cover"/>
-    </div>
+    <img src={logo} alt="BetaCare" className={`${className} object-contain`} />
   );
 }
