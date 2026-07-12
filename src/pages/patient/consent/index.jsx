@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ShieldAlert,
@@ -10,7 +10,10 @@ import {
   Plus,
   Loader2,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  QrCode,
+  Copy,
+  Heart
 } from "lucide-react";
 import { usePatient, INTEGRATED_HOSPITALS, MOCK_DOCTORS } from "../../../context/PatientContext";
 import { toast } from "sonner";
@@ -26,10 +29,119 @@ export default function PatientConsent() {
   const [revokingId, setRevokingId] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
+  // QR & Connection String states
+  const [shareScopes, setShareScopes] = useState(["visit_note", "prescription"]);
+  const [generatedCode, setGeneratedCode] = useState(null);
+  const [activeCodes, setActiveCodes] = useState(() => {
+    const saved = localStorage.getItem("betacare_shared_codes");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [pendingRequests, setPendingRequests] = useState(() => {
+    const saved = localStorage.getItem("betacare_pending_requests");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [copiedCode, setCopiedCode] = useState(null);
+
+  // Sync to local storage
+  useEffect(() => {
+    localStorage.setItem("betacare_shared_codes", JSON.stringify(activeCodes));
+  }, [activeCodes]);
+
+  useEffect(() => {
+    localStorage.setItem("betacare_pending_requests", JSON.stringify(pendingRequests));
+  }, [pendingRequests]);
+
   const scopeLabels = {
     visit_note: "Consultation Notes",
     prescription: "Prescription Records",
     lab_result: "Lab Reports & Vitals",
+  };
+
+  const handleGenerateCode = () => {
+    if (shareScopes.length === 0) {
+      toast.error("Please select at least one scope to share.");
+      return;
+    }
+    const code = `BC-SHARE-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+    const expiresAt = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(); // expires after 2 days
+    
+    const newCode = {
+      id: `code_${Date.now()}`,
+      code,
+      scopes: shareScopes,
+      expiresAt,
+      revoked: false
+    };
+
+    setActiveCodes(prev => [newCode, ...prev]);
+    setGeneratedCode(newCode);
+    toast.success("Shareable QR Code & Connection String generated!");
+
+    // Simulate someone attempting to connect using the generated code after 4.5 seconds
+    setTimeout(() => {
+      // Pick a random entity from available integrated entities
+      const allEntities = [
+        ...INTEGRATED_HOSPITALS.map(h => ({ id: h.id, name: h.name, is_doctor: false })),
+        ...MOCK_DOCTORS.map(d => ({ id: d.id, name: `${d.name} (${d.specialty})`, is_doctor: true }))
+      ];
+      // Filter out entities that already have active consents or active pending requests
+      const availableToRequest = allEntities.filter(
+        entity => !consents.some(c => c.hospital_id === entity.id) &&
+                  !pendingRequests.some(pr => pr.entityId === entity.id)
+      );
+
+      if (availableToRequest.length > 0) {
+        const selectedEntity = availableToRequest[Math.floor(Math.random() * availableToRequest.length)];
+        const newRequest = {
+          id: `req_${Date.now()}`,
+          entityId: selectedEntity.id,
+          entityName: selectedEntity.name,
+          is_doctor: selectedEntity.is_doctor,
+          code: code,
+          scopes: shareScopes,
+          receivedAt: new Date().toISOString()
+        };
+        setPendingRequests(prev => {
+          // Double check if code wasn't revoked in the meantime
+          const codes = JSON.parse(localStorage.getItem("betacare_shared_codes") || "[]");
+          const currentCode = codes.find(c => c.code === code);
+          if (currentCode && !currentCode.revoked) {
+            toast.info(`New request from ${selectedEntity.name} using code ${code}!`);
+            return [newRequest, ...prev];
+          }
+          return prev;
+        });
+      }
+    }, 4500);
+  };
+
+  const handleRevokeCode = (codeId) => {
+    setActiveCodes(prev =>
+      prev.map(c => (c.id === codeId ? { ...c, revoked: true } : c))
+    );
+    const codeObj = activeCodes.find(c => c.id === codeId);
+    if (codeObj) {
+      setPendingRequests(prev => prev.filter(r => r.code !== codeObj.code));
+      toast.success(`Connection string ${codeObj.code} has been revoked.`);
+    }
+  };
+
+  const handleApproveRequest = async (request) => {
+    setLoading(true);
+    try {
+      await grantConsent(request.entityId, request.scopes, 7);
+      setPendingRequests(prev => prev.filter(r => r.id !== request.id));
+      toast.success(`Access granted successfully to ${request.entityName}!`);
+    } catch (err) {
+      toast.error(err.message || "Failed to grant access.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeclineRequest = (requestId) => {
+    setPendingRequests(prev => prev.filter(r => r.id !== requestId));
+    toast.info("Connection request declined.");
   };
 
   const handleToggleScope = (scopeKey) => {
@@ -231,6 +343,77 @@ export default function PatientConsent() {
               )}
             </AnimatePresence>
           </div>
+
+          {/* Pending Access Requests */}
+          {pendingRequests.filter(req => {
+            const codeObj = activeCodes.find(c => c.code === req.code);
+            return codeObj && !codeObj.revoked;
+          }).length > 0 && (
+            <div className="space-y-4 mt-8">
+              <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <ShieldAlert size={20} className="text-amber-500 animate-pulse" />
+                Pending Access Requests (Validation Required)
+              </h2>
+              <div className="space-y-4">
+                <AnimatePresence mode="popLayout">
+                  {pendingRequests.filter(req => {
+                    const codeObj = activeCodes.find(c => c.code === req.code);
+                    return codeObj && !codeObj.revoked;
+                  }).map((req) => (
+                    <motion.div
+                      key={req.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="bg-amber-500/5 border border-amber-500/25 rounded-2xl p-5 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-amber-500/35 transition-all"
+                    >
+                      <div className="space-y-3 flex-1">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-sm text-foreground leading-snug">{req.entityName}</h3>
+                            <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                              Access Requested
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Requested connection via code <span className="font-mono font-bold text-primary">{req.code}</span>
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {req.scopes.map((s) => (
+                            <span
+                              key={s}
+                              className="text-[9px] font-bold uppercase tracking-wide bg-background text-amber-600 dark:text-amber-400 px-2.5 py-0.5 border border-amber-500/10 rounded-full"
+                            >
+                              {scopeLabels[s] || s}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 shrink-0 self-end md:self-center">
+                        <button
+                          type="button"
+                          onClick={() => handleDeclineRequest(req.id)}
+                          className="px-3.5 py-2 rounded-xl border border-border text-muted-foreground hover:bg-muted text-xs font-semibold cursor-pointer"
+                        >
+                          Decline
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleApproveRequest(req)}
+                          className="px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm"
+                        >
+                          <ShieldCheck size={14} /> Grant Access
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Column: Authorize New Access Widget */}
@@ -389,6 +572,149 @@ export default function PatientConsent() {
               </div>
 
             </form>
+          </div>
+
+          {/* Share QR & Connection Code Widget */}
+          <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-5">
+            <div className="flex items-center gap-2">
+              <QrCode size={18} className="text-primary" />
+              <h3 className="font-bold text-sm text-foreground">Share via QR & Code</h3>
+            </div>
+            
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Generate a shareable connection string and QR code for clinicians to request access. Expires after 2 days (default).
+            </p>
+
+            {/* Share Scope Checklist */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider block">Include in Scope</label>
+              {Object.entries(scopeLabels).map(([key, label]) => {
+                const isChecked = shareScopes.includes(key);
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => {
+                      setShareScopes(prev =>
+                        prev.includes(key) ? prev.filter(s => s !== key) : [...prev, key]
+                      );
+                    }}
+                    className={`flex items-center gap-2.5 w-full p-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer ${
+                      isChecked
+                        ? "bg-primary/5 border-primary/20 text-primary"
+                        : "bg-muted border-border text-muted-foreground hover:border-primary/20"
+                    }`}
+                  >
+                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 transition-all ${
+                      isChecked ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
+                    }`}>
+                      {isChecked && <CheckCircle2 size={8} className="text-primary-foreground" />}
+                    </div>
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGenerateCode}
+              className="w-full flex items-center justify-center gap-2 py-3 bg-secondary text-primary hover:bg-primary hover:text-primary-foreground font-semibold rounded-xl transition-all text-xs cursor-pointer border border-primary/10"
+            >
+              <Plus size={14} /> Generate QR & Connection String
+            </button>
+
+            {/* Active / Generated Code Display */}
+            {generatedCode && !generatedCode.revoked && (
+              <div className="bg-muted p-4 rounded-xl border border-border/80 text-center space-y-4 animate-fadeIn">
+                <div className="flex justify-between items-center pb-2 border-b border-border/60">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Generated Code</span>
+                  <span className="text-[9px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                    Expires in 48h
+                  </span>
+                </div>
+                
+                {/* Beautiful QR Mock SVG */}
+                <div className="w-32 h-32 bg-white p-2.5 rounded-xl border border-border mx-auto flex items-center justify-center relative shadow-sm group">
+                  <svg viewBox="0 0 100 100" className="w-full h-full text-zinc-800">
+                    <rect x="0" y="0" width="20" height="20" fill="currentColor" />
+                    <rect x="5" y="5" width="10" height="10" fill="white" />
+                    <rect x="80" y="0" width="20" height="20" fill="currentColor" />
+                    <rect x="85" y="5" width="10" height="10" fill="white" />
+                    <rect x="0" y="80" width="20" height="20" fill="currentColor" />
+                    <rect x="5" y="85" width="10" height="10" fill="white" />
+                    <rect x="30" y="10" width="10" height="10" fill="currentColor" />
+                    <rect x="50" y="0" width="10" height="20" fill="currentColor" />
+                    <rect x="40" y="30" width="20" height="10" fill="currentColor" />
+                    <rect x="10" y="40" width="10" height="30" fill="currentColor" />
+                    <rect x="70" y="40" width="20" height="10" fill="currentColor" />
+                    <rect x="30" y="60" width="10" height="20" fill="currentColor" />
+                    <rect x="50" y="80" width="10" height="10" fill="currentColor" />
+                    <rect x="70" y="70" width="10" height="20" fill="currentColor" />
+                    <rect x="80" y="60" width="10" height="10" fill="currentColor" />
+                    <rect x="80" y="30" width="10" height="10" fill="currentColor" />
+                    <rect x="30" y="80" width="10" height="10" fill="currentColor" />
+                  </svg>
+                  <div className="absolute inset-0 m-auto w-8 h-8 bg-white border border-border rounded-lg flex items-center justify-center text-primary shadow-sm">
+                    <Heart size={14} fill="currentColor" />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-2 bg-background p-2.5 rounded-lg border border-border">
+                  <span className="font-mono font-bold text-xs tracking-wide text-foreground select-all">{generatedCode.code}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedCode.code);
+                      setCopiedCode(generatedCode.id);
+                      toast.success("Code copied to clipboard!");
+                      setTimeout(() => setCopiedCode(null), 2000);
+                    }}
+                    className="p-1.5 hover:bg-muted text-muted-foreground rounded-lg transition-colors cursor-pointer"
+                  >
+                    {copiedCode === generatedCode.id ? (
+                      <CheckCircle2 size={14} className="text-emerald-500" />
+                    ) : (
+                      <Copy size={14} />
+                    )}
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleRevokeCode(generatedCode.id)}
+                  className="w-full text-[11px] font-bold text-destructive hover:bg-destructive/10 py-1.5 rounded-lg transition-all cursor-pointer"
+                >
+                  Revoke Active QR / Code
+                </button>
+              </div>
+            )}
+
+            {/* List of active codes */}
+            {activeCodes.filter(c => !c.revoked && (!generatedCode || generatedCode.id !== c.id)).length > 0 && (
+              <div className="space-y-2 pt-2 border-t border-border/85">
+                <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider block">Active Shared Codes</span>
+                <div className="space-y-2">
+                  {activeCodes.filter(c => !c.revoked && (!generatedCode || generatedCode.id !== c.id)).map(c => (
+                    <div key={c.id} className="flex justify-between items-center p-2.5 rounded-xl border border-border bg-muted/40 text-xs">
+                      <div>
+                        <p className="font-mono font-bold text-foreground">{c.code}</p>
+                        <p className="text-[9px] text-muted-foreground mt-0.5">
+                          Expires: {new Date(c.expiresAt).toLocaleDateString("en-NG", { day: "numeric", month: "short" })}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRevokeCode(c.id)}
+                        className="text-[10px] font-bold text-destructive hover:text-destructive-hover px-2 py-1 rounded transition-colors cursor-pointer"
+                      >
+                        Revoke
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
