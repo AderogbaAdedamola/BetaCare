@@ -97,7 +97,14 @@ export function PatientProvider({ children }) {
           open_anomalies: []
         };
       });
-      setProfile(profileRes);
+
+      const savedProfile = localStorage.getItem(`profile_${userId}`);
+      if (savedProfile) {
+        setProfile(JSON.parse(savedProfile));
+      } else {
+        setProfile(profileRes);
+        localStorage.setItem(`profile_${userId}`, JSON.stringify(profileRes));
+      }
 
       // 3. Fetch Records
       const recordsRes = await api.get(`/data/records/${userId}`).catch((err) => {
@@ -213,6 +220,13 @@ export function PatientProvider({ children }) {
     navigate("/patient/login");
   }, [navigate]);
 
+  const updateProfile = useCallback(async (newProfile) => {
+    const userId = getUserIdFromToken();
+    if (!userId) return;
+    setProfile(newProfile);
+    localStorage.setItem(`profile_${userId}`, JSON.stringify(newProfile));
+  }, [getUserIdFromToken]);
+
   useEffect(() => {
     if (isAuthenticated() && getRole() === "patient") {
       fetchPatientData();
@@ -229,6 +243,7 @@ export function PatientProvider({ children }) {
     refreshData: fetchPatientData,
     grantConsent,
     revokeConsent,
+    updateProfile,
     logout: handleLogout,
   };
 

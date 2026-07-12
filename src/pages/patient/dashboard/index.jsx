@@ -389,7 +389,7 @@ export default function PatientDashboard() {
                 {["Feeling feverish", "Nausea issues", "Headache query", "Medication question", "Blood pressure tips", "Diet advice"].map((suggestion) => (
                   <button
                     key={suggestion}
-                    onClick={() => navigate(`/patient/ai-chat?message=${encodeURIComponent(suggestion)}`)}
+                    onClick={() => navigate(`/patient/care-connect?message=${encodeURIComponent(suggestion)}`)}
                     className="text-[10px] font-semibold bg-secondary text-primary hover:bg-primary hover:text-primary-foreground px-2.5 py-1.5 rounded-full border border-primary/10 transition-colors cursor-pointer"
                   >
                     {suggestion}
@@ -399,10 +399,10 @@ export default function PatientDashboard() {
 
               {/* Open Chat Button */}
               <Link
-                to="/patient/ai-chat"
+                to="/patient/care-connect"
                 className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold px-4 py-3 rounded-xl hover:bg-primary/90 transition-colors text-sm shadow-sm cursor-pointer"
               >
-                Open AI Chat <ArrowRight size={14} />
+                Open Care Connect <ArrowRight size={14} />
               </Link>
             </div>
           </div>

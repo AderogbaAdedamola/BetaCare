@@ -13,7 +13,10 @@ import {
   AlertCircle,
   QrCode,
   Copy,
-  Heart
+  Heart,
+  Download,
+  Share2,
+  ChevronDown
 } from "lucide-react";
 import { usePatient, INTEGRATED_HOSPITALS, MOCK_DOCTORS } from "../../../context/PatientContext";
 import { toast } from "sonner";
@@ -41,6 +44,7 @@ export default function PatientConsent() {
     return saved ? JSON.parse(saved) : [];
   });
   const [copiedCode, setCopiedCode] = useState(null);
+  const [rightPanelTab, setRightPanelTab] = useState("direct"); // "direct" or "qr"
 
   // Sync to local storage
   useEffect(() => {
@@ -62,7 +66,11 @@ export default function PatientConsent() {
       toast.error("Please select at least one scope to share.");
       return;
     }
-    const code = `BC-SHARE-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+    
+    // Generate a longer, hyphenated connection string: BC-SHARE-XXXX-XXXX-XXXX-XXXX
+    const randSegment = () => Math.random().toString(36).substring(2, 6).toUpperCase();
+    const code = `BC-SHARE-${randSegment()}-${randSegment()}-${randSegment()}-${randSegment()}`;
+    
     const expiresAt = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(); // expires after 2 days
     
     const newCode = {
@@ -122,7 +130,137 @@ export default function PatientConsent() {
     const codeObj = activeCodes.find(c => c.id === codeId);
     if (codeObj) {
       setPendingRequests(prev => prev.filter(r => r.code !== codeObj.code));
-      toast.success(`Connection string ${codeObj.code} has been revoked.`);
+      toast.success(`Connection string has been revoked.`);
+    }
+  };
+
+  // Convert SVG to PNG and download
+  const handleDownloadQRPNG = () => {
+    if (!generatedCode) return;
+    const svgElement = document.getElementById("qr-code-svg");
+    if (!svgElement) return;
+
+    try {
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(svgElement);
+      const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+      const URL = window.URL || window.webkitURL || window;
+      const blobURL = URL.createObjectURL(svgBlob);
+      
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 512;
+        canvas.height = 512;
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#FFFFFF";
+        context.fillRect(0, 0, 512, 512);
+        
+        context.drawImage(image, 64, 64, 384, 384);
+        URL.revokeObjectURL(blobURL);
+        
+        const pngURL = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.href = pngURL;
+        downloadLink.download = `betacare-access-qr-${generatedCode.code}.png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        toast.success("QR Code downloaded as PNG!");
+      };
+      image.onerror = () => {
+        // Fallback to direct SVG download
+        const downloadLink = document.createElement("a");
+        downloadLink.href = blobURL;
+        downloadLink.download = `betacare-access-qr-${generatedCode.code}.svg`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        toast.success("Downloaded as SVG");
+      };
+      image.src = blobURL;
+    } catch (e) {
+      toast.error("Failed to generate image download.");
+    }
+  };
+
+  // Share generated QR code using Web Share API
+  const handleShareQR = async () => {
+    if (!generatedCode) return;
+    const svgElement = document.getElementById("qr-code-svg");
+    if (!svgElement) return;
+
+    const shareText = `BetaCare Secure Connection String:\n${generatedCode.code}\n\nAllowed Scopes:\n${generatedCode.scopes.map(s => scopeLabels[s] || s).join(", ")}`;
+
+    const copyToClipboardFallback = (text) => {
+      navigator.clipboard.writeText(text);
+      toast.success("Copied connection details to clipboard!");
+    };
+
+    try {
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(svgElement);
+      const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+      const URL = window.URL || window.webkitURL || window;
+      const blobURL = URL.createObjectURL(svgBlob);
+      
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 512;
+        canvas.height = 512;
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#FFFFFF";
+        context.fillRect(0, 0, 512, 512);
+        context.drawImage(image, 64, 64, 384, 384);
+        URL.revokeObjectURL(blobURL);
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            shareTextOnly();
+            return;
+          }
+          const file = new File([blob], `betacare-access-qr-${generatedCode.code}.png`, { type: "image/png" });
+          
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                title: "BetaCare Access QR Code",
+                text: `Use this secure connection code to access my BetaCare profile:`,
+                files: [file]
+              });
+              toast.success("QR Code shared successfully!");
+            } catch (err) {
+              if (err.name !== "AbortError") {
+                shareTextOnly();
+              }
+            }
+          } else {
+            shareTextOnly();
+          }
+        }, "image/png");
+      };
+      image.onerror = () => {
+        shareTextOnly();
+      };
+      image.src = blobURL;
+    } catch (e) {
+      shareTextOnly();
+    }
+
+    function shareTextOnly() {
+      if (navigator.share) {
+        navigator.share({
+          title: "BetaCare Access Connection String",
+          text: shareText
+        }).catch(err => {
+          if (err.name !== "AbortError") {
+            copyToClipboardFallback(shareText);
+          }
+        });
+      } else {
+        copyToClipboardFallback(shareText);
+      }
     }
   };
 
@@ -228,28 +366,73 @@ export default function PatientConsent() {
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6">
       
       {/* ── Page Header ── */}
-      <div>
+      <div className="border-b border-border/60 pb-6">
         <h1
-          className="text-3xl font-extrabold text-foreground tracking-tight"
+          className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight bg-gradient-to-r from-foreground via-foreground/90 to-primary/80 bg-clip-text text-transparent"
           style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         >
           Consent & Shared Access Controls
         </h1>
-        <p className="text-sm text-muted-foreground mt-1.5">
+        <p className="text-sm sm:text-base text-muted-foreground mt-2 max-w-3xl leading-relaxed">
           You own your medical records. BetaCare-integrated hospitals and doctors can only query your logs, vitals, or files with your explicit, time-bound authorization.
         </p>
+      </div>
+
+      {/* ── Summary Stats Bar ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-card/50 backdrop-blur-sm border border-border/80 rounded-2xl p-5 flex items-center justify-between shadow-sm hover:border-primary/20 transition-all duration-300">
+          <div>
+            <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Active Consents</p>
+            <p className="text-2xl font-black mt-1 text-emerald-600 dark:text-emerald-400">{activeConsents.length}</p>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shadow-inner">
+            <ShieldCheck size={20} />
+          </div>
+        </div>
+        
+        <div className="bg-card/50 backdrop-blur-sm border border-border/80 rounded-2xl p-5 flex items-center justify-between shadow-sm hover:border-primary/20 transition-all duration-300">
+          <div>
+            <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Pending Requests</p>
+            <p className="text-2xl font-black mt-1 text-amber-600 dark:text-amber-400">
+              {pendingRequests.filter(req => {
+                const codeObj = activeCodes.find(c => c.code === req.code);
+                return codeObj && !codeObj.revoked;
+              }).length}
+            </p>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shadow-inner">
+            <ShieldAlert size={20} className={pendingRequests.length > 0 ? "animate-pulse" : ""} />
+          </div>
+        </div>
+
+        <div className="bg-card/50 backdrop-blur-sm border border-border/80 rounded-2xl p-5 flex items-center justify-between shadow-sm hover:border-primary/20 transition-all duration-300">
+          <div>
+            <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Shared Codes</p>
+            <p className="text-2xl font-black mt-1 text-cyan-600 dark:text-cyan-400">
+              {activeCodes.filter(c => !c.revoked).length}
+            </p>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-600 flex items-center justify-center shadow-inner">
+            <QrCode size={20} />
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left/Middle Column: Active access list */}
-        <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            Authorized Clinicians & Facilities
-          </h2>
+        <div className="lg:col-span-2 space-y-8">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Authorized Clinicians & Facilities
+            </h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              Currently active permissions for your health dashboard.
+            </p>
+          </div>
 
           <div className="space-y-4">
             <AnimatePresence mode="popLayout">
@@ -262,29 +445,29 @@ export default function PatientConsent() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.25 }}
-                    className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-primary/20 transition-all"
+                    className="bg-card/70 backdrop-blur-sm border border-border rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group"
                   >
-                    <div className={`absolute top-0 left-0 w-1.5 h-full ${consent.is_doctor ? "bg-cyan-500" : "bg-emerald-500"}`} />
+                    <div className={`absolute top-0 left-0 w-1.5 h-full transition-colors duration-300 ${consent.is_doctor ? "bg-cyan-500" : "bg-emerald-500"}`} />
                     
                     <div className="space-y-4 flex-1">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/15 flex items-center justify-center text-primary shrink-0 mt-0.5">
-                          <Building2 size={18} />
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/15 flex items-center justify-center text-primary shrink-0 mt-0.5 group-hover:scale-105 group-hover:bg-primary/20 transition-all duration-300 shadow-sm">
+                          <Building2 size={20} />
                         </div>
                         <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-base text-foreground leading-snug">{consent.hospital_name}</h3>
-                            <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${
-                              consent.is_doctor ? "bg-cyan-500/10 text-cyan-600 border border-cyan-500/20" : "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="font-bold text-base text-foreground leading-snug tracking-tight">{consent.hospital_name}</h3>
+                            <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                              consent.is_doctor ? "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                             }`}>
                               {consent.is_doctor ? "Doctor" : "Hospital"}
                             </span>
                           </div>
-                          <div className="flex flex-wrap gap-1.5 mt-2.5">
+                          <div className="flex flex-wrap gap-1.5 mt-3">
                             {consent.scope.map((s) => (
                               <span
                                 key={s}
-                                className="text-[10px] font-bold uppercase tracking-wide bg-secondary text-primary px-2.5 py-0.5 border border-primary/10 rounded-full"
+                                className="text-[10px] font-bold uppercase tracking-wide bg-secondary text-primary px-3 py-1 border border-primary/10 rounded-full shadow-inner"
                               >
                                 {scopeLabels[s] || s}
                               </span>
@@ -293,12 +476,12 @@ export default function PatientConsent() {
                         </div>
                       </div>
  
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-muted-foreground pt-2 border-t border-border/80">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-muted-foreground pt-3 border-t border-border/80">
                         <span className="flex items-center gap-1.5">
                           <Calendar size={14} className="text-muted-foreground/75" />
                           Authorized: {formatDateTime(consent.granted_at)}
                         </span>
-                        <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-medium">
+                        <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-semibold">
                           <Clock size={14} className="current-color" />
                           Expires: {formatDateTime(consent.expires_at)}
                         </span>
@@ -309,7 +492,7 @@ export default function PatientConsent() {
                       <button
                         onClick={() => handleRevoke(consent.id)}
                         disabled={revokingId === consent.id}
-                        className="w-full md:w-auto flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-destructive/20 hover:border-destructive/35 hover:bg-destructive/10 text-destructive text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
+                        className="w-full md:w-auto flex items-center justify-center gap-1.5 px-4.5 py-3 rounded-xl border border-destructive/20 hover:border-destructive/35 hover:bg-destructive/10 text-destructive text-xs font-bold transition-all duration-200 disabled:opacity-50 cursor-pointer shadow-sm"
                       >
                         {revokingId === consent.id ? (
                           <>
@@ -328,14 +511,14 @@ export default function PatientConsent() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="bg-card border border-border p-12 text-center text-muted-foreground flex flex-col items-center justify-center gap-4 rounded-2xl"
+                  className="bg-card/50 backdrop-blur-sm border border-border p-12 text-center text-muted-foreground flex flex-col items-center justify-center gap-4 rounded-2xl shadow-sm"
                 >
-                  <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center text-muted-foreground/60">
-                    <ShieldAlert size={24} />
+                  <div className="w-14 h-14 bg-muted rounded-full flex items-center justify-center text-muted-foreground/60 shadow-inner">
+                    <ShieldAlert size={26} />
                   </div>
                   <div className="max-w-sm">
                     <p className="font-bold text-foreground text-sm">No clinicians currently have access</p>
-                    <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
                       Your records are locked. Hospitals and doctors won't be able to query your profiles or push reports until you grant them access.
                     </p>
                   </div>
@@ -349,7 +532,7 @@ export default function PatientConsent() {
             const codeObj = activeCodes.find(c => c.code === req.code);
             return codeObj && !codeObj.revoked;
           }).length > 0 && (
-            <div className="space-y-4 mt-8">
+            <div className="space-y-4 mt-8 pt-4 border-t border-border/50">
               <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 <ShieldAlert size={20} className="text-amber-500 animate-pulse" />
                 Pending Access Requests (Validation Required)
@@ -366,25 +549,25 @@ export default function PatientConsent() {
                       initial={{ opacity: 0, scale: 0.98 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="bg-amber-500/5 border border-amber-500/25 rounded-2xl p-5 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-amber-500/35 transition-all"
+                      className="bg-gradient-to-r from-amber-500/[0.03] to-orange-500/[0.03] dark:from-amber-500/[0.01] dark:to-orange-500/[0.01] border border-amber-500/20 rounded-2xl p-5 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-amber-500/40 hover:shadow-md hover:shadow-amber-500/[0.02] transition-all duration-300"
                     >
                       <div className="space-y-3 flex-1">
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-sm text-foreground leading-snug">{req.entityName}</h3>
+                            <h3 className="font-bold text-sm sm:text-base text-foreground leading-snug">{req.entityName}</h3>
                             <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
                               Access Requested
                             </span>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Requested connection via code <span className="font-mono font-bold text-primary">{req.code}</span>
+                          <p className="text-xs text-muted-foreground mt-1.5">
+                            Requested connection via code <span className="font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10 select-all">{req.code}</span>
                           </p>
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                           {req.scopes.map((s) => (
                             <span
                               key={s}
-                              className="text-[9px] font-bold uppercase tracking-wide bg-background text-amber-600 dark:text-amber-400 px-2.5 py-0.5 border border-amber-500/10 rounded-full"
+                              className="text-[9px] font-bold uppercase tracking-wide bg-background text-amber-600 dark:text-amber-400 px-2.5 py-1 border border-amber-500/10 rounded-full"
                             >
                               {scopeLabels[s] || s}
                             </span>
@@ -396,14 +579,14 @@ export default function PatientConsent() {
                         <button
                           type="button"
                           onClick={() => handleDeclineRequest(req.id)}
-                          className="px-3.5 py-2 rounded-xl border border-border text-muted-foreground hover:bg-muted text-xs font-semibold cursor-pointer"
+                          className="px-4 py-2.5 rounded-xl border border-border text-muted-foreground hover:bg-muted text-xs font-semibold cursor-pointer transition-colors duration-200"
                         >
                           Decline
                         </button>
                         <button
                           type="button"
                           onClick={() => handleApproveRequest(req)}
-                          className="px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm"
+                          className="px-4.5 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition-colors duration-200"
                         >
                           <ShieldCheck size={14} /> Grant Access
                         </button>
@@ -416,305 +599,386 @@ export default function PatientConsent() {
           )}
         </div>
 
-        {/* Right Column: Authorize New Access Widget */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            Authorize New Access
-          </h2>
-
-          <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
-            <form onSubmit={handlePreSubmit} className="space-y-5">
-              
-              {/* Tab Selector */}
-              <div className="grid grid-cols-2 gap-1 p-1 bg-muted rounded-xl border border-border">
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab("hospital"); setSelectedEntity(""); }}
-                  className={`py-2 rounded-lg text-xs font-semibold tracking-wider transition-all cursor-pointer ${
-                    activeTab === "hospital"
-                      ? "bg-background text-foreground shadow-sm font-bold border border-border/80"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Hospital
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab("doctor"); setSelectedEntity(""); }}
-                  className={`py-2 rounded-lg text-xs font-semibold tracking-wider transition-all cursor-pointer ${
-                    activeTab === "doctor"
-                      ? "bg-background text-foreground shadow-sm font-bold border border-border/80"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Doctor
-                </button>
-              </div>
-
-              {/* Select Entity */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
-                  Select {activeTab === "hospital" ? "Hospital" : "Doctor"}
-                </label>
-                <select
-                  required
-                  value={selectedEntity}
-                  onChange={(e) => setSelectedEntity(e.target.value)}
-                  className="w-full px-4 py-3 bg-muted rounded-xl border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
-                >
-                  <option value="">Choose integrated {activeTab === "hospital" ? "facility" : "practitioner"}…</option>
-                  {activeTab === "hospital" ? (
-                    availableHospitals.map((h) => (
-                      <option key={h.id} value={h.id}>
-                        {h.name} ({h.state})
-                      </option>
-                    ))
-                  ) : (
-                    availableDoctors.map((d) => (
-                      <option key={d.id} value={d.id}>
-                        {d.name} — {d.specialty} ({d.state})
-                      </option>
-                    ))
-                  )}
-                  {activeTab === "hospital" && availableHospitals.length === 0 && (
-                    <option disabled>No additional hospitals integrated</option>
-                  )}
-                  {activeTab === "doctor" && availableDoctors.length === 0 && (
-                    <option disabled>No additional doctors integrated</option>
-                  )}
-                </select>
-              </div>
-
-              {/* Scopes Checklist */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider block mb-1">Access Scope</label>
-                {Object.entries(scopeLabels).map(([key, label]) => {
-                  const isChecked = scopes.includes(key);
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => handleToggleScope(key)}
-                      className={`flex items-center gap-3 w-full p-3 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer ${
-                        isChecked
-                          ? "bg-primary/10 border-primary/20 text-primary"
-                          : "bg-muted border-border text-muted-foreground hover:border-primary/25"
-                      }`}
-                    >
-                      <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
-                        isChecked ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
-                      }`}>
-                        {isChecked && <CheckCircle2 size={10} className="text-primary-foreground" />}
-                      </div>
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Access History limit */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider block mb-1">Access History Limit</label>
-                <select
-                  value={historyRange}
-                  onChange={(e) => setHistoryRange(e.target.value)}
-                  className="w-full px-4 py-3 bg-muted rounded-xl border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
-                >
-                  <option value="all">All time records history (Recommended)</option>
-                  <option value="30d">Last 30 days records only</option>
-                  <option value="6m">Last 6 months records only</option>
-                  <option value="1y">Last 12 months records only</option>
-                </select>
-              </div>
-
-              {/* Expiry / Duration presets */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider block mb-1">Access Expiration</label>
-                <div className="grid grid-cols-4 gap-1.5 p-1 bg-muted rounded-xl border border-border">
-                  {[
-                    { days: "1", label: "24h" },
-                    { days: "7", label: "7d" },
-                    { days: "30", label: "30d" },
-                    { days: "90", label: "90d" }
-                  ].map((preset) => (
-                    <button
-                      key={preset.days}
-                      type="button"
-                      onClick={() => setDuration(preset.days)}
-                      className={`py-2 rounded-lg text-[10px] font-bold tracking-wider uppercase transition-all cursor-pointer ${
-                        duration === preset.days
-                          ? "bg-background text-foreground shadow-sm font-black border border-border/80"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={loading || !selectedEntity}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/95 transition-colors disabled:opacity-50 text-sm cursor-pointer shadow-sm"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" /> Authorizing Access…
-                    </>
-                  ) : (
-                    <>
-                      <Plus size={16} /> Authorize Sharing Access
-                    </>
-                  )}
-                </button>
-              </div>
-
-            </form>
+        {/* Right Column: Access Control Panel (Tabbed Direct Grant vs Share QR) */}
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Access Authorization Panel
+            </h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              Grant permissions directly or generate shareable access tokens.
+            </p>
           </div>
 
-          {/* Share QR & Connection Code Widget */}
-          <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-5">
-            <div className="flex items-center gap-2">
-              <QrCode size={18} className="text-primary" />
-              <h3 className="font-bold text-sm text-foreground">Share via QR & Code</h3>
-            </div>
-            
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Generate a shareable connection string and QR code for clinicians to request access. Expires after 2 days (default).
-            </p>
-
-            {/* Share Scope Checklist */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider block">Include in Scope</label>
-              {Object.entries(scopeLabels).map(([key, label]) => {
-                const isChecked = shareScopes.includes(key);
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => {
-                      setShareScopes(prev =>
-                        prev.includes(key) ? prev.filter(s => s !== key) : [...prev, key]
-                      );
-                    }}
-                    className={`flex items-center gap-2.5 w-full p-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer ${
-                      isChecked
-                        ? "bg-primary/5 border-primary/20 text-primary"
-                        : "bg-muted border-border text-muted-foreground hover:border-primary/20"
-                    }`}
-                  >
-                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 transition-all ${
-                      isChecked ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
-                    }`}>
-                      {isChecked && <CheckCircle2 size={8} className="text-primary-foreground" />}
-                    </div>
-                    {label}
-                  </button>
-                );
-              })}
+          <div className="bg-card/85 backdrop-blur-sm border border-border rounded-3xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
+            {/* Header Tabs */}
+            <div className="grid grid-cols-2 gap-1 p-1 bg-muted rounded-xl border border-border mb-6">
+              <button
+                type="button"
+                onClick={() => setRightPanelTab("direct")}
+                className={`py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  rightPanelTab === "direct"
+                    ? "bg-background text-foreground shadow-sm font-extrabold border border-border/80"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/25"
+                }`}
+              >
+                <ShieldCheck size={14} /> Direct Grant
+              </button>
+              <button
+                type="button"
+                onClick={() => setRightPanelTab("qr")}
+                className={`py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  rightPanelTab === "qr"
+                    ? "bg-background text-foreground shadow-sm font-extrabold border border-border/80"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/25"
+                }`}
+              >
+                <QrCode size={14} /> Share QR Code
+              </button>
             </div>
 
-            <button
-              type="button"
-              onClick={handleGenerateCode}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-secondary text-primary hover:bg-primary hover:text-primary-foreground font-semibold rounded-xl transition-all text-xs cursor-pointer border border-primary/10"
-            >
-              <Plus size={14} /> Generate QR & Connection String
-            </button>
-
-            {/* Active / Generated Code Display */}
-            {generatedCode && !generatedCode.revoked && (
-              <div className="bg-muted p-4 rounded-xl border border-border/80 text-center space-y-4 animate-fadeIn">
-                <div className="flex justify-between items-center pb-2 border-b border-border/60">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Generated Code</span>
-                  <span className="text-[9px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
-                    Expires in 48h
-                  </span>
-                </div>
-                
-                {/* Beautiful QR Mock SVG */}
-                <div className="w-32 h-32 bg-white p-2.5 rounded-xl border border-border mx-auto flex items-center justify-center relative shadow-sm group">
-                  <svg viewBox="0 0 100 100" className="w-full h-full text-zinc-800">
-                    <rect x="0" y="0" width="20" height="20" fill="currentColor" />
-                    <rect x="5" y="5" width="10" height="10" fill="white" />
-                    <rect x="80" y="0" width="20" height="20" fill="currentColor" />
-                    <rect x="85" y="5" width="10" height="10" fill="white" />
-                    <rect x="0" y="80" width="20" height="20" fill="currentColor" />
-                    <rect x="5" y="85" width="10" height="10" fill="white" />
-                    <rect x="30" y="10" width="10" height="10" fill="currentColor" />
-                    <rect x="50" y="0" width="10" height="20" fill="currentColor" />
-                    <rect x="40" y="30" width="20" height="10" fill="currentColor" />
-                    <rect x="10" y="40" width="10" height="30" fill="currentColor" />
-                    <rect x="70" y="40" width="20" height="10" fill="currentColor" />
-                    <rect x="30" y="60" width="10" height="20" fill="currentColor" />
-                    <rect x="50" y="80" width="10" height="10" fill="currentColor" />
-                    <rect x="70" y="70" width="10" height="20" fill="currentColor" />
-                    <rect x="80" y="60" width="10" height="10" fill="currentColor" />
-                    <rect x="80" y="30" width="10" height="10" fill="currentColor" />
-                    <rect x="30" y="80" width="10" height="10" fill="currentColor" />
-                  </svg>
-                  <div className="absolute inset-0 m-auto w-8 h-8 bg-white border border-border rounded-lg flex items-center justify-center text-primary shadow-sm">
-                    <Heart size={14} fill="currentColor" />
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between gap-2 bg-background p-2.5 rounded-lg border border-border">
-                  <span className="font-mono font-bold text-xs tracking-wide text-foreground select-all">{generatedCode.code}</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(generatedCode.code);
-                      setCopiedCode(generatedCode.id);
-                      toast.success("Code copied to clipboard!");
-                      setTimeout(() => setCopiedCode(null), 2000);
-                    }}
-                    className="p-1.5 hover:bg-muted text-muted-foreground rounded-lg transition-colors cursor-pointer"
-                  >
-                    {copiedCode === generatedCode.id ? (
-                      <CheckCircle2 size={14} className="text-emerald-500" />
-                    ) : (
-                      <Copy size={14} />
-                    )}
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleRevokeCode(generatedCode.id)}
-                  className="w-full text-[11px] font-bold text-destructive hover:bg-destructive/10 py-1.5 rounded-lg transition-all cursor-pointer"
+            <AnimatePresence mode="wait">
+              {rightPanelTab === "direct" ? (
+                <motion.div
+                  key="direct-form"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  Revoke Active QR / Code
-                </button>
-              </div>
-            )}
-
-            {/* List of active codes */}
-            {activeCodes.filter(c => !c.revoked && (!generatedCode || generatedCode.id !== c.id)).length > 0 && (
-              <div className="space-y-2 pt-2 border-t border-border/85">
-                <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider block">Active Shared Codes</span>
-                <div className="space-y-2">
-                  {activeCodes.filter(c => !c.revoked && (!generatedCode || generatedCode.id !== c.id)).map(c => (
-                    <div key={c.id} className="flex justify-between items-center p-2.5 rounded-xl border border-border bg-muted/40 text-xs">
-                      <div>
-                        <p className="font-mono font-bold text-foreground">{c.code}</p>
-                        <p className="text-[9px] text-muted-foreground mt-0.5">
-                          Expires: {new Date(c.expiresAt).toLocaleDateString("en-NG", { day: "numeric", month: "short" })}
-                        </p>
-                      </div>
+                  <form onSubmit={handlePreSubmit} className="space-y-5">
+                    
+                    {/* Tab Selector */}
+                    <div className="grid grid-cols-2 gap-1 p-1 bg-muted/60 rounded-xl border border-border/60">
                       <button
                         type="button"
-                        onClick={() => handleRevokeCode(c.id)}
-                        className="text-[10px] font-bold text-destructive hover:text-destructive-hover px-2 py-1 rounded transition-colors cursor-pointer"
+                        onClick={() => { setActiveTab("hospital"); setSelectedEntity(""); }}
+                        className={`py-2 rounded-lg text-xs font-semibold tracking-wider transition-all cursor-pointer ${
+                          activeTab === "hospital"
+                            ? "bg-background text-foreground shadow-sm font-bold border border-border/80"
+                            : "text-muted-foreground hover:text-foreground hover:bg-background/25"
+                        }`}
                       >
-                        Revoke
+                        Hospital
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setActiveTab("doctor"); setSelectedEntity(""); }}
+                        className={`py-2 rounded-lg text-xs font-semibold tracking-wider transition-all cursor-pointer ${
+                          activeTab === "doctor"
+                            ? "bg-background text-foreground shadow-sm font-bold border border-border/80"
+                            : "text-muted-foreground hover:text-foreground hover:bg-background/25"
+                        }`}
+                      >
+                        Doctor
                       </button>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
+
+                    {/* Select Entity */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
+                        Select {activeTab === "hospital" ? "Hospital" : "Doctor"}
+                      </label>
+                      <div className="relative">
+                        <select
+                          required
+                          value={selectedEntity}
+                          onChange={(e) => setSelectedEntity(e.target.value)}
+                          className="w-full px-4 py-3 bg-muted rounded-xl border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer pr-10"
+                        >
+                          <option value="">Choose integrated {activeTab === "hospital" ? "facility" : "practitioner"}…</option>
+                          {activeTab === "hospital" ? (
+                            availableHospitals.map((h) => (
+                              <option key={h.id} value={h.id}>
+                                {h.name} ({h.state})
+                              </option>
+                            ))
+                          ) : (
+                            availableDoctors.map((d) => (
+                              <option key={d.id} value={d.id}>
+                                {d.name} — {d.specialty} ({d.state})
+                              </option>
+                            ))
+                          )}
+                          {activeTab === "hospital" && availableHospitals.length === 0 && (
+                            <option disabled>No additional hospitals integrated</option>
+                          )}
+                          {activeTab === "doctor" && availableDoctors.length === 0 && (
+                            <option disabled>No additional doctors integrated</option>
+                          )}
+                        </select>
+                        <div className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-muted-foreground">
+                          <ChevronDown size={16} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Scopes Checklist */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider block mb-1">Access Scope</label>
+                      {Object.entries(scopeLabels).map(([key, label]) => {
+                        const isChecked = scopes.includes(key);
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => handleToggleScope(key)}
+                            className={`flex items-center gap-3 w-full p-3.5 rounded-xl border text-left text-xs font-semibold transition-all duration-200 cursor-pointer hover:scale-[1.01] ${
+                              isChecked
+                                ? "bg-primary/[0.08] border-primary/30 text-primary shadow-sm shadow-primary/5"
+                                : "bg-muted border-border text-muted-foreground hover:border-primary/20"
+                            }`}
+                          >
+                            <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
+                              isChecked ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
+                            }`}>
+                              {isChecked && <CheckCircle2 size={10} className="text-primary-foreground" />}
+                            </div>
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Access History limit */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider block mb-1">Access History Limit</label>
+                      <div className="relative">
+                        <select
+                          value={historyRange}
+                          onChange={(e) => setHistoryRange(e.target.value)}
+                          className="w-full px-4 py-3 bg-muted rounded-xl border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer pr-10"
+                        >
+                          <option value="all">All time records history (Recommended)</option>
+                          <option value="30d">Last 30 days records only</option>
+                          <option value="6m">Last 6 months records only</option>
+                          <option value="1y">Last 12 months records only</option>
+                        </select>
+                        <div className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-muted-foreground">
+                          <ChevronDown size={16} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expiry / Duration presets */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider block mb-1">Access Expiration</label>
+                      <div className="grid grid-cols-4 gap-1.5 p-1 bg-muted rounded-xl border border-border">
+                        {[
+                          { days: "1", label: "24h" },
+                          { days: "7", label: "7d" },
+                          { days: "30", label: "30d" },
+                          { days: "90", label: "90d" }
+                        ].map((preset) => (
+                          <button
+                            key={preset.days}
+                            type="button"
+                            onClick={() => setDuration(preset.days)}
+                            className={`py-2 rounded-lg text-[10px] font-extrabold tracking-wider uppercase transition-all cursor-pointer ${
+                              duration === preset.days
+                                ? "bg-background text-foreground shadow-sm font-black border border-border/80 scale-[1.03]"
+                                : "text-muted-foreground hover:text-foreground hover:bg-background/25"
+                            }`}
+                          >
+                            {preset.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        disabled={loading || !selectedEntity}
+                        className="w-full flex items-center justify-center gap-2 py-3.5 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/95 transition-colors disabled:opacity-50 text-sm cursor-pointer shadow-sm"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 size={16} className="animate-spin" /> Authorizing Access…
+                          </>
+                        ) : (
+                          <>
+                            <Plus size={16} /> Authorize Sharing Access
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                  </form>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="qr-panel"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-5"
+                >
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Generate a shareable connection string and QR code for clinicians to request access. Expires after 2 days (default).
+                  </p>
+
+                  {/* Share Scope Checklist */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider block">Include in Scope</label>
+                    {Object.entries(scopeLabels).map(([key, label]) => {
+                      const isChecked = shareScopes.includes(key);
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => {
+                            setShareScopes(prev =>
+                              prev.includes(key) ? prev.filter(s => s !== key) : [...prev, key]
+                            );
+                          }}
+                          className={`flex items-center gap-2.5 w-full p-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer ${
+                            isChecked
+                              ? "bg-primary/5 border-primary/20 text-primary"
+                              : "bg-muted border-border text-muted-foreground hover:border-primary/20"
+                          }`}
+                        >
+                          <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 transition-all ${
+                            isChecked ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
+                          }`}>
+                            {isChecked && <CheckCircle2 size={8} className="text-primary-foreground" />}
+                          </div>
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleGenerateCode}
+                    className="w-full flex items-center justify-center gap-2 py-3 bg-secondary text-primary hover:bg-primary hover:text-primary-foreground font-bold rounded-xl transition-all text-xs cursor-pointer border border-primary/10"
+                  >
+                    <Plus size={14} /> Generate QR & Connection String
+                  </button>
+
+                  {/* Active / Generated Code Display */}
+                  {generatedCode && !generatedCode.revoked && (
+                    <div className="relative bg-gradient-to-b from-muted to-muted/30 p-5 rounded-2xl border border-border/80 text-center space-y-4 animate-fadeIn overflow-hidden">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
+                      
+                      <div className="flex justify-between items-center pb-2 border-b border-border/60">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                          Secure Access Token
+                        </span>
+                        <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                          Expires in 48h
+                        </span>
+                      </div>
+                      
+                      {/* Beautiful QR Mock SVG */}
+                      <div className="w-36 h-36 bg-white p-3 rounded-2xl border border-border mx-auto flex items-center justify-center relative shadow-md group hover:scale-105 hover:rotate-1 transition-all duration-300">
+                        <svg id="qr-code-svg" viewBox="0 0 100 100" className="w-full h-full text-zinc-900" xmlns="http://www.w3.org/2000/svg">
+                          <rect x="0" y="0" width="20" height="20" fill="currentColor" />
+                          <rect x="5" y="5" width="10" height="10" fill="white" />
+                          <rect x="80" y="0" width="20" height="20" fill="currentColor" />
+                          <rect x="85" y="5" width="10" height="10" fill="white" />
+                          <rect x="0" y="80" width="20" height="20" fill="currentColor" />
+                          <rect x="5" y="85" width="10" height="10" fill="white" />
+                          <rect x="30" y="10" width="10" height="10" fill="currentColor" />
+                          <rect x="50" y="0" width="10" height="20" fill="currentColor" />
+                          <rect x="40" y="30" width="20" height="10" fill="currentColor" />
+                          <rect x="10" y="40" width="10" height="30" fill="currentColor" />
+                          <rect x="70" y="40" width="20" height="10" fill="currentColor" />
+                          <rect x="30" y="60" width="10" height="20" fill="currentColor" />
+                          <rect x="50" y="80" width="10" height="10" fill="currentColor" />
+                          <rect x="70" y="70" width="10" height="20" fill="currentColor" />
+                          <rect x="80" y="60" width="10" height="10" fill="currentColor" />
+                          <rect x="80" y="30" width="10" height="10" fill="currentColor" />
+                          <rect x="30" y="80" width="10" height="10" fill="currentColor" />
+                        </svg>
+                        <div className="absolute inset-0 m-auto w-9 h-9 bg-white border border-border/80 rounded-xl flex items-center justify-center text-primary shadow-sm">
+                          <Heart size={16} fill="currentColor" className="text-primary animate-pulse" />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1 text-left">
+                        <label className="text-[9px] font-extrabold uppercase text-muted-foreground tracking-wider block">
+                          Connection String
+                        </label>
+                        <div className="flex items-center justify-between gap-2 bg-background/85 backdrop-blur-md p-2.5 rounded-xl border border-border shadow-inner">
+                          <span className="font-mono font-bold text-xs tracking-wider text-foreground select-all break-all pr-1">{generatedCode.code}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(generatedCode.code);
+                              setCopiedCode(generatedCode.id);
+                              toast.success("Code copied to clipboard!");
+                              setTimeout(() => setCopiedCode(null), 2000);
+                            }}
+                            className="p-1.5 hover:bg-muted text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer shrink-0"
+                          >
+                            {copiedCode === generatedCode.id ? (
+                              <CheckCircle2 size={14} className="text-emerald-500" />
+                            ) : (
+                              <Copy size={14} />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <button
+                          type="button"
+                          onClick={handleDownloadQRPNG}
+                          className="flex items-center justify-center gap-1.5 py-2.5 bg-secondary text-primary hover:bg-primary hover:text-primary-foreground font-bold rounded-xl transition-all text-xs cursor-pointer border border-primary/10 shadow-sm"
+                        >
+                          <Download size={14} /> Download QR
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleShareQR}
+                          className="flex items-center justify-center gap-1.5 py-2.5 bg-primary text-primary-foreground hover:bg-primary/90 font-bold rounded-xl transition-all text-xs cursor-pointer shadow-sm"
+                        >
+                          <Share2 size={14} /> Share QR
+                        </button>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleRevokeCode(generatedCode.id)}
+                        className="w-full text-[10px] font-bold text-destructive hover:bg-destructive/10 py-2 rounded-xl transition-all cursor-pointer border border-destructive/10 border-dashed"
+                      >
+                        Revoke Active QR / Code
+                      </button>
+                    </div>
+                  )}
+
+                  {/* List of active codes */}
+                  {activeCodes.filter(c => !c.revoked && (!generatedCode || generatedCode.id !== c.id)).length > 0 && (
+                    <div className="space-y-2 pt-2 border-t border-border/85 animate-fadeIn">
+                      <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider block">Active Shared Codes</span>
+                      <div className="space-y-2">
+                        {activeCodes.filter(c => !c.revoked && (!generatedCode || generatedCode.id !== c.id)).map(c => (
+                          <div key={c.id} className="flex justify-between items-center p-2.5 rounded-xl border border-border bg-muted/40 text-xs">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-mono font-bold text-foreground break-all tracking-tight pr-2">{c.code}</p>
+                              <p className="text-[9px] text-muted-foreground mt-0.5">
+                                Expires: {new Date(c.expiresAt).toLocaleDateString("en-NG", { day: "numeric", month: "short" })}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRevokeCode(c.id)}
+                              className="text-[10px] font-bold text-destructive hover:text-destructive-hover px-2 py-1 rounded transition-colors cursor-pointer shrink-0"
+                            >
+                              Revoke
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
@@ -726,19 +990,21 @@ export default function PatientConsent() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
+              animate={{ opacity: 0.6 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowConfirmModal(false)}
-              className="absolute inset-0 bg-black"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-card border border-border rounded-3xl p-6 shadow-xl relative z-10 max-w-md w-full space-y-4"
+              className="bg-card border border-border rounded-3xl p-6 shadow-2xl relative z-10 max-w-md w-full space-y-4"
             >
               <div className="flex items-center gap-3 text-primary">
-                <ShieldCheck size={24} className="text-primary" />
+                <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                  <ShieldCheck size={22} />
+                </div>
                 <h3 className="text-lg font-bold text-foreground">Confirm Authorization</h3>
               </div>
               
@@ -746,7 +1012,7 @@ export default function PatientConsent() {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   You are about to grant <span className="font-bold text-foreground">{getEntityName(selectedEntity)}</span> permission to access your private health records.
                 </p>
-                <div className="bg-muted p-4 rounded-xl space-y-2 border border-border/60 text-xs">
+                <div className="bg-muted/80 border border-border/80 p-4 rounded-xl space-y-2 text-xs">
                   <p className="text-foreground">
                     <span className="text-muted-foreground font-medium">Recipient:</span> <span className="font-bold text-primary">{getEntityName(selectedEntity)}</span>
                   </p>
@@ -771,14 +1037,14 @@ export default function PatientConsent() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmModal(false)}
-                  className="px-4 py-2.5 text-xs font-semibold border border-border hover:bg-muted text-muted-foreground rounded-xl cursor-pointer"
+                  className="px-4 py-2.5 text-xs font-semibold border border-border hover:bg-muted text-muted-foreground rounded-xl cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleGrant}
-                  className="px-5 py-2.5 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/95 rounded-xl cursor-pointer"
+                  className="px-5 py-2.5 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/95 rounded-xl cursor-pointer shadow-sm transition-colors"
                 >
                   Agree & Authorize
                 </button>
