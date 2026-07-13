@@ -66,13 +66,13 @@ export default function PatientConsent() {
       toast.error("Please select at least one scope to share.");
       return;
     }
-    
+
     // Generate a longer, hyphenated connection string: BC-SHARE-XXXX-XXXX-XXXX-XXXX
     const randSegment = () => Math.random().toString(36).substring(2, 6).toUpperCase();
     const code = `BC-SHARE-${randSegment()}-${randSegment()}-${randSegment()}-${randSegment()}`;
-    
+
     const expiresAt = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(); // expires after 2 days
-    
+
     const newCode = {
       id: `code_${Date.now()}`,
       code,
@@ -95,7 +95,7 @@ export default function PatientConsent() {
       // Filter out entities that already have active consents or active pending requests
       const availableToRequest = allEntities.filter(
         entity => !consents.some(c => c.hospital_id === entity.id) &&
-                  !pendingRequests.some(pr => pr.entityId === entity.id)
+          !pendingRequests.some(pr => pr.entityId === entity.id)
       );
 
       if (availableToRequest.length > 0) {
@@ -146,7 +146,7 @@ export default function PatientConsent() {
       const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
       const URL = window.URL || window.webkitURL || window;
       const blobURL = URL.createObjectURL(svgBlob);
-      
+
       const image = new Image();
       image.onload = () => {
         const canvas = document.createElement("canvas");
@@ -155,10 +155,10 @@ export default function PatientConsent() {
         const context = canvas.getContext("2d");
         context.fillStyle = "#FFFFFF";
         context.fillRect(0, 0, 512, 512);
-        
+
         context.drawImage(image, 64, 64, 384, 384);
         URL.revokeObjectURL(blobURL);
-        
+
         const pngURL = canvas.toDataURL("image/png");
         const downloadLink = document.createElement("a");
         downloadLink.href = pngURL;
@@ -203,7 +203,7 @@ export default function PatientConsent() {
       const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
       const URL = window.URL || window.webkitURL || window;
       const blobURL = URL.createObjectURL(svgBlob);
-      
+
       const image = new Image();
       image.onload = () => {
         const canvas = document.createElement("canvas");
@@ -221,7 +221,7 @@ export default function PatientConsent() {
             return;
           }
           const file = new File([blob], `betacare-access-qr-${generatedCode.code}.png`, { type: "image/png" });
-          
+
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
               await navigator.share({
@@ -367,7 +367,7 @@ export default function PatientConsent() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6">
-      
+
       {/* ── Page Header ── */}
       <div className="border-b border-border/60 pb-6">
         <h1
@@ -392,7 +392,7 @@ export default function PatientConsent() {
             <ShieldCheck size={20} />
           </div>
         </div>
-        
+
         <div className="bg-card/50 backdrop-blur-sm border border-border/80 rounded-2xl p-5 flex items-center justify-between shadow-sm hover:border-primary/20 transition-all duration-300">
           <div>
             <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Pending Requests</p>
@@ -422,7 +422,7 @@ export default function PatientConsent() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
+
         {/* Left/Middle Column: Active access list */}
         <div className="lg:col-span-2 space-y-8">
           <div>
@@ -448,7 +448,7 @@ export default function PatientConsent() {
                     className="bg-card/70 backdrop-blur-sm border border-border rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group"
                   >
                     <div className={`absolute top-0 left-0 w-1.5 h-full transition-colors duration-300 ${consent.is_doctor ? "bg-cyan-500" : "bg-emerald-500"}`} />
-                    
+
                     <div className="space-y-4 flex-1">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/15 flex items-center justify-center text-primary shrink-0 mt-0.5 group-hover:scale-105 group-hover:bg-primary/20 transition-all duration-300 shadow-sm">
@@ -457,9 +457,8 @@ export default function PatientConsent() {
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="font-bold text-base text-foreground leading-snug tracking-tight">{consent.hospital_name}</h3>
-                            <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                              consent.is_doctor ? "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-                            }`}>
+                            <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${consent.is_doctor ? "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                              }`}>
                               {consent.is_doctor ? "Doctor" : "Hospital"}
                             </span>
                           </div>
@@ -475,7 +474,7 @@ export default function PatientConsent() {
                           </div>
                         </div>
                       </div>
- 
+
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-muted-foreground pt-3 border-t border-border/80">
                         <span className="flex items-center gap-1.5">
                           <Calendar size={14} className="text-muted-foreground/75" />
@@ -532,71 +531,71 @@ export default function PatientConsent() {
             const codeObj = activeCodes.find(c => c.code === req.code);
             return codeObj && !codeObj.revoked;
           }).length > 0 && (
-            <div className="space-y-4 mt-8 pt-4 border-t border-border/50">
-              <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                <ShieldAlert size={20} className="text-amber-500 animate-pulse" />
-                Pending Access Requests (Validation Required)
-              </h2>
-              <div className="space-y-4">
-                <AnimatePresence mode="popLayout">
-                  {pendingRequests.filter(req => {
-                    const codeObj = activeCodes.find(c => c.code === req.code);
-                    return codeObj && !codeObj.revoked;
-                  }).map((req) => (
-                    <motion.div
-                      key={req.id}
-                      layout
-                      initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="bg-gradient-to-r from-amber-500/[0.03] to-orange-500/[0.03] dark:from-amber-500/[0.01] dark:to-orange-500/[0.01] border border-amber-500/20 rounded-2xl p-5 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-amber-500/40 hover:shadow-md hover:shadow-amber-500/[0.02] transition-all duration-300"
-                    >
-                      <div className="space-y-3 flex-1">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-sm sm:text-base text-foreground leading-snug">{req.entityName}</h3>
-                            <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                              Access Requested
-                            </span>
+              <div className="space-y-4 mt-8 pt-4 border-t border-border/50">
+                <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  <ShieldAlert size={20} className="text-amber-500 animate-pulse" />
+                  Pending Access Requests (Validation Required)
+                </h2>
+                <div className="space-y-4">
+                  <AnimatePresence mode="popLayout">
+                    {pendingRequests.filter(req => {
+                      const codeObj = activeCodes.find(c => c.code === req.code);
+                      return codeObj && !codeObj.revoked;
+                    }).map((req) => (
+                      <motion.div
+                        key={req.id}
+                        layout
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-gradient-to-r from-amber-500/[0.03] to-orange-500/[0.03] dark:from-amber-500/[0.01] dark:to-orange-500/[0.01] border border-amber-500/20 rounded-2xl p-5 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-amber-500/40 hover:shadow-md hover:shadow-amber-500/[0.02] transition-all duration-300"
+                      >
+                        <div className="space-y-3 flex-1">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-bold text-sm sm:text-base text-foreground leading-snug">{req.entityName}</h3>
+                              <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                                Access Requested
+                              </span>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1.5">
+                              Requested connection via code <span className="font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10 select-all">{req.code}</span>
+                            </p>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1.5">
-                            Requested connection via code <span className="font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10 select-all">{req.code}</span>
-                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {req.scopes.map((s) => (
+                              <span
+                                key={s}
+                                className="text-[9px] font-bold uppercase tracking-wide bg-background text-amber-600 dark:text-amber-400 px-2.5 py-1 border border-amber-500/10 rounded-full"
+                              >
+                                {scopeLabels[s] || s}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                        <div className="flex flex-wrap gap-1.5">
-                          {req.scopes.map((s) => (
-                            <span
-                              key={s}
-                              className="text-[9px] font-bold uppercase tracking-wide bg-background text-amber-600 dark:text-amber-400 px-2.5 py-1 border border-amber-500/10 rounded-full"
-                            >
-                              {scopeLabels[s] || s}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
 
-                      <div className="flex gap-2 shrink-0 self-end md:self-center">
-                        <button
-                          type="button"
-                          onClick={() => handleDeclineRequest(req.id)}
-                          className="px-4 py-2.5 rounded-xl border border-border text-muted-foreground hover:bg-muted text-xs font-semibold cursor-pointer transition-colors duration-200"
-                        >
-                          Decline
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleApproveRequest(req)}
-                          className="px-4.5 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition-colors duration-200"
-                        >
-                          <ShieldCheck size={14} /> Grant Access
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                        <div className="flex gap-2 shrink-0 self-end md:self-center">
+                          <button
+                            type="button"
+                            onClick={() => handleDeclineRequest(req.id)}
+                            className="px-4 py-2.5 rounded-xl border border-border text-muted-foreground hover:bg-muted text-xs font-semibold cursor-pointer transition-colors duration-200"
+                          >
+                            Decline
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleApproveRequest(req)}
+                            className="px-4.5 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition-colors duration-200"
+                          >
+                            <ShieldCheck size={14} /> Grant Access
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
 
         {/* Right Column: Access Control Panel (Tabbed Direct Grant vs Share QR) */}
@@ -616,22 +615,20 @@ export default function PatientConsent() {
               <button
                 type="button"
                 onClick={() => setRightPanelTab("direct")}
-                className={`py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                  rightPanelTab === "direct"
+                className={`py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5 ${rightPanelTab === "direct"
                     ? "bg-background text-foreground shadow-sm font-extrabold border border-border/80"
                     : "text-muted-foreground hover:text-foreground hover:bg-background/25"
-                }`}
+                  }`}
               >
                 <ShieldCheck size={14} /> Direct Grant
               </button>
               <button
                 type="button"
                 onClick={() => setRightPanelTab("qr")}
-                className={`py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                  rightPanelTab === "qr"
+                className={`py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5 ${rightPanelTab === "qr"
                     ? "bg-background text-foreground shadow-sm font-extrabold border border-border/80"
                     : "text-muted-foreground hover:text-foreground hover:bg-background/25"
-                }`}
+                  }`}
               >
                 <QrCode size={14} /> Share QR Code
               </button>
@@ -647,28 +644,26 @@ export default function PatientConsent() {
                   transition={{ duration: 0.2 }}
                 >
                   <form onSubmit={handlePreSubmit} className="space-y-5">
-                    
+
                     {/* Tab Selector */}
                     <div className="grid grid-cols-2 gap-1 p-1 bg-muted/60 rounded-xl border border-border/60">
                       <button
                         type="button"
                         onClick={() => { setActiveTab("hospital"); setSelectedEntity(""); }}
-                        className={`py-2 rounded-lg text-xs font-semibold tracking-wider transition-all cursor-pointer ${
-                          activeTab === "hospital"
+                        className={`py-2 rounded-lg text-xs font-semibold tracking-wider transition-all cursor-pointer ${activeTab === "hospital"
                             ? "bg-background text-foreground shadow-sm font-bold border border-border/80"
                             : "text-muted-foreground hover:text-foreground hover:bg-background/25"
-                        }`}
+                          }`}
                       >
                         Hospital
                       </button>
                       <button
                         type="button"
                         onClick={() => { setActiveTab("doctor"); setSelectedEntity(""); }}
-                        className={`py-2 rounded-lg text-xs font-semibold tracking-wider transition-all cursor-pointer ${
-                          activeTab === "doctor"
+                        className={`py-2 rounded-lg text-xs font-semibold tracking-wider transition-all cursor-pointer ${activeTab === "doctor"
                             ? "bg-background text-foreground shadow-sm font-bold border border-border/80"
                             : "text-muted-foreground hover:text-foreground hover:bg-background/25"
-                        }`}
+                          }`}
                       >
                         Doctor
                       </button>
@@ -723,15 +718,13 @@ export default function PatientConsent() {
                             key={key}
                             type="button"
                             onClick={() => handleToggleScope(key)}
-                            className={`flex items-center gap-3 w-full p-3.5 rounded-xl border text-left text-xs font-semibold transition-all duration-200 cursor-pointer hover:scale-[1.01] ${
-                              isChecked
+                            className={`flex items-center gap-3 w-full p-3.5 rounded-xl border text-left text-xs font-semibold transition-all duration-200 cursor-pointer hover:scale-[1.01] ${isChecked
                                 ? "bg-primary/[0.08] border-primary/30 text-primary shadow-sm shadow-primary/5"
                                 : "bg-muted border-border text-muted-foreground hover:border-primary/20"
-                            }`}
+                              }`}
                           >
-                            <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
-                              isChecked ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
-                            }`}>
+                            <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-all ${isChecked ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
+                              }`}>
                               {isChecked && <CheckCircle2 size={10} className="text-primary-foreground" />}
                             </div>
                             {label}
@@ -774,11 +767,10 @@ export default function PatientConsent() {
                             key={preset.days}
                             type="button"
                             onClick={() => setDuration(preset.days)}
-                            className={`py-2 rounded-lg text-[10px] font-extrabold tracking-wider uppercase transition-all cursor-pointer ${
-                              duration === preset.days
+                            className={`py-2 rounded-lg text-[10px] font-extrabold tracking-wider uppercase transition-all cursor-pointer ${duration === preset.days
                                 ? "bg-background text-foreground shadow-sm font-black border border-border/80 scale-[1.03]"
                                 : "text-muted-foreground hover:text-foreground hover:bg-background/25"
-                            }`}
+                              }`}
                           >
                             {preset.label}
                           </button>
@@ -833,15 +825,13 @@ export default function PatientConsent() {
                               prev.includes(key) ? prev.filter(s => s !== key) : [...prev, key]
                             );
                           }}
-                          className={`flex items-center gap-2.5 w-full p-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer ${
-                            isChecked
+                          className={`flex items-center gap-2.5 w-full p-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer ${isChecked
                               ? "bg-primary/5 border-primary/20 text-primary"
                               : "bg-muted border-border text-muted-foreground hover:border-primary/20"
-                          }`}
+                            }`}
                         >
-                          <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 transition-all ${
-                            isChecked ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
-                          }`}>
+                          <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 transition-all ${isChecked ? "bg-primary border-primary text-white" : "border-muted-foreground/60"
+                            }`}>
                             {isChecked && <CheckCircle2 size={8} className="text-primary-foreground" />}
                           </div>
                           {label}
@@ -862,7 +852,7 @@ export default function PatientConsent() {
                   {generatedCode && !generatedCode.revoked && (
                     <div className="relative bg-gradient-to-b from-muted to-muted/30 p-5 rounded-2xl border border-border/80 text-center space-y-4 animate-fadeIn overflow-hidden">
                       <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
-                      
+
                       <div className="flex justify-between items-center pb-2 border-b border-border/60">
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
@@ -872,7 +862,7 @@ export default function PatientConsent() {
                           Expires in 48h
                         </span>
                       </div>
-                      
+
                       {/* Beautiful QR Mock SVG */}
                       <div className="w-36 h-36 bg-white p-3 rounded-2xl border border-border mx-auto flex items-center justify-center relative shadow-md group hover:scale-105 hover:rotate-1 transition-all duration-300">
                         <svg id="qr-code-svg" viewBox="0 0 100 100" className="w-full h-full text-zinc-900" xmlns="http://www.w3.org/2000/svg">
@@ -1007,7 +997,7 @@ export default function PatientConsent() {
                 </div>
                 <h3 className="text-lg font-bold text-foreground">Confirm Authorization</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   You are about to grant <span className="font-bold text-foreground">{getEntityName(selectedEntity)}</span> permission to access your private health records.

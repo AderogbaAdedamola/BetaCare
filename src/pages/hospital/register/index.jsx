@@ -41,8 +41,14 @@ export default function HospitalRegister() {
     if (!agreed) { setError("You must agree to the Terms of Service."); return; }
     setError(""); setLoading(true);
     try {
-      await api.post("/auth/hospital/register", { ...hospital, ...admin, cac });
-      setStep(3);
+      // Commenting out API call
+      // await api.post("/auth/hospital/register", { ...hospital, ...admin, cac });
+      
+      // Auto set session so they can go to dashboard
+      import("../../../lib/api").then(({ setSession }) => {
+        setSession("mock_hospital_token", "admin");
+        setStep(3);
+      });
     } catch (err) {
       setError(err.message || "Something went wrong. Try again.");
     } finally { setLoading(false); }
@@ -161,7 +167,7 @@ export default function HospitalRegister() {
               Verification
             </h1>
             <p className="text-sm text-muted-foreground mb-8">
-              We'll verify your CAC number before activating. This takes 1–2 business days.
+              We'll verify your CAC number to activate your account.
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -177,7 +183,7 @@ export default function HospitalRegister() {
 
               <div className="bg-muted/50 rounded-xl border border-border p-4 text-xs text-muted-foreground leading-relaxed">
                 <p className="font-semibold text-foreground mb-1">What happens next</p>
-                Our team verifies your CAC number and emails <span className="text-foreground font-medium">{admin.email}</span> within 1–2 business days. The account activates once confirmed.
+                Our system will instantly verify your CAC number and activate <span className="text-foreground font-medium">{hospital.name}</span>'s portal.
               </div>
 
               {/* T&C — required */}
@@ -206,30 +212,26 @@ export default function HospitalRegister() {
           </motion.div>
         )}
 
-        {/* STEP 3 — Submitted */}
         {step === 3 && (
           <motion.div key="submitted" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} className="text-center">
             <motion.div
               initial={{ scale: 0 }} animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 16, delay: 0.1 }}
-              className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto mb-6"
+              className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 mx-auto mb-6"
             >
-              <Clock size={36} />
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </motion.div>
             <h1 className="text-2xl font-extrabold text-foreground mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              Application received
+              Application Approved!
             </h1>
             <p className="text-sm text-muted-foreground mb-6">
-              We'll review{" "}
-              <span className="text-foreground font-medium">{hospital.name}</span>'s credentials and email{" "}
-              <span className="text-foreground font-medium">{admin.email}</span> within 1–2 business days.
+              <span className="text-foreground font-medium">{hospital.name}</span> has been verified successfully.
             </p>
             <div className="bg-muted rounded-2xl border border-border p-5 text-left mb-6">
               {[
-                { label: "Status", value: "Under review" },
+                { label: "Status", value: "Active" },
                 { label: "Hospital", value: hospital.name },
                 { label: "Contact email", value: admin.email },
-                { label: "Expected response", value: "1–2 business days" },
               ].map(({ label, value }) => (
                 <div key={label} className="flex items-center justify-between py-2.5 border-b border-border last:border-0">
                   <span className="text-xs text-muted-foreground">{label}</span>
@@ -237,8 +239,8 @@ export default function HospitalRegister() {
                 </div>
               ))}
             </div>
-            <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-primary font-medium hover:underline">
-              ← Back to BetaCare
+            <Link to="/hospital/dashboard" className="inline-flex w-full justify-center items-center gap-2 px-6 py-3.5 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors">
+              Proceed to Dashboard <ArrowRight size={16} />
             </Link>
           </motion.div>
         )}

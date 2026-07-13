@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router";
+import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router";
 
 import LandingPage from "./pages/landing";
 import ContactPage from "./pages/contact";
@@ -22,10 +22,24 @@ import { Toaster } from "sonner";
 
 import DoctorLogin from "./pages/doctor/login";
 import DoctorRegister from "./pages/doctor/register";
+import DoctorDashboard from "./pages/doctor/dashboard";
+import DoctorPatients from "./pages/doctor/patients";
+import DoctorPatientDetails from "./pages/doctor/patients/details";
+import DoctorAddNote from "./pages/doctor/patients/add-note";
+import DoctorAnomalies from "./pages/doctor/anomalies";
+import DoctorSettings from "./pages/doctor/settings";
 
 import HospitalLogin from "./pages/hospital/login";
 import HospitalRegister from "./pages/hospital/register";
 import HospitalDashboard from "./pages/hospital/dashboard";
+import HospitalPatients from "./pages/hospital/patients";
+import HospitalPatientDetails from "./pages/hospital/patients/details";
+import HospitalSettings from "./pages/hospital/settings";
+import HospitalAuditLog from "./pages/hospital/audit-log";
+import HospitalStaff from "./pages/hospital/staff";
+
+import { DoctorLayout } from "./components/layout/DoctorLayout";
+import { HospitalLayout } from "./components/layout/HospitalLayout";
 
 import NotFoundPages from "./pages/NotFoundPage";
 
@@ -39,25 +53,50 @@ const fontStyle = `
 `;
 
 // Auth pages manage their own layout — no public navbar
-const AUTH_ROUTES = [
-  "/patient/login", "/patient/register",
-  "/patient/dashboard", "/patient/records", "/patient/consent",
-  "/patient/notifications", "/patient/health-tracker", "/patient/care-connect", "/patient/settings",
-  "/doctor/login", "/doctor/register",
-  "/hospital/login", "/hospital/register",
-  "/hospital/dashboard", "*"
+const AUTH_PREFIXES = [
+  "/patient",
+  "/doctor",
+  "/hospital"
 ];
 
-function PatientProtectedRoute({ children }) {
+function PatientProtectedRoute() {
   if (!isAuthenticated() || getRole() !== "patient") {
     return <Navigate to="/patient/login" replace />;
   }
-  return <PatientProvider>{children}</PatientProvider>;
+  return (
+    <PatientProvider>
+      <PatientLayout>
+        <Outlet />
+      </PatientLayout>
+    </PatientProvider>
+  );
+}
+
+function DoctorProtectedRoute() {
+  if (!isAuthenticated() || getRole() !== "doctor") {
+    return <Navigate to="/doctor/login" replace />;
+  }
+  return (
+    <DoctorLayout>
+      <Outlet />
+    </DoctorLayout>
+  );
+}
+
+function HospitalProtectedRoute() {
+  if (!isAuthenticated() || (getRole() !== "hospital_staff" && getRole() !== "admin")) {
+    return <Navigate to="/hospital/login" replace />;
+  }
+  return (
+    <HospitalLayout>
+      <Outlet />
+    </HospitalLayout>
+  );
 }
 
 function AnimatedRoutes({ onGetStarted }) {
   const location = useLocation();
-  const isAuthRoute = AUTH_ROUTES.includes(location.pathname);
+  const isAuthRoute = AUTH_PREFIXES.some(prefix => location.pathname.startsWith(prefix));
 
   return (
     <>
@@ -75,88 +114,46 @@ function AnimatedRoutes({ onGetStarted }) {
           <Route path="/patient/register" element={<PatientRegister />} />
 
           {/* Patient Protected Portal */}
-          <Route
-            path="/patient/dashboard"
-            element={
-              <PatientProtectedRoute>
-                <PatientLayout>
-                  <PatientDashboard />
-                </PatientLayout>
-              </PatientProtectedRoute>
-            }
-          />
-          <Route
-            path="/patient/records"
-            element={
-              <PatientProtectedRoute>
-                <PatientLayout>
-                  <PatientRecords />
-                </PatientLayout>
-              </PatientProtectedRoute>
-            }
-          />
-          <Route
-            path="/patient/health-tracker"
-            element={
-              <PatientProtectedRoute>
-                <PatientLayout>
-                  <PatientHealthTracker />
-                </PatientLayout>
-              </PatientProtectedRoute>
-            }
-          />
-          <Route
-            path="/patient/notifications"
-            element={
-              <PatientProtectedRoute>
-                <PatientLayout>
-                  <PatientNotifications />
-                </PatientLayout>
-              </PatientProtectedRoute>
-            }
-          />
-          <Route
-            path="/patient/consent"
-            element={
-              <PatientProtectedRoute>
-                <PatientLayout>
-                  <PatientConsent />
-                </PatientLayout>
-              </PatientProtectedRoute>
-            }
-          />
-          <Route
-            path="/patient/care-connect"
-            element={
-              <PatientProtectedRoute>
-                <PatientLayout>
-                  <PatientAIChat />
-                </PatientLayout>
-              </PatientProtectedRoute>
-            }
-          />
-          <Route
-            path="/patient/settings"
-            element={
-              <PatientProtectedRoute>
-                <PatientLayout>
-                  <PatientSettings />
-                </PatientLayout>
-              </PatientProtectedRoute>
-            }
-          />
+          <Route element={<PatientProtectedRoute />}>
+            <Route path="/patient/dashboard" element={<PatientDashboard />} />
+            <Route path="/patient/records" element={<PatientRecords />} />
+            <Route path="/patient/health-tracker" element={<PatientHealthTracker />} />
+            <Route path="/patient/notifications" element={<PatientNotifications />} />
+            <Route path="/patient/consent" element={<PatientConsent />} />
+            <Route path="/patient/care-connect" element={<PatientAIChat />} />
+            <Route path="/patient/settings" element={<PatientSettings />} />
+          </Route>
 
           {/* Doctor auth */}
           <Route path="/doctor/login" element={<DoctorLogin />} />
           <Route path="/doctor/register" element={<DoctorRegister />} />
 
-          {/* Hospital auth + dashboard */}
+          {/* Doctor Protected Portal */}
+          <Route element={<DoctorProtectedRoute />}>
+            <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+            <Route path="/doctor/patients" element={<DoctorPatients />} />
+            <Route path="/doctor/patients/:id" element={<DoctorPatientDetails />} />
+            <Route path="/doctor/patients/add-note" element={<DoctorAddNote />} />
+            <Route path="/doctor/anomalies" element={<DoctorAnomalies />} />
+            <Route path="/doctor/settings" element={<DoctorSettings />} />
+          </Route>
+
+          {/* Hospital auth */}
           <Route path="/hospital/login" element={<HospitalLogin />} />
           <Route path="/hospital/register" element={<HospitalRegister />} />
-          <Route path="/hospital/dashboard" element={<HospitalDashboard />} />
+
+          {/* Hospital Protected Portal */}
+          <Route element={<HospitalProtectedRoute />}>
+            <Route path="/hospital/dashboard" element={<HospitalDashboard />} />
+            <Route path="/hospital/patients" element={<HospitalPatients />} />
+            <Route path="/hospital/patients/:id" element={<HospitalPatientDetails />} />
+            <Route path="/hospital/settings" element={<HospitalSettings />} />
+            <Route path="/hospital/audit-log" element={<HospitalAuditLog />} />
+            <Route path="/hospital/staff" element={<HospitalStaff />} />
+          </Route>
 
           {/* catch non exixting routes */}
-          <Route path="*" element={<NotFoundPages/>}/>
+          <Route path="*" element={<NotFoundPages />} />
         </Routes>
       </div>
     </>

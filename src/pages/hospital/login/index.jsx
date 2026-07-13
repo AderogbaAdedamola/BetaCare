@@ -18,13 +18,29 @@ export default function HospitalLogin() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError(""); setLoading(true);
-    try {
-      const data = await api.post("/auth/hospital/login", form);
-      setSession(data.token, data.role);
-      navigate("/hospital/dashboard");
-    } catch (err) {
-      setError(err.message || "Incorrect credentials.");
-    } finally { setLoading(false); }
+    
+    // Simulate slight network delay
+    setTimeout(async () => {
+      try {
+        // Commenting out the real API call
+        // const data = await api.post("/auth/hospital/login", form);
+        
+        // Mock pending state if user types 'pending'
+        if (form.email.toLowerCase().includes("pending")) {
+          setError("Your hospital account is not approved yet. Please contact us if it has been more than 2 working days.");
+          setLoading(false);
+          return;
+        }
+
+        // Allow any other input to successfully log in
+        setSession("mock_hospital_token", "admin");
+        navigate("/hospital/dashboard");
+      } catch (err) {
+        setError(err.message || "Incorrect credentials.");
+      } finally { 
+        setLoading(false); 
+      }
+    }, 500);
   }
 
   return (
