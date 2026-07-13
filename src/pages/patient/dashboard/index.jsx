@@ -15,7 +15,8 @@ import {
   Calendar,
   AlertCircle,
   CheckCircle2,
-  Bot
+  Bot,
+  Mic
 } from "lucide-react";
 import { usePatient } from "../../../context/PatientContext";
 import { TiltCard } from "../../../components/common/TiltCard";
@@ -404,6 +405,23 @@ export default function PatientDashboard() {
               >
                 Open Care Connect <ArrowRight size={14} />
               </Link>
+
+              {/* Mic / Voice Note Check-in */}
+              <div className="mt-3.5 p-3.5 bg-gradient-to-r from-primary/[0.04] to-cyan-500/[0.04] border border-primary/15 rounded-2xl flex items-center gap-3 shadow-sm">
+                <div className="w-9 h-9 bg-primary text-primary-foreground rounded-xl flex items-center justify-center animate-pulse shrink-0">
+                  <Mic size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-primary">Voice Check-in</span>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug truncate">Express how you are feeling today with audio</p>
+                  <button
+                    onClick={() => navigate("/patient/care-connect?voicecheckin=true")}
+                    className="text-[10px] font-bold text-primary hover:text-primary/85 mt-1 block cursor-pointer text-left"
+                  >
+                    Start Audio Check-in →
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

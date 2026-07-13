@@ -14,6 +14,7 @@ import PatientConsent from "./pages/patient/consent";
 import PatientNotifications from "./pages/patient/notifications";
 import PatientHealthTracker from "./pages/patient/health-tracker";
 import PatientAIChat from "./pages/patient/care-connect";
+import PatientSettings from "./pages/patient/settings";
 import { PatientProvider } from "./context/PatientContext";
 import { PatientLayout } from "./components/layout/PatientLayout";
 import { isAuthenticated, getRole } from "./lib/api";
@@ -41,7 +42,7 @@ const fontStyle = `
 const AUTH_ROUTES = [
   "/patient/login", "/patient/register",
   "/patient/dashboard", "/patient/records", "/patient/consent",
-  "/patient/notifications", "/patient/health-tracker", "/patient/care-connect",
+  "/patient/notifications", "/patient/health-tracker", "/patient/care-connect", "/patient/settings",
   "/doctor/login", "/doctor/register",
   "/hospital/login", "/hospital/register",
   "/hospital/dashboard", "*"
@@ -130,6 +131,16 @@ function AnimatedRoutes({ onGetStarted }) {
               <PatientProtectedRoute>
                 <PatientLayout>
                   <PatientAIChat />
+                </PatientLayout>
+              </PatientProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/settings"
+            element={
+              <PatientProtectedRoute>
+                <PatientLayout>
+                  <PatientSettings />
                 </PatientLayout>
               </PatientProtectedRoute>
             }

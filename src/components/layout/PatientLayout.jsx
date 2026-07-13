@@ -12,6 +12,7 @@ import {
   LineChart,
   Bot,
   MessageSquare,
+  Settings,
 } from "lucide-react";
 import { usePatient } from "../../context/PatientContext";
 import { BetaCareLogo } from "../icons/BetaCareLogo";
@@ -28,6 +29,7 @@ export function PatientLayout({ children }) {
     { name: "Care Connect", href: "/patient/care-connect", icon: MessageSquare },
     { name: "Notifications", href: "/patient/notifications", icon: Bell },
     { name: "Manage Access", href: "/patient/consent", icon: ShieldCheck },
+    { name: "Settings", href: "/patient/settings", icon: Settings },
   ];
 
   const isActive = (path) => location.pathname === path;

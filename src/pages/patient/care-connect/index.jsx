@@ -14,7 +14,13 @@ import {
   X,
   Pencil,
   Info,
-  ChevronLeft
+  ChevronLeft,
+  MoreVertical,
+  Play,
+  Pause,
+  Volume2,
+  Mic,
+  FileText
 } from "lucide-react";
 import { usePatient } from "../../../context/PatientContext";
 import { toast } from "sonner";
@@ -127,6 +133,9 @@ export default function PatientAIChat() {
   const [coPilotEnabled, setCoPilotEnabled] = useState(true);
   const [mobileView, setMobileView] = useState("threads"); // "threads" | "chat" | "insights"
 
+  // Dropdown menu state
+  const [menuOpen, setMenuOpen] = useState(false);
+
   // Search/Filter state
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -159,6 +168,12 @@ export default function PatientAIChat() {
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
+  // Audio recording state
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const timerRef = useRef(null);
+  const [playingAudioId, setPlayingAudioId] = useState(null);
+
   // AI Health Insights state
   const [pendingInsights, setPendingInsights] = useState(() => {
     const saved = localStorage.getItem("betacare_pending_insights");
@@ -176,6 +191,33 @@ export default function PatientAIChat() {
   useEffect(() => {
     localStorage.setItem("betacare_pending_insights", JSON.stringify(pendingInsights));
   }, [pendingInsights]);
+
+  // Monitor voice checkin query param
+  useEffect(() => {
+    const voiceCheck = searchParams.get("voicecheckin");
+    if (voiceCheck === "true") {
+      setActiveThread("ai");
+      setIsRecording(true);
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete("voicecheckin");
+      navigate(`/patient/care-connect?${nextParams.toString()}`, { replace: true });
+    }
+  }, [searchParams, navigate]);
+
+  // Handle timer inside recording modal
+  useEffect(() => {
+    if (isRecording) {
+      setRecordingSeconds(0);
+      timerRef.current = setInterval(() => {
+        setRecordingSeconds(prev => prev + 1);
+      }, 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isRecording]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -289,7 +331,7 @@ export default function PatientAIChat() {
     const content = text || inputText.trim();
     if (!content) return;
 
-    const userMessage = { role: "user", content, timestamp: new Date() };
+    const userMessage = { id: `msg_${Date.now()}`, role: "user", content, timestamp: new Date() };
     
     setThreadHistory(prev => ({
       ...prev,
@@ -312,6 +354,59 @@ export default function PatientAIChat() {
         replyContent = generateClinicianReply(content, coPilotEnabled);
       }
 
+      const reply = { id: `msg_${Date.now()}`, role: "assistant", content: replyContent, timestamp: new Date() };
+      setThreadHistory(prev => ({
+        ...prev,
+        [activeThread]: [...(prev[activeThread] || []), reply]
+      }));
+      setIsTyping(false);
+    }, delay);
+  };
+
+  const handleSendVoiceNote = () => {
+    setIsRecording(false);
+    
+    // Choose a voice note message text based on a random index
+    const mockTranscripts = [
+      "I have been feeling chest pain and tightness since yesterday morning",
+      "I missed my Metformin dose this evening, is it okay to take it now?",
+      "I have a persistent headache and feeling slightly dizzy",
+      "Experiencing slight fever and stomach nausea after taking my pills"
+    ];
+    const transcript = mockTranscripts[Math.floor(Math.random() * mockTranscripts.length)];
+    const duration = `0:${recordingSeconds < 10 ? "0" + recordingSeconds : recordingSeconds}`;
+    
+    const msgId = `audio_${Date.now()}`;
+    const userMessage = {
+      id: msgId,
+      role: "user",
+      type: "audio",
+      duration,
+      transcript,
+      timestamp: new Date()
+    };
+    
+    setThreadHistory(prev => ({
+      ...prev,
+      [activeThread]: [...(prev[activeThread] || []), userMessage]
+    }));
+    setIsTyping(true);
+
+    // Trigger AI Insight extraction on the voice transcript
+    setTimeout(() => {
+      extractInsight(transcript);
+    }, 400);
+
+    // AI/Clinician response
+    const delay = 1000 + Math.random() * 800;
+    setTimeout(() => {
+      let replyContent = "";
+      if (activeThread === "ai") {
+        replyContent = generateAIReply(transcript);
+      } else {
+        replyContent = generateClinicianReply(transcript, coPilotEnabled);
+      }
+
       const reply = { role: "assistant", content: replyContent, timestamp: new Date() };
       setThreadHistory(prev => ({
         ...prev,
@@ -319,6 +414,18 @@ export default function PatientAIChat() {
       }));
       setIsTyping(false);
     }, delay);
+  };
+
+  const toggleAudioPlayback = (msgId) => {
+    if (playingAudioId === msgId) {
+      setPlayingAudioId(null);
+    } else {
+      setPlayingAudioId(msgId);
+      // Simulate playback finishing after 3.5 seconds
+      setTimeout(() => {
+        setPlayingAudioId(prev => prev === msgId ? null : prev);
+      }, 3500);
+    }
   };
 
   const clearChat = () => {
@@ -518,11 +625,11 @@ export default function PatientAIChat() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 relative">
             {/* Mobile Insights Toggle Indicator */}
             <button
               onClick={() => setMobileView("insights")}
-              className="relative p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl md:hidden transition-colors cursor-pointer"
+              className="relative p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl md:hidden transition-colors cursor-pointer mr-0.5"
               title="View Insights"
             >
               <Sparkles size={16} className={pendingInsights.length > 0 ? "text-primary animate-pulse" : ""} />
@@ -533,7 +640,7 @@ export default function PatientAIChat() {
               )}
             </button>
 
-            {/* Co-Pilot Toggle Switch */}
+            {/* Co-Pilot Toggle Switch (Desktop only, mobile moves it inside 3-dot) */}
             {currentThreadInfo.type !== "ai" && (
               <div className="hidden sm:flex items-center gap-2 bg-muted/65 border border-border px-3 py-1.5 rounded-full shadow-inner select-none transition-all hover:bg-muted duration-200">
                 <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground flex items-center gap-1">
@@ -556,45 +663,91 @@ export default function PatientAIChat() {
               </div>
             )}
 
-            {activeMessages.length > 1 && (
-              <button
-                onClick={clearChat}
-                title="Clear conversation"
-                className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors cursor-pointer"
-              >
-                <Trash2 size={15} />
-              </button>
+            {/* 3-Dot Action Header Menu */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className={`p-2 rounded-xl transition-colors cursor-pointer text-muted-foreground hover:text-foreground hover:bg-secondary ${
+                menuOpen ? "bg-secondary text-foreground" : ""
+              }`}
+            >
+              <MoreVertical size={16} />
+            </button>
+
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+                <div className="absolute right-0 top-11 bg-card border border-border rounded-2xl p-2 w-52 shadow-xl z-20 animate-fadeIn">
+                  
+                  {/* Co-Pilot Switch inside mobile dropdown menu */}
+                  {currentThreadInfo.type !== "ai" && (
+                    <div className="flex items-center justify-between px-3 py-2 border-b border-border/80 text-xs select-none sm:hidden">
+                      <span className="font-bold text-muted-foreground">Co-Pilot Assist</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleToggleCoPilot();
+                          setMenuOpen(false);
+                        }}
+                        className={`relative inline-flex h-4.5 w-8.5 shrink-0 cursor-pointer rounded-full border border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                          coPilotEnabled ? "bg-primary" : "bg-muted-foreground/30"
+                        }`}
+                      >
+                        <span className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-background shadow-md transition duration-200 ${
+                          coPilotEnabled ? "translate-x-4" : "translate-x-0"
+                        }`} />
+                      </button>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      clearChat();
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-secondary hover:text-primary rounded-xl text-left text-xs font-bold transition-all text-foreground cursor-pointer"
+                  >
+                    <Trash2 size={13} className="text-muted-foreground" /> Clear Conversation
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      toast.success("Transcript exported successfully!", {
+                        description: `Transcripts for ${currentThreadInfo.name} saved as PDF.`,
+                        icon: "📄"
+                      });
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-secondary hover:text-primary rounded-xl text-left text-xs font-bold transition-all text-foreground cursor-pointer"
+                  >
+                    <FileText size={13} className="text-muted-foreground" /> Export Transcript
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      toast.info("AI Analysis Summary", {
+                        description: `Clinical assessment for ${currentThreadInfo.name}: Patient conditions are well-managed and logs demonstrate stable parameters.`,
+                        icon: "📊"
+                      });
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-secondary hover:text-primary rounded-xl text-left text-xs font-bold transition-all text-foreground cursor-pointer"
+                  >
+                    <Sparkles size={13} className="text-muted-foreground" /> Co-Pilot Analytics
+                  </button>
+
+                </div>
+              </>
             )}
+
           </div>
         </div>
 
         {/* Message bubble pane */}
         <div className="flex-1 overflow-y-auto py-5 space-y-4 scrollbar-thin">
-          {currentThreadInfo.type !== "ai" && (
-            <div className="sm:hidden flex items-center justify-between p-3 bg-secondary/60 border border-border/80 rounded-2xl mb-2 text-xs">
-              <span className="font-bold flex items-center gap-1.5 text-muted-foreground">
-                <Sparkles size={12} className={coPilotEnabled ? "text-primary animate-pulse" : ""} />
-                AI Co-Pilot Assist
-              </span>
-              <button
-                type="button"
-                onClick={handleToggleCoPilot}
-                className={`relative inline-flex h-4.5 w-8.5 shrink-0 cursor-pointer rounded-full border border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  coPilotEnabled ? "bg-primary" : "bg-muted-foreground/30"
-                }`}
-              >
-                <span
-                  className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-background shadow-lg ring-0 transition duration-200 ease-in-out ${
-                    coPilotEnabled ? "translate-x-4" : "translate-x-0"
-                  }`}
-                />
-              </button>
-            </div>
-          )}
-
+          
           {activeMessages.map((msg, idx) => (
             <div
-              key={idx}
+              key={msg.id || idx}
               className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
             >
               <div className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center text-xs font-bold mt-0.5 ${
@@ -606,18 +759,75 @@ export default function PatientAIChat() {
               </div>
 
               <div className={`max-w-[78%] ${msg.role === "user" ? "items-end" : "items-start"} flex flex-col gap-1`}>
-                <div className={`px-4 py-3 rounded-2xl text-xs sm:text-sm leading-relaxed ${
-                  msg.role === "user"
-                    ? "bg-primary text-primary-foreground rounded-tr-sm shadow-sm"
-                    : "bg-card border border-border text-foreground rounded-tl-sm shadow-sm shadow-border/10"
-                }`}>
-                  {msg.content.split("\n").map((line, i) => (
-                    <span key={i}>
-                      {line}
-                      {i < msg.content.split("\n").length - 1 && <br />}
-                    </span>
-                  ))}
-                </div>
+                
+                {/* Render Audio Player Bubble if msg.type is audio */}
+                {msg.type === "audio" ? (
+                  <div className={`px-4 py-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-sm w-64 ${
+                    msg.role === "user"
+                      ? "bg-primary text-primary-foreground rounded-tr-sm"
+                      : "bg-card border border-border text-foreground rounded-tl-sm"
+                  }`}>
+                    {/* Audio Player Controls */}
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => toggleAudioPlayback(msg.id)}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 cursor-pointer ${
+                          msg.role === "user" ? "bg-white/20 text-white hover:bg-white/30" : "bg-primary/10 text-primary hover:bg-primary/15"
+                        }`}
+                      >
+                        {playingAudioId === msg.id ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
+                      </button>
+                      
+                      {/* Waveform Visualizer */}
+                      <div className="flex-1 flex items-end gap-0.5 h-6">
+                        {[40, 60, 30, 80, 50, 70, 45, 90, 35, 60, 55, 75, 40, 85, 50].map((h, i) => (
+                          <span
+                            key={i}
+                            className={`w-0.5 rounded-full transition-all duration-300 ${
+                              playingAudioId === msg.id ? "animate-pulse" : ""
+                            } ${
+                              msg.role === "user"
+                                ? playingAudioId === msg.id ? "bg-white" : "bg-white/50"
+                                : playingAudioId === msg.id ? "bg-primary" : "bg-primary/40"
+                            }`}
+                            style={{ height: `${h}%`, animationDelay: `${i * 60}ms` }}
+                          />
+                        ))}
+                      </div>
+                      
+                      <span className={`text-[10px] shrink-0 font-mono ${msg.role === "user" ? "text-white/80" : "text-muted-foreground"}`}>
+                        {msg.duration || "0:14"}
+                      </span>
+                    </div>
+                    
+                    {/* Transcript divider & box */}
+                    {msg.transcript && (
+                      <div className={`mt-3 pt-2.5 border-t border-dashed text-[10px] leading-relaxed ${
+                        msg.role === "user" ? "border-white/25 text-white/90" : "border-border text-muted-foreground/90"
+                      }`}>
+                        <div className="font-bold flex items-center gap-1 mb-1">
+                          <Volume2 size={10} /> AI Transcribed:
+                        </div>
+                        <p className="italic font-medium">"{msg.transcript}"</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className={`px-4 py-3 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+                    msg.role === "user"
+                      ? "bg-primary text-primary-foreground rounded-tr-sm shadow-sm"
+                      : "bg-card border border-border text-foreground rounded-tl-sm shadow-sm shadow-border/10"
+                  }`}>
+                    {msg.content.split("\n").map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        {i < msg.content.split("\n").length - 1 && <br />}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
                 <span className="text-[9px] text-muted-foreground px-1">
                   {formatTime(msg.timestamp)}
                 </span>
@@ -663,8 +873,19 @@ export default function PatientAIChat() {
         <div className="pt-3 border-t border-border/80 shrink-0">
           <form
             onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
-            className="flex items-center gap-3 bg-muted/50 border border-border/80 focus-within:border-primary/45 rounded-2xl px-4 py-3 transition-all shadow-inner"
+            className="flex items-center gap-3 bg-muted/50 border border-border/80 focus-within:border-primary/45 rounded-2xl px-4 py-2.5 transition-all shadow-inner"
           >
+            {/* Mic / Audio Record Trigger */}
+            <button
+              type="button"
+              onClick={() => setIsRecording(true)}
+              disabled={isTyping}
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all cursor-pointer shrink-0"
+              title="Record Voice Note"
+            >
+              <Mic size={15} />
+            </button>
+
             <input
               ref={inputRef}
               type="text"
@@ -810,6 +1031,66 @@ export default function PatientAIChat() {
         </div>
 
       </div>
+
+      {/* ── Voice recording simulation overlay modal ── */}
+      {isRecording && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center z-50 animate-fadeIn p-4">
+          <div className="bg-card border border-border p-8 rounded-3xl max-w-sm w-full text-center space-y-6 shadow-2xl relative overflow-hidden">
+            {/* Glowing gradient back accent */}
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent pointer-events-none" />
+            
+            <div className="space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary">BetaCare AI Voice Check-in</span>
+              <h3 className="text-lg font-extrabold text-foreground">Listening to Wellness Voice Log</h3>
+              <p className="text-xs text-muted-foreground">Describe how you are feeling, your symptoms, or meds logs.</p>
+            </div>
+
+            {/* Pulsing microphone block */}
+            <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
+              <span className="absolute inset-0 rounded-full bg-primary/10 animate-ping animate-duration-1000" />
+              <span className="absolute inset-2 rounded-full bg-primary/20 animate-pulse" />
+              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg shadow-primary/25 z-10">
+                <Mic size={24} className="animate-pulse" />
+              </div>
+            </div>
+
+            {/* Visualizer bars */}
+            <div className="flex items-center justify-center gap-1 h-6">
+              {[4, 8, 3, 7, 5, 9, 4, 8, 3, 6].map((h, i) => (
+                <span
+                  key={i}
+                  className="w-1 bg-primary/70 rounded-full animate-bounce"
+                  style={{ height: `${h * 2.5}px`, animationDelay: `${i * 120}ms` }}
+                />
+              ))}
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-2xl font-mono font-black text-foreground">
+                0:{recordingSeconds < 10 ? "0" + recordingSeconds : recordingSeconds}
+              </span>
+              <p className="text-[10px] text-muted-foreground">Pulsing audio logs locked & encrypted</p>
+            </div>
+
+            <div className="flex gap-3 justify-center pt-2">
+              <button
+                type="button"
+                onClick={() => setIsRecording(false)}
+                className="px-5 py-2.5 border border-border hover:bg-muted text-muted-foreground rounded-xl text-xs font-bold transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSendVoiceNote}
+                className="px-6 py-2.5 bg-primary text-primary-foreground hover:bg-primary/95 rounded-xl text-xs font-black shadow-md transition-all cursor-pointer hover:scale-[1.02]"
+              >
+                Stop &amp; Send Log
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
