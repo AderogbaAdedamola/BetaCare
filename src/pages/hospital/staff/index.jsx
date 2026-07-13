@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { motion } from "motion/react";
-import { Search, UserPlus, CheckCircle, ShieldCheck } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { Search, UserPlus, ShieldCheck, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { StaffApprovalList } from "./components/StaffApprovalList";
+import { DataTable } from "../../../components/common/DataTable";
+import { RoleAssignmentModal } from "./components/RoleAssignmentModal";
 
 // Mock Data
 const HOSPITAL_ROSTER = [
-  { id: "bc_doc_0987", name: "Dr. Sarah Lee", email: "sarah.lee@hospital.com", role: "doctor" },
-  { id: "bc_staff_102", name: "Mark Okafor", email: "mark.o@hospital.com", role: "hospital_staff" },
+  { id: "bc_doc_0987", name: "Dr. Sarah Lee", email: "sarah.lee@hospital.com", role: "doctor", status: "Active" },
+  { id: "bc_staff_102", name: "Mark Okafor", email: "mark.o@hospital.com", role: "receptionist", status: "Active" },
+  { id: "bc_nurse_553", name: "Jane Adewale", email: "jane.a@hospital.com", role: "nurse", status: "Invited" },
 ];
 
 const MOCK_PLATFORM_USERS = [
@@ -17,17 +19,25 @@ const MOCK_PLATFORM_USERS = [
 
 export default function HospitalStaff() {
   const [roster, setRoster] = useState(HOSPITAL_ROSTER);
+  const [activeTab, setActiveTab] = useState("link"); // 'link' or 'create'
+  
+  // Link State
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
+  
+  // Create State
+  const [newStaff, setNewStaff] = useState({ name: "", email: "", password: "" });
+
+  // Modal State
+  const [modalOpen, setModalOpen] = useState(false);
+  const [pendingUser, setPendingUser] = useState(null);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
 
     setIsSearching(true);
-    
-    // Simulate finding a user on the platform using connection string/ID
     setTimeout(() => {
       const foundUser = MOCK_PLATFORM_USERS.find(
         (u) => u.id === searchQuery.trim() || u.name.toLowerCase() === searchQuery.trim().toLowerCase()
@@ -37,19 +47,42 @@ export default function HospitalStaff() {
     }, 800);
   };
 
-  const handleAddStaff = () => {
+  const openRoleModalForLink = () => {
     if (!searchResult || searchResult === "not_found") return;
-    
-    // Check if already in roster
     if (roster.some((u) => u.id === searchResult.id)) {
       toast.error(`${searchResult.name} is already in your hospital network.`);
       return;
     }
+    setPendingUser(searchResult);
+    setModalOpen(true);
+  };
 
-    setRoster([searchResult, ...roster]);
-    toast.success(`${searchResult.name} added to your hospital network.`);
+  const handleCreateStaffInitiate = (e) => {
+    e.preventDefault();
+    if (!newStaff.name || !newStaff.email || !newStaff.password) {
+      toast.error("Please fill all fields."); return;
+    }
+    // Generate a mock ID
+    const generatedUser = {
+      id: `bc_staff_${Math.floor(Math.random() * 10000)}`,
+      name: newStaff.name,
+      email: newStaff.email,
+      status: "Active"
+    };
+    setPendingUser(generatedUser);
+    setModalOpen(true);
+  };
+
+  const handleConfirmAddStaff = (finalizedUser) => {
+    setRoster([finalizedUser, ...roster]);
+    toast.success(`${finalizedUser.name} added as a ${finalizedUser.role.replace("_", " ")}.`);
+    
+    // Reset states
+    setModalOpen(false);
+    setPendingUser(null);
     setSearchResult(null);
     setSearchQuery("");
+    setNewStaff({ name: "", email: "", password: "" });
   };
 
   const handleRemove = (id) => {
@@ -57,115 +90,210 @@ export default function HospitalStaff() {
     toast.success("Staff member removed from hospital.");
   };
 
+  // DataTable Columns Configuration
+  const columns = [
+    {
+      header: "Name",
+      accessor: "name",
+      render: (row) => (
+        <div>
+          <p className="font-semibold text-foreground">{row.name}</p>
+          <p className="text-xs text-muted-foreground">{row.email}</p>
+        </div>
+      )
+    },
+    { header: "Connection ID", accessor: "id", cellClassName: "text-muted-foreground font-mono text-xs" },
+    { 
+      header: "Role", 
+      accessor: "role",
+      render: (row) => <span className="capitalize font-medium text-foreground">{row.role.replace("_", " ")}</span>
+    },
+    {
+      header: "Status",
+      accessor: "status",
+      render: (row) => (
+        <span className={`px-2 py-1 text-xs font-bold rounded-md ${
+          row.status === "Active" ? "bg-emerald-500/10 text-emerald-500" : "bg-orange-500/10 text-orange-500"
+        }`}>
+          {row.status}
+        </span>
+      )
+    },
+    {
+      header: "Actions",
+      accessor: "actions",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      render: (row) => (
+        <button
+          onClick={() => handleRemove(row.id)}
+          className="text-xs text-destructive hover:underline font-medium"
+        >
+          Remove
+        </button>
+      )
+    }
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-8 max-w-5xl mx-auto"
+      className="space-y-8"
     >
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Manage Staff & Doctors
         </h1>
         <p className="text-muted-foreground mt-1">
-          Search for existing BetaCare professionals using their name or connection ID, and add them to your hospital's network.
+          Add existing professionals or create internal accounts for your staff.
         </p>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-6">
-        <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-          <UserPlus className="text-primary" size={20} /> Add New Staff Member
-        </h3>
-        
-        <form onSubmit={handleSearch} className="flex gap-3 max-w-xl">
-          <div className="relative flex-1">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
-              <Search size={18} />
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Enter Doctor/Staff Connection ID (e.g. bc_doc_1122)..."
-              className="w-full bg-background border border-border text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-primary block pl-10 p-3 outline-none transition-all"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={isSearching}
-            className="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-xl text-sm transition-colors hover:bg-primary/90 disabled:opacity-70"
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        {/* Tabs */}
+        <div className="flex border-b border-border">
+          <button 
+            onClick={() => setActiveTab("link")}
+            className={`flex-1 py-4 text-sm font-semibold transition-colors flex justify-center items-center gap-2 ${
+              activeTab === "link" ? "text-primary border-b-2 border-primary bg-primary/5" : "text-muted-foreground hover:bg-muted"
+            }`}
           >
-            {isSearching ? "Searching..." : "Search Platform"}
+            <ShieldCheck size={18} /> Link Existing Doctor
           </button>
-        </form>
+          <button 
+            onClick={() => setActiveTab("create")}
+            className={`flex-1 py-4 text-sm font-semibold transition-colors flex justify-center items-center gap-2 ${
+              activeTab === "create" ? "text-primary border-b-2 border-primary bg-primary/5" : "text-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <UserPlus size={18} /> Create Staff Account
+          </button>
+        </div>
 
-        {searchResult && searchResult !== "not_found" && (
-          <div className="mt-6 p-4 border border-border rounded-xl bg-muted/30 flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="text-emerald-500" size={18} />
-                <h4 className="font-bold text-foreground">Verified BetaCare User Found</h4>
-              </div>
-              <p className="text-sm text-foreground mt-2 font-medium">{searchResult.name} <span className="text-muted-foreground font-normal">({searchResult.id})</span></p>
-              <p className="text-xs text-muted-foreground capitalize mt-0.5">Role: {searchResult.role.replace("_", " ")}</p>
-            </div>
-            <button
-              onClick={handleAddStaff}
-              className="px-4 py-2 bg-foreground text-background font-medium rounded-lg text-sm hover:opacity-90 transition-opacity"
-            >
-              Add to Hospital
-            </button>
-          </div>
-        )}
+        <div className="p-6">
+          <AnimatePresence mode="wait">
+            
+            {/* LINK DOCTOR TAB */}
+            {activeTab === "link" && (
+              <motion.div key="link" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}>
+                <p className="text-sm text-muted-foreground mb-5">
+                  Search for doctors already registered on BetaCare using their Connection ID.
+                </p>
+                <form onSubmit={handleSearch} className="flex gap-3 max-w-xl">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Enter Connection ID (e.g. bc_doc_1122)..."
+                      className="w-full bg-background border border-border text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-primary block pl-10 p-3 outline-none transition-all"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSearching}
+                    className="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-xl text-sm transition-colors hover:bg-primary/90 disabled:opacity-70"
+                  >
+                    {isSearching ? "Searching..." : "Search"}
+                  </button>
+                </form>
 
-        {searchResult === "not_found" && (
-          <div className="mt-6 p-4 border border-destructive/20 rounded-xl bg-destructive/5 text-destructive text-sm font-medium">
-            No user found matching that ID or name. Ensure the professional is already registered on BetaCare.
-          </div>
-        )}
-      </div>
+                {searchResult && searchResult !== "not_found" && (
+                  <div className="mt-6 p-4 border border-primary/20 rounded-xl bg-primary/5 flex items-center justify-between max-w-xl">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="text-primary" size={18} />
+                        <h4 className="font-bold text-foreground">Verified BetaCare User</h4>
+                      </div>
+                      <p className="text-sm text-foreground mt-2 font-medium">{searchResult.name} <span className="text-muted-foreground font-normal">({searchResult.id})</span></p>
+                    </div>
+                    <button
+                      onClick={openRoleModalForLink}
+                      className="px-4 py-2 bg-foreground text-background font-medium rounded-lg text-sm hover:opacity-90 transition-opacity"
+                    >
+                      Add & Set Role
+                    </button>
+                  </div>
+                )}
+                {searchResult === "not_found" && (
+                  <div className="mt-6 p-4 border border-destructive/20 rounded-xl bg-destructive/5 text-destructive text-sm font-medium max-w-xl">
+                    No user found matching that ID.
+                  </div>
+                )}
+              </motion.div>
+            )}
 
-      <div>
-        <h3 className="text-lg font-bold text-foreground mb-4">Current Hospital Roster</h3>
-        {/* We reuse the StaffApprovalList but modify it slightly for removal instead of approve/reject if possible, or just pass handleRemove to both for now to see. Actually, let's just make a simple table here. */}
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-muted/50 text-muted-foreground border-b border-border">
-                <tr>
-                  <th className="px-6 py-4 font-medium">Name</th>
-                  <th className="px-6 py-4 font-medium">Connection ID</th>
-                  <th className="px-6 py-4 font-medium">Role</th>
-                  <th className="px-6 py-4 font-medium text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {roster.map((user) => (
-                  <tr key={user.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-foreground">
-                      {user.name}
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground">
-                      {user.id}
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground capitalize">
-                      {user.role.replace("_", " ")}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleRemove(user.id)}
-                        className="text-xs text-destructive hover:underline font-medium"
-                      >
-                        Remove from Network
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+            {/* CREATE STAFF TAB */}
+            {activeTab === "create" && (
+              <motion.div key="create" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}>
+                <p className="text-sm text-muted-foreground mb-5">
+                  Directly create a BetaCare account for your internal staff (Nurses, Admin, Receptionists). They will use these credentials to log in.
+                </p>
+                <form onSubmit={handleCreateStaffInitiate} className="max-w-xl space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground mb-1.5 block">Full Name</label>
+                      <input 
+                        type="text" 
+                        required 
+                        value={newStaff.name} onChange={e => setNewStaff({...newStaff, name: e.target.value})}
+                        placeholder="e.g. Jane Doe" 
+                        className="w-full px-4 py-2.5 bg-background rounded-xl border border-border text-sm focus:ring-2 focus:ring-primary outline-none transition-all" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground mb-1.5 block">Email Address</label>
+                      <input 
+                        type="email" 
+                        required 
+                        value={newStaff.email} onChange={e => setNewStaff({...newStaff, email: e.target.value})}
+                        placeholder="staff@hospital.com" 
+                        className="w-full px-4 py-2.5 bg-background rounded-xl border border-border text-sm focus:ring-2 focus:ring-primary outline-none transition-all" 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground mb-1.5 block">Temporary Password</label>
+                    <input 
+                      type="password" 
+                      required 
+                      value={newStaff.password} onChange={e => setNewStaff({...newStaff, password: e.target.value})}
+                      placeholder="••••••••" 
+                      className="w-full px-4 py-2.5 bg-background rounded-xl border border-border text-sm focus:ring-2 focus:ring-primary outline-none transition-all" 
+                    />
+                  </div>
+                  <button type="submit" className="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-xl text-sm transition-colors hover:bg-primary/90">
+                    Next: Assign Role
+                  </button>
+                </form>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
         </div>
       </div>
+
+      {/* Scalable DataTable */}
+      <div>
+        <h3 className="text-lg font-bold text-foreground mb-4">Current Staff Roster</h3>
+        <DataTable 
+          columns={columns} 
+          data={roster} 
+          searchPlaceholder="Search staff by name, role, or ID..." 
+          defaultItemsPerPage={5}
+        />
+      </div>
+
+      {/* Role Assignment Modal */}
+      <RoleAssignmentModal 
+        isOpen={modalOpen} 
+        onClose={() => { setModalOpen(false); setPendingUser(null); }}
+        userDetails={pendingUser}
+        onConfirm={handleConfirmAddStaff}
+        mode={activeTab}
+      />
     </motion.div>
   );
 }
