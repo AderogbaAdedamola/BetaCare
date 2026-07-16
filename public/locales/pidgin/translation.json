@@ -1,0 +1,54 @@
+{
+  "hero": {
+    "badge": "Nigeria Healthcare Record Platform",
+    "titlePart1": "Your Health Records,",
+    "titleHighlight": "Dey Hand Always.",
+    "desc": "BetaCare dey digitize your medical history so e go follow you anywhere you go \u2014 for different hospitals, cities, and all over Naija. No more missing case notes. No more starting afresh.",
+    "ctaPrimary": "Start For Free",
+    "ctaSecondary": "See How E Dey Work",
+    "patientBadge": "Patient Record",
+    "patientName": "Adaeze Okonkwo",
+    "bloodType": "Blood Type",
+    "age": "Age",
+    "lastVisit": "Last Visit",
+    "nextAppt": "Next Appt.",
+    "diagnoses": "Recent Diagnoses",
+    "statusTreated": "Treated",
+    "statusOngoing": "Ongoing",
+    "aiBadge": "AI Health Agent",
+    "aiDesc": "Time to check BP!",
+    "encryptedBadge": "Encrypted",
+    "marquee": [
+      "Free for patients",
+      "No need to download app",
+      "E dey work on WhatsApp",
+      "E dey work on SMS",
+      "NDPR compliant",
+      "End-to-end encrypted",
+      "Built for Naija",
+      "AI health monitoring",
+      "Instant hospital access",
+      "Your records, your control"
+    ]
+  },
+  "problem": {
+    "badge": "The Matter",
+    "titlePart1": "Nigeria healthcare records don",
+    "titleHighlight": "spoil.",
+    "desc": "Hospitals like UCH still dey use paper write patient history. Dis thing dey cause big wahala for people life.",
+    "problems": [
+      {
+        "title": "Paper records dey loss",
+        "description": "Many people dey reach hospital make dem find say dem case notes don missing \u2014 e mean say dem go start from scratch."
+      },
+      {
+        "title": "Damage no get reverse",
+        "description": "Fire, flood, and normal wear and tear dey destroy medical history. No backup, no recovery, no continuation."
+      },
+      {
+        "title": "No connection between hospitals",
+        "description": "Different hospitals no know wetin happen before \u2014 e dey make dem do double tests and cause danger."
+      }
+    ]
+  }
+}

@@ -163,6 +163,20 @@ export function handleMockRequest(path, method, body) {
     return { success: true };
   }
 
+  // Password reset
+  if (cleanPath === "/auth/password/reset-request" && method === "POST") {
+    return { reset_id: "reset_mock_id", otp_sent: true };
+  }
+
+  if (cleanPath === "/auth/password/reset-confirm" && method === "POST") {
+    return { success: true };
+  }
+
+  // Staff Approvals
+  if (cleanPath === "/auth/staff/approve" && method === "POST") {
+    return { success: true };
+  }
+
   // Fallback / default handler
   return { success: true };
 }

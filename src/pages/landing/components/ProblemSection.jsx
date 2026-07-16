@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { FileText, AlertTriangle, Activity } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -9,23 +10,10 @@ const fadeUp = {
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export function ProblemSection() {
-  const problems = [
-    {
-      icon: FileText,
-      title: "Paper records get lost",
-      description: "Thousands arrive at hospital only to find their case notes missing — forcing them to restart consultations entirely.",
-    },
-    {
-      icon: AlertTriangle,
-      title: "Physical damage is irreversible",
-      description: "Fires, floods, and daily wear destroy medical history. No backup, no recovery, no continuity of care.",
-    },
-    {
-      icon: Activity,
-      title: "No continuity across hospitals",
-      description: "Different hospitals have no visibility into prior treatment — leading to duplicate tests and dangerous care gaps.",
-    },
-  ];
+  const { t } = useTranslation();
+  
+  const problems = t("problem.problems", { returnObjects: true }) || [];
+  const icons = [FileText, AlertTriangle, Activity];
 
   return (
     <section className="py-24 bg-foreground text-card overflow-hidden">
@@ -39,22 +27,21 @@ export function ProblemSection() {
         >
           <motion.div variants={fadeUp}>
             <span className="inline-block px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-semibold mb-4">
-              The Problem
+              {t("problem.badge")}
             </span>
             <h2
               className="text-4xl lg:text-5xl font-extrabold leading-tight mb-6"
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
             >
-              Nigeria&apos;s healthcare records are <span className="text-accent">broken.</span>
+              {t("problem.titlePart1")} <span className="text-accent">{t("problem.titleHighlight")}</span>
             </h2>
             <p className="text-card/70 text-lg leading-relaxed">
-              Hospitals like UCH still rely on paper to track patient history. The consequences range from inconvenient
-              to life-threatening.
+              {t("problem.desc")}
             </p>
           </motion.div>
           <div className="flex flex-col gap-5">
             {problems.map((item, i) => {
-              const Icon = item.icon;
+              const Icon = icons[i] || FileText;
               return (
                 <motion.div
                   key={item.title}

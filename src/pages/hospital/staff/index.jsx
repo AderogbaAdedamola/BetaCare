@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, UserPlus, ShieldCheck, Mail, Lock } from "lucide-react";
+import { Search, UserPlus, ShieldCheck, Mail, Lock, ClipboardList } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "../../../components/common/DataTable";
 import { RoleAssignmentModal } from "./components/RoleAssignmentModal";
+import { StaffApprovalList } from "./components/StaffApprovalList";
+import { api } from "../../../lib/api";
 
 // Mock Data
 const HOSPITAL_ROSTER = [
@@ -32,6 +34,32 @@ export default function HospitalStaff() {
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [pendingUser, setPendingUser] = useState(null);
+
+  // Approvals State
+  const [pendingApprovals, setPendingApprovals] = useState([
+    { id: "bc_staff_req_1", name: "Dr. Chioma Eze", email: "chioma.eze@gmail.com", role: "doctor", requestDate: "2026-07-14", status: "Pending" },
+    { id: "bc_staff_req_2", name: "Ahmed Musa", email: "amusa@yahoo.com", role: "nurse", requestDate: "2026-07-15", status: "Pending" }
+  ]);
+
+  const handleApprove = async (staffId) => {
+    try {
+      await api.post("/auth/staff/approve", { id: staffId, action: "approve" });
+      setPendingApprovals(p => p.filter(req => req.id !== staffId));
+      toast.success("Staff approved successfully");
+    } catch (err) {
+      toast.error("Failed to approve staff");
+    }
+  };
+
+  const handleReject = async (staffId) => {
+    try {
+      await api.post("/auth/staff/approve", { id: staffId, action: "reject" });
+      setPendingApprovals(p => p.filter(req => req.id !== staffId));
+      toast.success("Staff request rejected");
+    } catch (err) {
+      toast.error("Failed to reject staff");
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -169,6 +197,19 @@ export default function HospitalStaff() {
           >
             <UserPlus size={18} /> Create Staff Account
           </button>
+          <button 
+            onClick={() => setActiveTab("approvals")}
+            className={`flex-1 py-4 text-sm font-semibold transition-colors flex justify-center items-center gap-2 ${
+              activeTab === "approvals" ? "text-primary border-b-2 border-primary bg-primary/5" : "text-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <ClipboardList size={18} /> Pending Approvals
+            {pendingApprovals.length > 0 && (
+              <span className="ml-1 bg-accent text-accent-foreground text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {pendingApprovals.length}
+              </span>
+            )}
+          </button>
         </div>
 
         <div className="p-6">
@@ -268,6 +309,20 @@ export default function HospitalStaff() {
                     Next: Assign Role
                   </button>
                 </form>
+              </motion.div>
+            )}
+
+            {/* APPROVALS TAB */}
+            {activeTab === "approvals" && (
+              <motion.div key="approvals" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}>
+                <div className="flex justify-between items-end mb-5">
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">Pending Join Requests</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Review healthcare professionals requesting to join your hospital network.</p>
+                  </div>
+                </div>
+                
+                <StaffApprovalList staff={pendingApprovals} onApprove={handleApprove} onReject={handleReject} />
               </motion.div>
             )}
 

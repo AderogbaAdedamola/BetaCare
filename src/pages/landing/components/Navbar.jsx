@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate, useLocation } from "react-router";
+import { useTranslation } from "react-i18next";
 import { BetaCareLogo } from "../../../components/icons/BetaCareLogo";
 import {
   Heart,
@@ -10,6 +11,7 @@ import {
   User,
   Stethoscope,
   Building2,
+  Globe,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -20,12 +22,22 @@ import {
 import { MagneticButton } from "../../../components/common/MagneticButton";
 
 
+const LANGUAGES = [
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "pidgin", label: "Pidgin", flag: "🇳🇬" },
+  { code: "yoruba", label: "Yorùbá", flag: "🇳🇬" },
+  { code: "hausa", label: "Hausa", flag: "🇳🇬" },
+  { code: "igbo", label: "Igbo", flag: "🇳🇬" },
+];
+
 export function Navbar({ onGetStarted }) {
+  const { i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const isContact = location.pathname === "/contact";
 
   useEffect(() => {
@@ -97,6 +109,33 @@ export function Navbar({ onGetStarted }) {
             Contact
           </MagneticButton>
 
+          {/* Language Dropdown */}
+          <DropdownMenu open={langOpen} onOpenChange={setLangOpen}>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <Globe size={16} />
+                  <span>{LANGUAGES.find((l) => l.code === i18n.language)?.label || "English"}</span>
+                  <ChevronDown size={14} className="opacity-70 group-data-[state=open]:rotate-180 transition-transform" />
+                </div>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40 rounded-xl p-2 bg-card border-border shadow-2xl">
+              {LANGUAGES.map((l) => (
+                <DropdownMenuItem
+                  key={l.code}
+                  onClick={() => i18n.changeLanguage(l.code)}
+                  className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-lg hover:bg-accent/10 focus:bg-accent/10"
+                >
+                  <span>{l.flag}</span>
+                  <span className={`text-sm ${i18n.language === l.code ? "font-bold text-primary" : "text-foreground"}`}>
+                    {l.label}
+                  </span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <DropdownMenu open={signInOpen} onOpenChange={setSignInOpen}>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors cursor-pointer">
@@ -160,6 +199,27 @@ export function Navbar({ onGetStarted }) {
                   {link.label}
                 </a>
               ))}
+              <div className="border-t border-border my-2 pt-2 flex flex-col gap-1">
+                <p className="px-3 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Language</p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {LANGUAGES.map((l) => (
+                      <button
+                        key={l.code}
+                        onClick={() => {
+                          i18n.changeLanguage(l.code);
+                          setMobileOpen(false);
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-sm transition-colors border ${
+                          i18n.language === l.code
+                            ? "bg-primary/10 border-primary text-primary font-bold"
+                            : "bg-muted border-border text-muted-foreground hover:bg-accent/10"
+                        }`}
+                      >
+                        {l.flag} {l.label}
+                      </button>
+                    ))}
+                  </div>
+              </div>
               <div className="border-t border-border my-2 pt-2 flex flex-col gap-1">
                 {signInLinks.map((item) => {
                   const Icon = item.icon;

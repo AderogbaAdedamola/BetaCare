@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PasswordReset from "./pages/password-reset";
 import { AnimatePresence } from "motion/react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router";
 
@@ -56,7 +57,8 @@ const fontStyle = `
 const AUTH_PREFIXES = [
   "/patient",
   "/doctor",
-  "/hospital"
+  "/hospital",
+  "/password-reset"
 ];
 
 function PatientProtectedRoute() {
@@ -108,6 +110,9 @@ function AnimatedRoutes({ onGetStarted }) {
           <Route path="/" element={<LandingPage onGetStarted={onGetStarted} />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/terms" element={<TermsPage />} />
+
+          {/* Password Reset (shared) */}
+          <Route path="/password-reset" element={<PasswordReset />} />
 
           {/* Patient auth */}
           <Route path="/patient/login" element={<PatientLogin />} />

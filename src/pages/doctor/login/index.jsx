@@ -53,6 +53,9 @@ export default function DoctorLogin() {
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            <div className="flex justify-end mt-1.5">
+              <Link to="/password-reset?role=doctor" className="text-xs text-primary font-medium hover:underline">Forgot password?</Link>
+            </div>
           </div>
 
           {error && (

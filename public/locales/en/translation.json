@@ -1,0 +1,54 @@
+{
+  "hero": {
+    "badge": "Nigeria's Healthcare Record Platform",
+    "titlePart1": "Your Health Records,",
+    "titleHighlight": "Always Within Reach.",
+    "desc": "BetaCare digitizes your medical history so it follows you wherever healthcare takes you \u2014 across hospitals, across cities, across Nigeria. No more missing case notes. No more starting over.",
+    "ctaPrimary": "Get Started Free",
+    "ctaSecondary": "See How It Works",
+    "patientBadge": "Patient Record",
+    "patientName": "Adaeze Okonkwo",
+    "bloodType": "Blood Type",
+    "age": "Age",
+    "lastVisit": "Last Visit",
+    "nextAppt": "Next Appt.",
+    "diagnoses": "Recent Diagnoses",
+    "statusTreated": "Treated",
+    "statusOngoing": "Ongoing",
+    "aiBadge": "AI Health Agent",
+    "aiDesc": "Time for your BP check!",
+    "encryptedBadge": "Encrypted",
+    "marquee": [
+      "Free for patients",
+      "No app download needed",
+      "Works on WhatsApp",
+      "Works on SMS",
+      "NDPR compliant",
+      "End-to-end encrypted",
+      "Built for Nigeria",
+      "AI health monitoring",
+      "Instant hospital access",
+      "Your records, your control"
+    ]
+  },
+  "problem": {
+    "badge": "The Problem",
+    "titlePart1": "Nigeria's healthcare records are",
+    "titleHighlight": "broken.",
+    "desc": "Hospitals like UCH still rely on paper to track patient history. The consequences range from inconvenient to life-threatening.",
+    "problems": [
+      {
+        "title": "Paper records get lost",
+        "description": "Thousands arrive at hospital only to find their case notes missing \u2014 forcing them to restart consultations entirely."
+      },
+      {
+        "title": "Physical damage is irreversible",
+        "description": "Fires, floods, and daily wear destroy medical history. No backup, no recovery, no continuity of care."
+      },
+      {
+        "title": "No continuity across hospitals",
+        "description": "Different hospitals have no visibility into prior treatment \u2014 leading to duplicate tests and dangerous care gaps."
+      }
+    ]
+  }
+}

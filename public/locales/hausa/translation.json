@@ -1,0 +1,54 @@
+{
+  "hero": {
+    "badge": "Tsarin Rikodin Lafiya na Najeriya",
+    "titlePart1": "Bayanan Lafiyarku,",
+    "titleHighlight": "Koyaushe A Cikin Isarwa.",
+    "desc": "BetaCare yana sanya tarihin likitancin ku a kan intanet don haka yana bin ku a duk inda kula da lafiya ya kai ku \u2014 a fadin asibitoci, fadin birane, fadin Najeriya. Babu sauran bayanan da suka \u0253ace. Babu sauran farawa daga farko.",
+    "ctaPrimary": "Fara Kyauta",
+    "ctaSecondary": "Duba Yadda Yake Aiki",
+    "patientBadge": "Bayanan Majiyyaci",
+    "patientName": "Adaeze Okonkwo",
+    "bloodType": "Nau'in Jini",
+    "age": "Shekaru",
+    "lastVisit": "Ziyarar Karshe",
+    "nextAppt": "Taron Gaba",
+    "diagnoses": "Cututtukan Baya-bayan Nan",
+    "statusTreated": "An Yi Magani",
+    "statusOngoing": "Yana Ci Gaba",
+    "aiBadge": "Jami'in Lafiya na AI",
+    "aiDesc": "Lokacin duba BP ɗinku!",
+    "encryptedBadge": "An \u0184oye",
+    "marquee": [
+      "Kyauta ga marasa lafiya",
+      "Babu bu\u0199atar sauke app",
+      "Yana aiki akan WhatsApp",
+      "Yana aiki akan SMS",
+      "Mai bin dokar NDPR",
+      "An \u0183oye daga farko har karshe",
+      "An gina don Najeriya",
+      "Saka idanu kan lafiya na AI",
+      "Shiga asibiti nan take",
+      "Bayananku, ikonku"
+    ]
+  },
+  "problem": {
+    "badge": "Matsalar",
+    "titlePart1": "Bayanan lafiyar Najeriya",
+    "titleHighlight": "sun lalace.",
+    "desc": "Asibitoci irin su UCH suna ci gaba da dogaro da takarda don bin tarihin marasa lafiya. Sakamakon zai iya zama mai ha\u0257ari ga rayuwa.",
+    "problems": [
+      {
+        "title": "Takardun asibiti suna \u0253acewa",
+        "description": "Dubban mutane suna zuwa asibiti kawai don gano takardun su sun \u0253ace \u2014 yana sa su fara duba daga farko."
+      },
+      {
+        "title": "Lalacewar jiki ba ta dawowa",
+        "description": "Wuta, ambaliya, da amfani na yau da kullun suna lalata tarihin lafiya. Ba\u0300 ajiya, ba\u0300 dawowa."
+      },
+      {
+        "title": "Ba\u0300 ci gaba tsakanin asibitoci",
+        "description": "Daban-daban asibitoci ba su da masaniyar jinyar da aka yi a baya \u2014 yana haifar da gwaje-gwaje biyu da matsala masu ha\u0257ari."
+      }
+    ]
+  }
+}

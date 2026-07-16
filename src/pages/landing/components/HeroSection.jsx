@@ -6,6 +6,7 @@ import { MagneticButton } from "../../../components/common/MagneticButton";
 import { TiltCard } from "../../../components/common/TiltCard";
 import { RevealWords } from "./RevealWords";
 import { Marquee } from "./Marquee";
+import { useTranslation } from "react-i18next";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -15,6 +16,7 @@ const fadeUp = {
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export function HeroSection({ onGetStarted }) {
+  const { t } = useTranslation();
   const heroRef = useRef(null);
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 600], [0, -100]);
@@ -23,10 +25,15 @@ export function HeroSection({ onGetStarted }) {
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
   const navigate = useNavigate();
 
-  const valuePillars = [
-    { icon: "🆓", label: "Free for Patients", sub: "Always" },
-    { icon: "📱", label: "No App Download", sub: "Works on WhatsApp & SMS" },
-    { icon: "🇳🇬", label: "Built for Nigeria", sub: "NDPR Compliant" },
+  const cardFields = [
+    { label: t("hero.bloodType", { defaultValue: "Blood Type" }), value: "O+" },
+    { label: t("hero.age", { defaultValue: "Age" }), value: "34 yrs" },
+    { label: t("hero.lastVisit", { defaultValue: "Last Visit" }), value: "Jun 18, 2026" },
+    { label: t("hero.nextAppt", { defaultValue: "Next Appt." }), value: "Jul 02, 2026" },
+  ];
+  const diagnoses = [
+    { name: "Malaria", date: "Jun 18", status: t("hero.statusTreated", { defaultValue: "Treated" }) },
+    { name: "Hypertension", date: "Mar 04", status: t("hero.statusOngoing", { defaultValue: "Ongoing" }) },
   ];
 
   return (
@@ -72,7 +79,7 @@ export function HeroSection({ onGetStarted }) {
               transition={{ duration: 2.5, repeat: Infinity }}
             >
               <Zap size={13} className="fill-current" />
-              Nigeria&apos;s Healthcare Record Platform
+              {t("hero.badge")}
             </motion.span>
           </motion.div>
 
@@ -80,9 +87,9 @@ export function HeroSection({ onGetStarted }) {
             className="text-5xl lg:text-6xl font-extrabold text-foreground leading-[1.1] tracking-tight overflow-hidden"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            <RevealWords text="Your Health Records," />{" "}
+            <RevealWords text={t("hero.titlePart1")} />{" "}
             <span className="text-primary">
-              <RevealWords text="Always Within Reach." />
+              <RevealWords text={t("hero.titleHighlight")} />
             </span>
           </h1>
 
@@ -92,8 +99,7 @@ export function HeroSection({ onGetStarted }) {
             transition={{ delay: 0.7, duration: 0.6 }}
             className="text-lg text-muted-foreground leading-relaxed"
           >
-            BetaCare digitizes your medical history so it follows you wherever healthcare takes you — across hospitals,
-            across cities, across Nigeria. No more missing case notes. No more starting over.
+            {t("hero.desc")}
           </motion.p>
 
           <motion.div
@@ -106,41 +112,15 @@ export function HeroSection({ onGetStarted }) {
               onClick={onGetStarted}
               className="flex items-center gap-2 px-6 py-3.5 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors hover:shadow-lg hover:shadow-primary/20"
             >
-              Get Started Free <ArrowRight size={16} />
+              {t("hero.ctaPrimary")} <ArrowRight size={16} />
             </MagneticButton>
             <MagneticButton
               href="#how-it-works"
               className="flex items-center gap-2 px-6 py-3.5 border-2 border-border text-foreground font-semibold rounded-xl hover:border-primary/40 hover:bg-secondary transition-all"
             >
-              See How It Works
+              {t("hero.ctaSecondary")}
             </MagneticButton>
           </motion.div>
-
-          {/* Value pillars */}
-          {/* <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.05, duration: 0.5 }}
-            className="grid grid-cols-3 gap-3"
-          >
-            {valuePillars.map((p) => (
-              <motion.div
-                key={p.label}
-                whileHover={{ y: -3 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                className="flex flex-col items-center text-center p-3 rounded-xl bg-card border border-border"
-              >
-                <span className="text-xl mb-1">{p.icon}</span>
-                <p
-                  className="text-xs font-bold text-foreground leading-tight"
-                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                >
-                  {p.label}
-                </p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">{p.sub}</p>
-              </motion.div>
-            ))}
-          </motion.div> */}
         </motion.div>
 
         {/* Right — floating mockup */}
@@ -154,15 +134,15 @@ export function HeroSection({ onGetStarted }) {
           <div className="relative w-full max-w-md">
             <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}>
               <TiltCard className="bg-card rounded-2xl shadow-2xl border border-border p-6">
-                <div className="flex items-center justify-between mb-4">
+                <div className="absolute top-4 left-4 flex items-center gap-2 bg-background/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-border shadow-sm text-xs font-semibold">
+                  <Shield size={12} className="text-primary" />
+                  {t("hero.patientBadge", { defaultValue: "Patient Record" })}
+                </div>
+                <div className="flex items-center justify-between mb-4 pt-8">
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Patient Record</p>
-                    <p
-                      className="font-bold text-foreground mt-0.5"
-                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                    >
-                      Adaeze Okonkwo
-                    </p>
+                    <h3 className="font-bold text-foreground text-lg">
+                      {t("hero.patientName", { defaultValue: "Adaeze Okonkwo" })}
+                    </h3>
                   </div>
                   <motion.div
                     className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm"
@@ -172,12 +152,7 @@ export function HeroSection({ onGetStarted }) {
                   </motion.div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 mb-4">
-                  {[
-                    { label: "Blood Type", value: "O+" },
-                    { label: "Age", value: "34 yrs" },
-                    { label: "Last Visit", value: "Jun 18, 2026" },
-                    { label: "Next Appt.", value: "Jul 02, 2026" },
-                  ].map((item) => (
+                  {cardFields.map((item) => (
                     <div key={item.label} className="bg-muted rounded-lg p-3">
                       <p className="text-xs text-muted-foreground">{item.label}</p>
                       <p className="text-sm font-semibold text-foreground mt-0.5">{item.value}</p>
@@ -185,13 +160,11 @@ export function HeroSection({ onGetStarted }) {
                   ))}
                 </div>
                 <div className="border-t border-border pt-4">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                    Recent Diagnoses
-                  </p>
-                  {[
-                    { name: "Malaria", date: "Jun 18", status: "Treated" },
-                    { name: "Hypertension", date: "Mar 04", status: "Ongoing" },
-                  ].map((item) => (
+                  <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <Heart size={14} className="text-destructive" />
+                    {t("hero.diagnoses", { defaultValue: "Recent Diagnoses" })}
+                  </h4>
+                  {diagnoses.map((item) => (
                     <div key={item.name} className="flex items-center justify-between py-1.5">
                       <div className="flex items-center gap-2">
                         <div
@@ -232,10 +205,10 @@ export function HeroSection({ onGetStarted }) {
               >
                 <MessageSquare size={16} />
               </motion.div>
-              <div>
-                <p className="text-xs font-semibold text-foreground">AI Health Agent</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Time for your BP check!</p>
-              </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-primary">{t("hero.aiBadge", { defaultValue: "AI Health Agent" })}</span>
+                  <span className="text-xs text-muted-foreground">{t("hero.aiDesc", { defaultValue: "Time for your BP check!" })}</span>
+                </div>
             </motion.div>
 
             {/* Encrypted badge */}
@@ -246,26 +219,13 @@ export function HeroSection({ onGetStarted }) {
               className="absolute -top-4 -right-4 bg-primary text-primary-foreground rounded-xl shadow-lg p-3 flex items-center gap-2"
             >
               <Shield size={14} />
-              <span className="text-xs font-semibold">Encrypted</span>
+              <span className="text-xs font-semibold">{t("hero.encryptedBadge", { defaultValue: "Encrypted" })}</span>
             </motion.div>
           </div>
         </motion.div>
       </div>
 
-      <Marquee
-        items={[
-          "Free for patients",
-          "No app download needed",
-          "Works on WhatsApp",
-          "Works on SMS",
-          "NDPR compliant",
-          "End-to-end encrypted",
-          "Built for Nigeria",
-          "AI health monitoring",
-          "Instant hospital access",
-          "Your records, your control",
-        ]}
-      />
+        <Marquee items={t("hero.marquee", { returnObjects: true }) || []} />
     </section>
   );
 }

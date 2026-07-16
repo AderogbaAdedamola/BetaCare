@@ -1,0 +1,54 @@
+{
+  "hero": {
+    "badge": "Usoro Ndek\u1ecd Ah\u1ee5ike nke Na\u1ecbjir\u1ecba",
+    "titlePart1": "Ihe Ndek\u1ecd Ah\u1ee5ike G\u1ecb,",
+    "titleHighlight": "N'Aka Oge Niile.",
+    "desc": "BetaCare na-edobe ak\u1ee5k\u1ecd ah\u1ee5ike g\u1ecb n'\u1ecbtaneti ka \u1ecd na-eso g\u1ecb ebe \u1ecdb\u1ee5la nlek\u1ecdta ah\u1ee5ike na-eduga g\u1ecb \u2014 n'ime \u1ee5l\u1ecd \u1ecdgw\u1ee5 d\u1ecb iche iche, n'obodo d\u1ecb iche iche, na Na\u1ecbjir\u1ecba niile. \u1eccd\u1ecbgh\u1ecb ihe ndek\u1ecd na-efu efu. \u1ecc d\u1ecbgh\u1ecb \u1ecbmalite \u1ecdf\u1ee5\u1ee5 \u1ecdz\u1ecd.",
+    "ctaPrimary": "Bido N'efu",
+    "ctaSecondary": "H\u1ee5 Otu \u1ecc S\u1ecb Ar\u1ee5 \u1eccr\u1ee5",
+    "patientBadge": "Ndek\u1ecd Onye \u1eccr\u1ecba",
+    "patientName": "Adaeze Okonkwo",
+    "bloodType": "\u1ee4d\u1ecb \u1eccbara",
+    "age": "Af\u1ecd",
+    "lastVisit": "Nleta Ikpeaz\u1ee5",
+    "nextAppt": "Nzuk\u1ecd Na-ab\u1ecba",
+    "diagnoses": "Nch\u1ecdp\u1ee5ta \u1ecch\u1ee5r\u1ee5",
+    "statusTreated": "A Gw\u1ecdr\u1ecd",
+    "statusOngoing": "Na-aga N'ihu",
+    "aiBadge": "Onye Nn\u1ecdchite Ah\u1ee5ike AI",
+    "aiDesc": "Oge maka nyocha BP g\u1ecb!",
+    "encryptedBadge": "Ezoro Ezo",
+    "marquee": [
+      "N'efu maka nd\u1ecb \u1ecdr\u1ecba",
+      "\u1ecc d\u1ecbgh\u1ecb mkpa nbudata ngwa",
+      "Na-ar\u1ee5 \u1ecdr\u1ee5 na WhatsApp",
+      "Na-ar\u1ee5 \u1ecdr\u1ee5 na SMS",
+      "Kwek\u1ecdr\u1ecd na NDPR",
+      "Ezoro ezo site na mmalite ruo n'\u1ecdt\u1ee5t\u1ee5",
+      "Ar\u1ee5r\u1ee5 maka Na\u1ecbjir\u1ecba",
+      "Nlek\u1ecdta ah\u1ee5ike AI",
+      "Nnweta \u1ee5l\u1ecd \u1ecdgw\u1ee5 ngwa ngwa",
+      "Ndek\u1ecd g\u1ecb, njikwa g\u1ecb"
+    ]
+  },
+  "problem": {
+    "badge": "Nsogbu",
+    "titlePart1": "Ak\u1ee5k\u1ecd ah\u1ee5ike Na\u1ecbjir\u1ecba",
+    "titleHighlight": "emebiela.",
+    "desc": "\u1ee4l\u1ecd \u1ecdgw\u1ee5 d\u1ecb ka UCH ka na-eji akw\u1ee5kw\u1ecd ka edebanye ak\u1ee5k\u1ecd nd\u1ecb \u1ecdr\u1ecba. Ihe \u1ecd r\u1ee5p\u1ee5tara nwere ike \u1ecb\u1e33pata \u1ecdnw\u1ee5.",
+    "problems": [
+      {
+        "title": "Akw\u1ee5kw\u1ecd ah\u1ee5ike na-efu",
+        "description": "\u1ecct\u1ee5t\u1ee5 nd\u1ecb na-ab\u1ecba \u1ee5l\u1ecd \u1ecdgw\u1ee5 na-ach\u1ecdp\u1ee5ta na akw\u1ee5kw\u1ecd ha efuola \u2014 na-eme ka ha malite nyocha \u1ecdz\u1ecd."
+      },
+      {
+        "title": "Mmebi anagh\u1ecb agbanwe",
+        "description": "\u1ecck\u1ee5, ide mmiri, na iji eme ihe na-emebi ak\u1ee5k\u1ecd ah\u1ee5ike. Enwegh\u1ecb nkwado ndabere, enwegh\u1ecb nkw\u1ee5ghachi."
+      },
+      {
+        "title": "Enwegh\u1ecb n'ihu n'etiti \u1ee5l\u1ecd \u1ecdgw\u1ee5",
+        "description": "\u1ee4l\u1ecd \u1ecdgw\u1ee5 d\u1ecb iche iche amagh\u1ecb maka nlek\u1ecdta ah\u1ee5ike nke mb\u1ee5 \u2014 na-eduga na nnwale okpukpu ab\u1ee5\u1ecd na \u1ecdd\u1ecbiche nlek\u1ecdta d\u1ecb ize nd\u1ee5."
+      }
+    ]
+  }
+}
