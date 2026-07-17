@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { User, Stethoscope, Building2 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../components/ui/tabs";
+import { useTranslation } from "react-i18next";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -10,35 +11,37 @@ const fadeUp = {
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export function HowItWorksSection() {
+  const { t } = useTranslation();
+
   const tabs = [
     {
       id: "patient",
-      label: "Patient",
+      label: t('howItWorks.tabs.patient.label'),
       icon: User,
       steps: [
-        { step: "01", title: "Create your account", desc: "Register with name, phone, and email in under 2 minutes." },
-        { step: "02", title: "Build your health profile", desc: "Answer a short intake form and import existing records via WhatsApp." },
-        { step: "03", title: "Access records anywhere", desc: "View history, share securely with any doctor, get AI health reminders." },
+        { step: "01", title: t('howItWorks.tabs.patient.steps.0.title'), desc: t('howItWorks.tabs.patient.steps.0.desc') },
+        { step: "02", title: t('howItWorks.tabs.patient.steps.1.title'), desc: t('howItWorks.tabs.patient.steps.1.desc') },
+        { step: "03", title: t('howItWorks.tabs.patient.steps.2.title'), desc: t('howItWorks.tabs.patient.steps.2.desc') },
       ],
     },
     {
       id: "doctor",
-      label: "Doctor",
+      label: t('howItWorks.tabs.doctor.label'),
       icon: Stethoscope,
       steps: [
-        { step: "01", title: "Register & enter credentials", desc: "Sign up with full name, email, and MDCN licence number." },
-        { step: "02", title: "Verify your identity", desc: "Email OTP, then liveness check via Smile Identity for full verification." },
-        { step: "03", title: "Access patient histories", desc: "With consent, view records, update case notes, track patient progress." },
+        { step: "01", title: t('howItWorks.tabs.doctor.steps.0.title'), desc: t('howItWorks.tabs.doctor.steps.0.desc') },
+        { step: "02", title: t('howItWorks.tabs.doctor.steps.1.title'), desc: t('howItWorks.tabs.doctor.steps.1.desc') },
+        { step: "03", title: t('howItWorks.tabs.doctor.steps.2.title'), desc: t('howItWorks.tabs.doctor.steps.2.desc') },
       ],
     },
     {
       id: "hospital",
-      label: "Hospital",
+      label: t('howItWorks.tabs.hospital.label'),
       icon: Building2,
       steps: [
-        { step: "01", title: "Apply for integration", desc: "Submit hospital credentials and CAC registration for review." },
-        { step: "02", title: "Set up your dashboard", desc: "Configure patient flow, departments, and doctor accounts." },
-        { step: "03", title: "Go live", desc: "Begin tracking visits, managing records digitally, and collaborating." },
+        { step: "01", title: t('howItWorks.tabs.hospital.steps.0.title'), desc: t('howItWorks.tabs.hospital.steps.0.desc') },
+        { step: "02", title: t('howItWorks.tabs.hospital.steps.1.title'), desc: t('howItWorks.tabs.hospital.steps.1.desc') },
+        { step: "03", title: t('howItWorks.tabs.hospital.steps.2.title'), desc: t('howItWorks.tabs.hospital.steps.2.desc') },
       ],
     },
   ];
@@ -57,16 +60,16 @@ export function HowItWorksSection() {
             variants={fadeUp}
             className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4"
           >
-            How It Works
+            {t('howItWorks.badge')}
           </motion.span>
           <h2
             className="text-4xl font-extrabold text-foreground mb-4"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Simple for everyone involved
+            {t('howItWorks.title')}
           </h2>
           <p className="text-muted-foreground text-lg">
-            Patient, doctor, or hospital — getting started takes minutes.
+            {t('howItWorks.desc')}
           </p>
         </motion.div>
 

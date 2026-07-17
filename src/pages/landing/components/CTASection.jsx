@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { Heart, ArrowRight } from "lucide-react";
 import { MagneticButton } from "../../../components/common/MagneticButton";
 import { BetaCareLogo } from "../../../components/icons/BetaCareLogo";
+import { useTranslation } from "react-i18next";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -12,6 +13,7 @@ const fadeUp = {
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export function CTASection({ onGetStarted }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   return (
     <section className="py-24 bg-muted/30 border-t border-border overflow-hidden">
@@ -35,24 +37,23 @@ export function CTASection({ onGetStarted }) {
             className="text-4xl lg:text-5xl font-extrabold text-foreground mb-5 leading-tight"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Your health story deserves to be remembered
+            {t('cta.title')}
           </motion.h2>
           <motion.p variants={fadeUp} className="text-muted-foreground text-lg mb-8">
-            Join Nigerians who have taken control of their health records. Sign up free — no credit card, no app download
-            required.
+            {t('cta.desc')}
           </motion.p>
           <motion.div variants={fadeUp} className="flex flex-wrap gap-3 justify-center">
             <MagneticButton
               onClick={onGetStarted}
               className="flex items-center gap-2 px-7 py-4 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors hover:shadow-lg hover:shadow-primary/20"
             >
-              Get Started Free <ArrowRight size={16} />
+              {t('cta.primary')} <ArrowRight size={16} />
             </MagneticButton>
             <MagneticButton
               onClick={() => navigate("/contact")}
               className="flex items-center gap-2 px-7 py-4 border-2 border-border text-foreground font-semibold rounded-xl hover:border-primary/40 hover:bg-secondary transition-all"
             >
-              Talk to the Team
+              {t('cta.secondary')}
             </MagneticButton>
           </motion.div>
         </motion.div>

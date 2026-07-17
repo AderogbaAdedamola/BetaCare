@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "../../../components/ui/accordion";
+import { useTranslation } from "react-i18next";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -15,45 +16,12 @@ const fadeUp = {
 
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
-const faqs = [
-  {
-    q: "Is BetaCare free to use?",
-    a: "Yes. BetaCare is completely free for patients — always. We charge hospitals and healthcare centres a subscription fee for integration. Patients will never pay.",
-  },
-  {
-    q: "How do I access my health records?",
-    a: "You can access your records via our web dashboard, WhatsApp, or SMS. No app download required. Register once and your records are available wherever you are.",
-  },
-  {
-    q: "Is my health data safe?",
-    a: "Absolutely. All data is end-to-end encrypted and stored on NDPR-compliant servers. We will never sell your data to third parties. You have full visibility of every access request.",
-  },
-  {
-    q: "Which hospitals support BetaCare?",
-    a: "We are in active onboarding with hospitals across Lagos, Abuja, and Port Harcourt. Any hospital can apply for integration through our Hospital portal — the network grows every week.",
-  },
-  {
-    q: "How does doctor verification work?",
-    a: "Doctors go through a three-step process: email OTP verification, MDCN licence number validation, and a liveness check via Smile Identity. Only licensed practitioners get access.",
-  },
-  {
-    q: "Can I use BetaCare without a smartphone?",
-    a: "Yes. BetaCare works entirely over SMS for users without smartphones or internet access. Any phone with a working SIM card and airtime is enough.",
-  },
-  {
-    q: "What happens to my records if I switch hospitals?",
-    a: "Your records belong to you, not the hospital. When you visit a new facility, you authorise them to view your BetaCare profile — your complete history is instantly available.",
-  },
-  {
-    q: "How does the AI health agent work?",
-    a: "The AI builds a health profile from your records and interactions. It proactively sends reminders (drug schedules, upcoming appointments), flags unusual patterns, and answers basic health questions via WhatsApp.",
-  },
-];
-
 export function FAQSection() {
+  const { t } = useTranslation();
   const [openItem, setOpenItem] = useState("");
   const [openedAngle, setOpenedAngle] = useState(0);
-  // const [closedAngle, setClosedAngle] = useState(0);
+
+  const faqs = t('faq.items', { returnObjects: true });
 
   useEffect(() => {
     if (openItem) {
@@ -63,15 +31,6 @@ export function FAQSection() {
       }, 300);
     }
   }, [openItem]);
-  // useEffect(() => {
-  //   if (!openItem) {
-  //     setClosedAngle(-45);
-  //     setTimeout(() => {
-  //       setClosedAngle(0);
-  //     }, 300);
-  //   }
-  // }, [closedAngle]);
-  
 
   return (
     <section id="faq" className="py-24 bg-background overflow-hidden">
@@ -87,18 +46,18 @@ export function FAQSection() {
             variants={fadeUp}
             className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4"
           >
-            FAQ
+            {t('faq.badge')}
           </motion.span>
           <h2
             className="text-4xl font-extrabold text-foreground mb-4"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Frequently asked questions
+            {t('faq.title')}
           </h2>
           <p className="text-muted-foreground">
-            Everything you need to know about BetaCare. Can&apos;t find your answer?{" "}
+            {t('faq.desc')}{" "}
             <a href="/contact" className="text-primary font-medium hover:underline">
-              Reach out to us.
+              {t('faq.contactLink')}
             </a>
           </p>
         </motion.div>
@@ -110,7 +69,7 @@ export function FAQSection() {
           onValueChange={setOpenItem}
           className="flex flex-col gap-3"
         >
-          {faqs.map((faq, i) => {
+          {Array.isArray(faqs) && faqs.map((faq, i) => {
             const isOpened = openItem === `item-${i}`;
             return (
               <motion.div

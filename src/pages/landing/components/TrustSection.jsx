@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Lock, Shield, Users, Zap } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -9,26 +10,28 @@ const fadeUp = {
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export function TrustSection() {
+  const { t } = useTranslation();
+
   const pillars = [
     {
       icon: Lock,
-      title: "End-to-End Encrypted",
-      desc: "Your health data is encrypted at rest and in transit. Nobody reads it without your explicit consent.",
+      title: t('trust.pillars.0.title'),
+      desc: t('trust.pillars.0.desc'),
     },
     {
       icon: Shield,
-      title: "NDPR Compliant",
-      desc: "Full compliance with the Nigeria Data Protection Regulation and global health data standards.",
+      title: t('trust.pillars.1.title'),
+      desc: t('trust.pillars.1.desc'),
     },
     {
       icon: Users,
-      title: "Patient-First Consent",
-      desc: "You decide who sees your records. Every access request is logged and visible to you.",
+      title: t('trust.pillars.2.title'),
+      desc: t('trust.pillars.2.desc'),
     },
     {
       icon: Zap,
-      title: "Always Available",
-      desc: "Your records are accessible even during outages via WhatsApp and SMS. No single point of failure.",
+      title: t('trust.pillars.3.title'),
+      desc: t('trust.pillars.3.desc'),
     },
   ];
 
@@ -46,9 +49,9 @@ export function TrustSection() {
             className="text-3xl font-extrabold text-foreground mb-3"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Built on trust
+            {t('trust.title')}
           </h2>
-          <p className="text-muted-foreground">Security and privacy are foundational, not afterthoughts.</p>
+          <p className="text-muted-foreground">{t('trust.desc')}</p>
         </motion.div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {pillars.map((item, i) => {

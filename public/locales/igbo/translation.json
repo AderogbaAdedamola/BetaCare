@@ -1,54 +1,268 @@
 {
   "hero": {
-    "badge": "Usoro Ndek\u1ecd Ah\u1ee5ike nke Na\u1ecbjir\u1ecba",
-    "titlePart1": "Ihe Ndek\u1ecd Ah\u1ee5ike G\u1ecb,",
+    "badge": "Usoro Ndekọ Ahụike nke Naịjirịa",
+    "titlePart1": "Ihe Ndekọ Ahụike Gị,",
     "titleHighlight": "N'Aka Oge Niile.",
-    "desc": "BetaCare na-edobe ak\u1ee5k\u1ecd ah\u1ee5ike g\u1ecb n'\u1ecbtaneti ka \u1ecd na-eso g\u1ecb ebe \u1ecdb\u1ee5la nlek\u1ecdta ah\u1ee5ike na-eduga g\u1ecb \u2014 n'ime \u1ee5l\u1ecd \u1ecdgw\u1ee5 d\u1ecb iche iche, n'obodo d\u1ecb iche iche, na Na\u1ecbjir\u1ecba niile. \u1eccd\u1ecbgh\u1ecb ihe ndek\u1ecd na-efu efu. \u1ecc d\u1ecbgh\u1ecb \u1ecbmalite \u1ecdf\u1ee5\u1ee5 \u1ecdz\u1ecd.",
+    "desc": "BetaCare na-edobe akụkọ ahụike gị n'ịtaneti ka ọ na-eso gị ebe ọbụla nlekọta ahụike na-eduga gị — n'ime ụlọ ọgwụ dị iche iche, n'obodo dị iche iche, na Naịjirịa niile. Ọdịghị ihe ndekọ na-efu efu. Ọ dịghị ịmalite ọfụụ ọzọ.",
     "ctaPrimary": "Bido N'efu",
-    "ctaSecondary": "H\u1ee5 Otu \u1ecc S\u1ecb Ar\u1ee5 \u1eccr\u1ee5",
-    "patientBadge": "Ndek\u1ecd Onye \u1eccr\u1ecba",
+    "ctaSecondary": "Hụ Otu Ọ Sị Arụ Ọrụ",
+    "patientBadge": "Ndekọ Onye Ọrịa",
     "patientName": "Adaeze Okonkwo",
-    "bloodType": "\u1ee4d\u1ecb \u1eccbara",
-    "age": "Af\u1ecd",
-    "lastVisit": "Nleta Ikpeaz\u1ee5",
-    "nextAppt": "Nzuk\u1ecd Na-ab\u1ecba",
-    "diagnoses": "Nch\u1ecdp\u1ee5ta \u1ecch\u1ee5r\u1ee5",
-    "statusTreated": "A Gw\u1ecdr\u1ecd",
+    "bloodType": "Ụdị Ọbara",
+    "age": "Afọ",
+    "lastVisit": "Nleta Ikpeazụ",
+    "nextAppt": "Nzukọ Na-abịa",
+    "diagnoses": "Nchọpụta Ọhụrụ",
+    "statusTreated": "A Gwọrọ",
     "statusOngoing": "Na-aga N'ihu",
-    "aiBadge": "Onye Nn\u1ecdchite Ah\u1ee5ike AI",
-    "aiDesc": "Oge maka nyocha BP g\u1ecb!",
+    "aiBadge": "Onye Nnọchite Ahụike AI",
+    "aiDesc": "Oge maka nyocha BP gị!",
     "encryptedBadge": "Ezoro Ezo",
     "marquee": [
-      "N'efu maka nd\u1ecb \u1ecdr\u1ecba",
-      "\u1ecc d\u1ecbgh\u1ecb mkpa nbudata ngwa",
-      "Na-ar\u1ee5 \u1ecdr\u1ee5 na WhatsApp",
-      "Na-ar\u1ee5 \u1ecdr\u1ee5 na SMS",
-      "Kwek\u1ecdr\u1ecd na NDPR",
-      "Ezoro ezo site na mmalite ruo n'\u1ecdt\u1ee5t\u1ee5",
-      "Ar\u1ee5r\u1ee5 maka Na\u1ecbjir\u1ecba",
-      "Nlek\u1ecdta ah\u1ee5ike AI",
-      "Nnweta \u1ee5l\u1ecd \u1ecdgw\u1ee5 ngwa ngwa",
-      "Ndek\u1ecd g\u1ecb, njikwa g\u1ecb"
+      "N'efu maka ndị ọrịa",
+      "Ọ dịghị mkpa nbudata ngwa",
+      "Na-arụ ọrụ na WhatsApp",
+      "Na-arụ ọrụ na SMS",
+      "Kwekọrọ na NDPR",
+      "Ezoro ezo site na mmalite ruo n'ọtụtụ",
+      "Arụrụ maka Naịjirịa",
+      "Nlekọta ahụike AI",
+      "Nnweta ụlọ ọgwụ ngwa ngwa",
+      "Ndekọ gị, njikwa gị"
     ]
   },
   "problem": {
     "badge": "Nsogbu",
-    "titlePart1": "Ak\u1ee5k\u1ecd ah\u1ee5ike Na\u1ecbjir\u1ecba",
+    "titlePart1": "Akụkọ ahụike Naịjirịa",
     "titleHighlight": "emebiela.",
-    "desc": "\u1ee4l\u1ecd \u1ecdgw\u1ee5 d\u1ecb ka UCH ka na-eji akw\u1ee5kw\u1ecd ka edebanye ak\u1ee5k\u1ecd nd\u1ecb \u1ecdr\u1ecba. Ihe \u1ecd r\u1ee5p\u1ee5tara nwere ike \u1ecb\u1e33pata \u1ecdnw\u1ee5.",
+    "desc": "Ụlọ ọgwụ dị ka UCH ka na-eji akwụkwọ ka edebanye akụkọ ndị ọrịa. Ihe ọ rụpụtara nwere ike ịḳpata ọnwụ.",
     "problems": [
       {
-        "title": "Akw\u1ee5kw\u1ecd ah\u1ee5ike na-efu",
-        "description": "\u1ecct\u1ee5t\u1ee5 nd\u1ecb na-ab\u1ecba \u1ee5l\u1ecd \u1ecdgw\u1ee5 na-ach\u1ecdp\u1ee5ta na akw\u1ee5kw\u1ecd ha efuola \u2014 na-eme ka ha malite nyocha \u1ecdz\u1ecd."
+        "title": "Akwụkwọ ahụike na-efu",
+        "description": "Ọtụtụ ndị na-abịa ụlọ ọgwụ na-achọpụta na akwụkwọ ha efuola — na-eme ka ha malite nyocha ọzọ."
       },
       {
-        "title": "Mmebi anagh\u1ecb agbanwe",
-        "description": "\u1ecck\u1ee5, ide mmiri, na iji eme ihe na-emebi ak\u1ee5k\u1ecd ah\u1ee5ike. Enwegh\u1ecb nkwado ndabere, enwegh\u1ecb nkw\u1ee5ghachi."
+        "title": "Mmebi anaghị agbanwe",
+        "description": "Ọkụ, ide mmiri, na iji eme ihe na-emebi akụkọ ahụike. Enweghị nkwado ndabere, enweghị nkwụghachi."
       },
       {
-        "title": "Enwegh\u1ecb n'ihu n'etiti \u1ee5l\u1ecd \u1ecdgw\u1ee5",
-        "description": "\u1ee4l\u1ecd \u1ecdgw\u1ee5 d\u1ecb iche iche amagh\u1ecb maka nlek\u1ecdta ah\u1ee5ike nke mb\u1ee5 \u2014 na-eduga na nnwale okpukpu ab\u1ee5\u1ecd na \u1ecdd\u1ecbiche nlek\u1ecdta d\u1ecb ize nd\u1ee5."
+        "title": "Enweghị n'ihu n'etiti ụlọ ọgwụ",
+        "description": "Ụlọ ọgwụ dị iche iche amaghị maka nlekọta ahụike nke mbụ — na-eduga na nnwale okpukpu abụọ na ọdịiche nlekọta dị ize ndụ."
       }
     ]
+  },
+  "features": {
+    "badge": "Ihe BetaCare Na-eme",
+    "title": "Ihe niile ị chọrọ, n'otu ebe",
+    "desc": "A rụrụ ya kpọmkwem maka usoro ahụike Naịjirịa — ọ dị ntụkwasị obi, echedoro, ma dị mfe iji.",
+    "list": [
+      {
+        "label": "Akụkụ Dị Mkpa",
+        "title": "Ihe Ndekọ Ahụike Ọfụrụ",
+        "desc": "Ebe nchekwa data echedoro nke na-echekwa akụkọ ahụike gị niile — nyocha, ọgwụ, na ndetu dọkịta.",
+        "points": [
+          "Nchekwa ezoro ezo site na mmalite ruo ọtụtụ",
+          "Nkwado iwu nzuzo data Naịjirịa",
+          "Nchekwa ndekọ oge niile"
+        ]
+      },
+      {
+        "label": "Akụkụ Dị Mkpa",
+        "title": "Ihe Ngosi Maka Naịjirịa",
+        "desc": "BetaCare na-ezute ndị Naịjirịa na WhatsApp na SMS. Enweghị nbudata ngwa. Ngwa ọrụ ha marala.",
+        "points": [
+          "Mmekọrịta WhatsApp",
+          "SMS maka ebe enweghị netiwọk pụtarị ịhe",
+          "Dị n'asụsụ Bekee na Pidgin"
+        ]
+      },
+      {
+        "label": "Ike AI",
+        "title": "Onye Nnyemaka Ahụike",
+        "desc": "AI anyị na-emepụta profaịlụ ahụike maka onye ọbụla — na-enyocha ojiji ọgwụ, na-echetara banyere oge nzukọ.",
+        "points": [
+          "Nyocha ọnụọnụ ọgwụ",
+          "Ndụmọdụ ahụike ahaziri iche",
+          "Ihe ncheta nzukọ"
+        ]
+      }
+    ]
+  },
+  "howItWorks": {
+    "badge": "Otu Ọ Sị Arụ Ọrụ",
+    "title": "Dị mfe maka onye ọbụla",
+    "desc": "Onye ọrịa, dọkịta, ma ọbụ ụlọ ọgwụ — ịmalite anaghị ewe oge.",
+    "tabs": {
+      "patient": {
+        "label": "Onye Ọrịa",
+        "steps": [
+          {
+            "title": "Mepụta akaụntụ gị",
+            "desc": "Debanye aha na aha gị, nọmba fon, na email n'ime nkeji abụọ."
+          },
+          {
+            "title": "Wuo profaịlụ ahụike gị",
+            "desc": "Zaa ajụjụ dị mkpirikpi ma weta akụkọ gị gara aga site na WhatsApp."
+          },
+          {
+            "title": "Nweta ndekọ n'ebe ọbụla",
+            "desc": "Lelee akụkọ gị, gwa dọkịta ọbụla okwu n'enweghị nsogbu."
+          }
+        ]
+      },
+      "doctor": {
+        "label": "Dọkịta",
+        "steps": [
+          {
+            "title": "Debanye aha na nkịta ọrụ",
+            "desc": "Debanye aha na aha gị, email, na nọmba ikike MDCN."
+          },
+          {
+            "title": "Nyochaa onye ị bụ",
+            "desc": "Email OTP, ma nyochaa ihu gị maka nkwenye zuru oke."
+          },
+          {
+            "title": "Lelee akụkọ ndị ọrịa",
+            "desc": "Site na nkwenye, lelee ndekọ, melite ndetu, sochie ọnọdụ onye ọrịa."
+          }
+        ]
+      },
+      "hospital": {
+        "label": "Ụlọ Ọgwụ",
+        "steps": [
+          {
+            "title": "Tinye akwụkwọ njikọ",
+            "desc": "Tinye akwụkwọ ụlọ ọgwụ gị na ndebanye aha CAC."
+          },
+          {
+            "title": "Hazie pọtaalụ gị",
+            "desc": "Haziwe otu ndị ọrịa si abata, ngalaba, na akaụntụ dọkịta."
+          },
+          {
+            "title": "Malite ọrụ",
+            "desc": "Malite ịdịbanata nleta, na-ejikwa ndekọ dijitalụ, ma na-arụkọmkịta ọrụ."
+          }
+        ]
+      }
+    }
+  },
+  "trust": {
+    "title": "A rụrụ ya na ntụkwasị obi",
+    "desc": "Nchekwa na nzuzo bụ ihe ndị mbụ, ọbụghị ihe akpachapụghị anya.",
+    "pillars": [
+      {
+        "title": "Ezoro ezo n'enweghị ntụpọ",
+        "desc": "E chebere data ahụike gị. Ọ dịghị onye na-agụ ya n'enweghị ikike gị."
+      },
+      {
+        "title": "Kwadoro NDPR",
+        "desc": "Nkwado zuru oke na iwu nchekwa data Naịjirịa na iwu ụwa."
+      },
+      {
+        "title": "Nkwenye Onye Ọrịa",
+        "desc": "Ị bụ onye na-ekpebi onye na-ahụ ndekọ gị. Ị ga-ahụ onye ọbụla rịrịọrọ ka ọ hụ ya."
+      },
+      {
+        "title": "Nnweta Oge Niile",
+        "desc": "Enwere ike inweta ndekọ gị ọ bụladị na mgbe netiwọk pụtarị ịhe site na WhatsApp na SMS."
+      }
+    ]
+  },
+  "hospital": {
+    "badge": "Maka Ụlọ Ọgwụ",
+    "title": "Jikọbie BetaCare na ụlọ ọgwụ gị taa",
+    "desc": "Nye ndị ọrụ gị ike ịhụ akụkọ onye ọrịa ozugbo. Belata obibi akwụkwọ, melite nlekọta.",
+    "benefits": [
+      "Nnweta ozugbo na akụkọ onye ọrịa na ntụhie ahụike",
+      "Belata oge ntụhie na ule abụọ",
+      "Nkwalite ozugbo na ngalaba niile",
+      "Nkwado iwu data ahụike nke Naịjirịa",
+      "Nkwado nka ụzụ n'oge niile"
+    ],
+    "cta": "Tinye Maka Njikọ",
+    "dashboard": "Pọtaalụ Ụlọ Ọgwụ",
+    "statusAdmitted": "A nabatara",
+    "statusOutpatient": "Onye ọrịa ezị",
+    "statusDischarged": "A pụpụrụ",
+    "active": "Na-arụ",
+    "appts": "Nzukọ taa"
+  },
+  "faq": {
+    "badge": "Ajụjụ",
+    "title": "Ajụjụ ndị mmadụ na-ajụ",
+    "desc": "Ihe niile ị chọrọ ịmata maka BetaCare. Ị hụghị azịza gị?",
+    "contactLink": "Kpọtụrụ anyị.",
+    "items": [
+      {
+        "q": "BetaCare ọ bụ n'efu?",
+        "a": "Ee. BetaCare bụ n'efu maka ndị ọrịa oge niile. Anyị na-ana ndị ụlọ ọgwụ ego ndenye aha. Ndị ọrịa agaghị akwụ ụgwọ."
+      },
+      {
+        "q": "Kedu ka m ga-esi hụ ndekọ ahụike m?",
+        "a": "Ị nwere ike iji weebụ pọtaalụ, WhatsApp, ma ọbụ SMS hụ ndekọ gị. Ọ dịghị nbudata ngwa. Debanye aha otu ugboro ma ndekọ gị ga-anọ n'akụkụ gị ebe ọbụla."
+      },
+      {
+        "q": "Data ahụike m ọ dị nchebe?",
+        "a": "Kpam kpam. Echebere data niile ma chekwaa ya na sẹva NDPR. Anyị agaghị ere data gị n'aka ọtụtụ ndị ọzọ."
+      },
+      {
+        "q": "Kedu ụlọ ọgwụ na-akwado BetaCare?",
+        "a": "Anyị na-eso ụlọ ọgwụ dị n'ime Lagos, Abuja, na Port Harcourt na-arụkọmkịta ọrụ. Ụlọ ọgwụ ọbụla nwere ike itinye akwụkwọ — netiwọkụ anyị na-eto kwa ụbọchị."
+      },
+      {
+        "q": "Kedu ka nkwenye dọkịta si arụ ọrụ?",
+        "a": "Ndị dọkịta na-agafe usoro nzọbụkwụ atọ: Email OTP, nkwenye nọmba ikike MDCN, na nkwenye ihu site na Smile Identity."
+      },
+      {
+        "q": "M nwere ike iji BetaCare n'enweghị ekwentị smart?",
+        "a": "Ee. BetaCare na-arụ ọrụ n'uju site na SMS maka ndị ịntanetị pụtarị ịhe. Ekwentị ọbụla nwere kaadị SIM ga-arụ ọrụ."
+      },
+      {
+        "q": "Kedu ihe ga-eme ndekọ m ma ọbụrụ na m gbanwee ụlọ ọgwụ?",
+        "a": "Ndekọ gị bụ nke gị, ọbụghị nke ụlọ ọgwụ. Mgbe ị gara ụlọ ọgwụ ọfụrụ, ị na-enye ha ikike ịhụ profaịlụ BetaCare gị — akụkọ gị ga-adị ozugbo."
+      },
+      {
+        "q": "Kedu ka onye nnyemaka AI si arụ ọrụ?",
+        "a": "AI na-ewu profaịlụ ahụike site na ndekọ gị. Ọ na-eziga ihe ncheta, na-egosi nsogbu, ma na-aza ajụjụ ahụike dị mfe na WhatsApp."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Akụkọ ahụike gị kwesịrị ncheta",
+    "desc": "Sonyere ndị Naịjirịa ndị na-elekọta akụkọ ahụike ha. Debanye aha n'efu — ọdịghị kaadị bankị, ọdịghị nbudata ngwa.",
+    "primary": "Bido N'efu",
+    "secondary": "Gwa Ndị Ọrụ Okwu"
+  },
+  "footer": {
+    "desc": "Na-eme ka akụkọ ahụike Naịjirịa bụrụ dijitalụ, otu onye ọrịa n'otu oge.",
+    "product": "Ngwaọhịa",
+    "portals": "Pọtaalụ",
+    "company": "Ụlọ ọrụ",
+    "legal": "Iwu",
+    "productLinks": {
+      "howItWorks": "Otu Ọ Sị Arụ Ọrụ",
+      "features": "Akụkụ",
+      "security": "Nchekwa",
+      "pricing": "Ọnụ Ahịa"
+    },
+    "portalsLinks": {
+      "patientLogin": "Banye Onye Ọrịa",
+      "doctorLogin": "Banye Dọkịta",
+      "hospitalLogin": "Banye Ụlọ Ọgwụ",
+      "register": "Debanye Aha"
+    },
+    "companyLinks": {
+      "aboutUs": "Banyere Anyị",
+      "blog": "Blọgụ",
+      "careers": "Ọrụ",
+      "press": "Ozi"
+    },
+    "legalLinks": {
+      "privacyPolicy": "Iwu Nzuzo",
+      "terms": "Iwu Ọrụ",
+      "ndpr": "Nkwado NDPR"
+    },
+    "copyright": "© 2026 BetaCare Technologies Ltd. Ikike niile echedoro.",
+    "madeWithCare": "E ji ịhụnanya meere ndị Naịjirịa."
   }
 }

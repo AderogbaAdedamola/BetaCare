@@ -2,15 +2,38 @@ import { useNavigate } from "react-router";
 import { BetaCareLogo } from "../../../components/icons/BetaCareLogo";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export function Footer() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const links = {
-    Product: [{ label: "How It Works", link: "#how-it-works" }, { label: "Features", link: "#features" }, { label: "Security", link: "#" }, { label: "Pricing", link: "#" }],
-    Portals: [{ label: "Patient Login", link: "/patient/login" }, { label: "Doctor Login", link: "/doctor/login" }, { label: "Hospital Login", link: "/hospital/login" }, { label: "Register", link: "/register" }],
-    Company: [{ label: "About Us", link: "#" }, { label: "Blog", link: "#" }, { label: "Careers", link: "#" }, { label: "Press", link: "#" }],
-    Legal: [{ label: "Privacy Policy", link: "#" }, { label: "Terms of Service", link: "/terms" }, { label: "NDPR Compliance", link: "#" }],
+    [t('footer.product')]: [
+      { label: t('footer.productLinks.howItWorks'), link: "#how-it-works" }, 
+      { label: t('footer.productLinks.features'), link: "#features" }, 
+      { label: t('footer.productLinks.security'), link: "#" }, 
+      { label: t('footer.productLinks.pricing'), link: "#" }
+    ],
+    [t('footer.portals')]: [
+      { label: t('footer.portalsLinks.patientLogin'), link: "/patient/login" }, 
+      { label: t('footer.portalsLinks.doctorLogin'), link: "/doctor/login" }, 
+      { label: t('footer.portalsLinks.hospitalLogin'), link: "/hospital/login" }, 
+      { label: t('footer.portalsLinks.register'), link: "/register" }
+    ],
+    [t('footer.company')]: [
+      { label: t('footer.companyLinks.aboutUs'), link: "#" }, 
+      { label: t('footer.companyLinks.blog'), link: "#" }, 
+      { label: t('footer.companyLinks.careers'), link: "#" }, 
+      { label: t('footer.companyLinks.press'), link: "#" }
+    ],
+    [t('footer.legal')]: [
+      { label: t('footer.legalLinks.privacyPolicy'), link: "#" }, 
+      { label: t('footer.legalLinks.terms'), link: "/terms" }, 
+      { label: t('footer.legalLinks.ndpr'), link: "#" }
+    ],
   };
+
   return (
     <footer className="bg-foreground text-card pt-14 pb-8 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
@@ -25,7 +48,7 @@ export function Footer() {
               </span>
             </button>
             <p className="text-sm text-card/60 leading-relaxed max-w-[180px]">
-              Digitizing Nigeria&apos;s healthcare records, one patient at a time.
+              {t('footer.desc')}
             </p>
           </div>
           {Object.entries(links).map(([category, items]) => (
@@ -44,8 +67,8 @@ export function Footer() {
           ))}
         </div>
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-card/40">
-          <p>© 2026 BetaCare Technologies Ltd. All rights reserved.</p>
-          <p>Made with care for Nigerians, by Nigerians.</p>
+          <p>{t('footer.copyright')}</p>
+          <p>{t('footer.madeWithCare')}</p>
         </div>
       </div>
     </footer>

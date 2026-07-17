@@ -3,7 +3,7 @@
     "badge": "Tsarin Rikodin Lafiya na Najeriya",
     "titlePart1": "Bayanan Lafiyarku,",
     "titleHighlight": "Koyaushe A Cikin Isarwa.",
-    "desc": "BetaCare yana sanya tarihin likitancin ku a kan intanet don haka yana bin ku a duk inda kula da lafiya ya kai ku \u2014 a fadin asibitoci, fadin birane, fadin Najeriya. Babu sauran bayanan da suka \u0253ace. Babu sauran farawa daga farko.",
+    "desc": "BetaCare yana sanya tarihin likitancin ku a kan intanet don haka yana bin ku a duk inda kula da lafiya ya kai ku — a fadin asibitoci, fadin birane, fadin Najeriya. Babu sauran bayanan da suka ɓace. Babu sauran farawa daga farko.",
     "ctaPrimary": "Fara Kyauta",
     "ctaSecondary": "Duba Yadda Yake Aiki",
     "patientBadge": "Bayanan Majiyyaci",
@@ -17,14 +17,14 @@
     "statusOngoing": "Yana Ci Gaba",
     "aiBadge": "Jami'in Lafiya na AI",
     "aiDesc": "Lokacin duba BP ɗinku!",
-    "encryptedBadge": "An \u0184oye",
+    "encryptedBadge": "An Ƅoye",
     "marquee": [
       "Kyauta ga marasa lafiya",
-      "Babu bu\u0199atar sauke app",
+      "Babu buƙatar sauke app",
       "Yana aiki akan WhatsApp",
       "Yana aiki akan SMS",
       "Mai bin dokar NDPR",
-      "An \u0183oye daga farko har karshe",
+      "An ƃoye daga farko har karshe",
       "An gina don Najeriya",
       "Saka idanu kan lafiya na AI",
       "Shiga asibiti nan take",
@@ -35,20 +35,234 @@
     "badge": "Matsalar",
     "titlePart1": "Bayanan lafiyar Najeriya",
     "titleHighlight": "sun lalace.",
-    "desc": "Asibitoci irin su UCH suna ci gaba da dogaro da takarda don bin tarihin marasa lafiya. Sakamakon zai iya zama mai ha\u0257ari ga rayuwa.",
+    "desc": "Asibitoci irin su UCH suna ci gaba da dogaro da takarda don bin tarihin marasa lafiya. Sakamakon zai iya zama mai haɗari ga rayuwa.",
     "problems": [
       {
-        "title": "Takardun asibiti suna \u0253acewa",
-        "description": "Dubban mutane suna zuwa asibiti kawai don gano takardun su sun \u0253ace \u2014 yana sa su fara duba daga farko."
+        "title": "Takardun asibiti suna ɓacewa",
+        "description": "Dubban mutane suna zuwa asibiti kawai don gano takardun su sun ɓace — yana sa su fara duba daga farko."
       },
       {
         "title": "Lalacewar jiki ba ta dawowa",
-        "description": "Wuta, ambaliya, da amfani na yau da kullun suna lalata tarihin lafiya. Ba\u0300 ajiya, ba\u0300 dawowa."
+        "description": "Wuta, ambaliya, da amfani na yau da kullun suna lalata tarihin lafiya. Bà ajiya, bà dawowa."
       },
       {
-        "title": "Ba\u0300 ci gaba tsakanin asibitoci",
-        "description": "Daban-daban asibitoci ba su da masaniyar jinyar da aka yi a baya \u2014 yana haifar da gwaje-gwaje biyu da matsala masu ha\u0257ari."
+        "title": "Bà ci gaba tsakanin asibitoci",
+        "description": "Daban-daban asibitoci ba su da masaniyar jinyar da aka yi a baya — yana haifar da gwaje-gwaje biyu da matsala masu haɗari."
       }
     ]
+  },
+  "features": {
+    "badge": "Abin da BetaCare ke yi",
+    "title": "Duk abin da kuke bukata, a kan dandamali ɗaya",
+    "desc": "An gina musamman don tsarin kiwon lafiya na Najeriya — mai aminci, mai tsaro, kuma mai saukin amfani.",
+    "list": [
+      {
+        "label": "Siffa ta Musamman",
+        "title": "Rubutun Lafiya na Dijital",
+        "desc": "Wani rumbun adana bayanai da ke adana cikakken tarihin lafiyarku - gwaje-gwaje, takardun magani, da rubutun likita.",
+        "points": [
+          "Ma’ajiyar da aka ɓoye daga farko zuwa ƙarshe",
+          "Ya dace da dokokin tsare sirri na Najeriya",
+          "Adana rikodi na dindindin"
+        ]
+      },
+      {
+        "label": "Siffa ta Musamman",
+        "title": "Abin dubawa na Najeriya",
+        "desc": "BetaCare yana aiki kan WhatsApp da SMS. Babu buƙatar sauke manhaja. Adadin kayan aikin da suke amfani da su.",
+        "points": [
+          "Haɗawa da WhatsApp",
+          "SMS ga yankunan da babu intanet sosai",
+          "Akwai a Turance da Pidgin"
+        ]
+      },
+      {
+        "label": "Ayyukan AI",
+        "title": "Jami’in Lafiya Mai Lura",
+        "desc": "AI ɗinmu yana kera bayanan lafiya ga kowane mai amfani - lura da shan magani, tunatarwa akan likita, da gano hadarin lafiya da wuri.",
+        "points": [
+          "Kula da shan magani",
+          "Shawarwarin lafiya na musamman",
+          "Tunatarwa akan ganin likita"
+        ]
+      }
+    ]
+  },
+  "howItWorks": {
+    "badge": "Yadda Yake Aiki",
+    "title": "Sauki ga kowa da kowa",
+    "desc": "Majiyyaci, likita, ko asibiti — farawa baya wuce mintuna biyu.",
+    "tabs": {
+      "patient": {
+        "label": "Majiyyaci",
+        "steps": [
+          {
+            "title": "Irkiri asusunka",
+            "desc": "Yi rajista da suna, lambar waya, da imel acikin kankanin lokaci."
+          },
+          {
+            "title": "Tsara bayanan lafiyarku",
+            "desc": "Amsa tambayoyi kadan sannan ka shigo da tsoffin bayananka ta WhatsApp."
+          },
+          {
+            "title": "Shiga bayananka a kowane wuri",
+            "desc": "Duba tarihinka, raba tare da kowane likita a asirce, sami tunatarwar lafiya."
+          }
+        ]
+      },
+      "doctor": {
+        "label": "Likita",
+        "steps": [
+          {
+            "title": "Yi rajista & shigar da bayanai",
+            "desc": "Yi rajista da cikakken suna, imel, da lambar lasisin MDCN."
+          },
+          {
+            "title": "Tabbatar da wanene kai",
+            "desc": "Imel OTP, sannan duba fuskarka don cikakken tabbaci."
+          },
+          {
+            "title": "Duba tarihin majiyyaci",
+            "desc": "Tare da izini, duba rikodi, sabunta rubutu, bi sawun ci gaban majiyyaci."
+          }
+        ]
+      },
+      "hospital": {
+        "label": "Asibiti",
+        "steps": [
+          {
+            "title": "Aika don haɗawa",
+            "desc": "Saka takardun asibitin ku da rajistar CAC domin bincike."
+          },
+          {
+            "title": "Kafa dandamalin ku",
+            "desc": "Tsara tafiyar majiyyata, sassa, da asusun likitoci."
+          },
+          {
+            "title": "Fara aiki",
+            "desc": "Fara kula da ziyara, sarrafa bayanai a kan na’ura, da aiki tare."
+          }
+        ]
+      }
+    }
+  },
+  "trust": {
+    "title": "An gina shi bisa aminci",
+    "desc": "Tsaro da sirri suna da mahimmanci a gare mu.",
+    "pillars": [
+      {
+        "title": "An boye bayanai sosai",
+        "desc": "Bayanan lafiyar ku suna cikin asiri. Babu wanda zai iya karanta shi ba tare da izinin ku ba."
+      },
+      {
+        "title": "Ya dace da NDPR",
+        "desc": "Cikakken aiki tare da Dokar Kare Bayanai ta Najeriya da matsayin bayanan lafiya na duniya."
+      },
+      {
+        "title": "Izinin Majiyyaci ne a Gaba",
+        "desc": "Ku ke tsara wanda zai ga bayananku. Kowane neman shiga yana da rubutu don ku duba."
+      },
+      {
+        "title": "Akwai a Koda Yaushe",
+        "desc": "Bayananku suna nan koda akwai yankewar wutar lantarki ta WhatsApp da SMS."
+      }
+    ]
+  },
+  "hospital": {
+    "badge": "Don Cibiyoyin Kiwon Lafiya",
+    "title": "Haɗa BetaCare zuwa asibitinku a yau",
+    "desc": "Baiwa ma’aikatan asibitinku dama nan take ga cikakken tarihin majiyyata. Rage aikin takarda, inganta kula.",
+    "benefits": [
+      "Samun damar shiga bayanan majiyyata a wurin kula",
+      "Rage lokacin tuntuba da gwaji sau biyu",
+      "Sabuntawa na ainihin lokaci ga kowane sashe",
+      "Ya dace da ka’idojin bayanan lafiya na Najeriya",
+      "Taimakon fasaha 24/7 a kowane lokaci"
+    ],
+    "cta": "Nemi Haɗawa",
+    "dashboard": "Dandamali Asibiti",
+    "statusAdmitted": "An kwantar",
+    "statusOutpatient": "Ara ita",
+    "statusDischarged": "An sallama",
+    "active": "Masu aiki",
+    "appts": "Taron yau"
+  },
+  "faq": {
+    "badge": "Tambayoyi",
+    "title": "Tambayoyin da ake yi akai-akai",
+    "desc": "Duk abin da kuke buƙatar sani game da BetaCare. Ba ku sami amsar ku ba?",
+    "contactLink": "Tuntuɓi mu.",
+    "items": [
+      {
+        "q": "Shin BetaCare kyauta ne?",
+        "a": "E, BetaCare kyauta ne gaba daya ga marasa lafiya — koyaushe. Muna cajin asibitoci kudin amfani kawai. Marasa lafiya ba zasu taɓa biya ba."
+      },
+      {
+        "q": "Ta yaya zan ga bayanan lafiyata?",
+        "a": "Zaku iya samun bayanan ku ta hanyar intanet, WhatsApp, ko SMS. Babu buƙatar manhaja. Yi rijista sau ɗaya kuma bayanan ku suna tare daku a ko’ina."
+      },
+      {
+        "q": "Shin bayanan lafiyata suna lafiya?",
+        "a": "Kwarai kuwa. Duk bayanan an kare su sannan an adana su a wuraren da suka dace da NDPR. Ba zamu taba siyar da bayanan ku ba."
+      },
+      {
+        "q": "Wadanne asibitoci ke tallafawa BetaCare?",
+        "a": "Muna aiki da asibitoci daban-daban a Legas, Abuja, da Fatakwal. Kowane asibiti zai iya nema — cibiyar mu tana fadada koyaushe."
+      },
+      {
+        "q": "Ta yaya ake tabbatar da likita?",
+        "a": "Likitoci suna bin tsari na matakai uku: OTP na Imel, tabbatar da lambar MDCN, da tabbatar da fuska. Kwararrun likitoci kawai suke samun shiga."
+      },
+      {
+        "q": "Zan iya amfani da BetaCare ba tare da wayar zamani ba?",
+        "a": "E. BetaCare yana aiki da SMS ga masu amfani da ba su da wayar zamani ko intanet. Kowace waya mai katin SIM zatayi aiki."
+      },
+      {
+        "q": "Me zai faru da bayanai na idan na canza asibiti?",
+        "a": "Bayananku naku ne, ba na asibitin ba. Idan kuka ziyarci sabon asibiti, kuna basu izinin ganin bayanan ku — tarihinku zai kasance nan take."
+      },
+      {
+        "q": "Ta yaya Jami’in Lafiya na AI ke aiki?",
+        "a": "AI yana lura da lafiyar ku daga bayanan ku. Yana aiko da tunatarwa, gano matsaloli, sannan ya amsa tambayoyi masu sauƙi ta WhatsApp."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Tarihin lafiyarku ya cancanci a adana shi",
+    "desc": "Haɗa da ƴan Najeriya waɗanda suka ɗauki ikon kula da bayanan lafiyarsu. Yi rajista kyauta — babu katin banki, babu sauke manhaja.",
+    "primary": "Fara Kyauta",
+    "secondary": "Tuntuɓi Ƙungiyar"
+  },
+  "footer": {
+    "desc": "Tsara bayanan lafiyar Najeriya akan intanet, kowane majiyyaci a lokaci guda.",
+    "product": "Samfur",
+    "portals": "Kofofi",
+    "company": "Kamfani",
+    "legal": "Doka",
+    "productLinks": {
+      "howItWorks": "Yadda Yake Aiki",
+      "features": "Siffofin Mu",
+      "security": "Tsaro",
+      "pricing": "Farashi"
+    },
+    "portalsLinks": {
+      "patientLogin": "Shiga Majiyyaci",
+      "doctorLogin": "Shiga Likita",
+      "hospitalLogin": "Shiga Asibiti",
+      "register": "Yi Rajista"
+    },
+    "companyLinks": {
+      "aboutUs": "Game Da Mu",
+      "blog": "Bulogi",
+      "careers": "Ayyuka",
+      "press": "Labarai"
+    },
+    "legalLinks": {
+      "privacyPolicy": "Manufar Tsare Sirri",
+      "terms": "Sharuɗɗan Sabis",
+      "ndpr": "Biyayya ga NDPR"
+    },
+    "copyright": "© 2026 BetaCare Technologies Ltd. Duk haƙƙoƙi an kiyaye.",
+    "madeWithCare": "An yi da ƙauna ga ’yan Najeriya, daga ’yan Najeriya."
   }
 }

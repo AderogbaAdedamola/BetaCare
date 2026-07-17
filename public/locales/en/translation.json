@@ -3,7 +3,7 @@
     "badge": "Nigeria's Healthcare Record Platform",
     "titlePart1": "Your Health Records,",
     "titleHighlight": "Always Within Reach.",
-    "desc": "BetaCare digitizes your medical history so it follows you wherever healthcare takes you \u2014 across hospitals, across cities, across Nigeria. No more missing case notes. No more starting over.",
+    "desc": "BetaCare digitizes your medical history so it follows you wherever healthcare takes you — across hospitals, across cities, across Nigeria. No more missing case notes. No more starting over.",
     "ctaPrimary": "Get Started Free",
     "ctaSecondary": "See How It Works",
     "patientBadge": "Patient Record",
@@ -39,7 +39,7 @@
     "problems": [
       {
         "title": "Paper records get lost",
-        "description": "Thousands arrive at hospital only to find their case notes missing \u2014 forcing them to restart consultations entirely."
+        "description": "Thousands arrive at hospital only to find their case notes missing — forcing them to restart consultations entirely."
       },
       {
         "title": "Physical damage is irreversible",
@@ -47,8 +47,222 @@
       },
       {
         "title": "No continuity across hospitals",
-        "description": "Different hospitals have no visibility into prior treatment \u2014 leading to duplicate tests and dangerous care gaps."
+        "description": "Different hospitals have no visibility into prior treatment — leading to duplicate tests and dangerous care gaps."
       }
     ]
+  },
+  "features": {
+    "badge": "What BetaCare Does",
+    "title": "Everything you need, one platform",
+    "desc": "Built specifically for the Nigerian healthcare context — reliable, secure, and genuinely easy to use.",
+    "list": [
+      {
+        "label": "Core Feature",
+        "title": "Digitized Medical Records",
+        "desc": "A secure, cloud-backed database preserving your complete medical history — diagnoses, prescriptions, lab results, and doctor notes.",
+        "points": [
+          "End-to-end encrypted storage",
+          "Compliant with Nigeria data privacy laws",
+          "Lifetime record retention"
+        ]
+      },
+      {
+        "label": "Core Feature",
+        "title": "Nigerian-Friendly Interface",
+        "desc": "BetaCare meets Nigerians on WhatsApp and SMS. No app download. No confusing dashboards. Just the tools they already use.",
+        "points": [
+          "WhatsApp integration",
+          "SMS for low-connectivity areas",
+          "Available in English & Pidgin"
+        ]
+      },
+      {
+        "label": "AI-Powered",
+        "title": "Context-Aware Health Agent",
+        "desc": "Our AI builds a health profile for each user — monitoring drug usage, reminding about appointments, and flagging health risks early.",
+        "points": [
+          "Drug adherence monitoring",
+          "Personalised health tips",
+          "Smart appointment reminders"
+        ]
+      }
+    ]
+  },
+  "howItWorks": {
+    "badge": "How It Works",
+    "title": "Simple for everyone involved",
+    "desc": "Patient, doctor, or hospital — getting started takes minutes.",
+    "tabs": {
+      "patient": {
+        "label": "Patient",
+        "steps": [
+          {
+            "title": "Create your account",
+            "desc": "Register with name, phone, and email in under 2 minutes."
+          },
+          {
+            "title": "Build your health profile",
+            "desc": "Answer a short intake form and import existing records via WhatsApp."
+          },
+          {
+            "title": "Access records anywhere",
+            "desc": "View history, share securely with any doctor, get AI health reminders."
+          }
+        ]
+      },
+      "doctor": {
+        "label": "Doctor",
+        "steps": [
+          {
+            "title": "Register & enter credentials",
+            "desc": "Sign up with full name, email, and MDCN licence number."
+          },
+          {
+            "title": "Verify your identity",
+            "desc": "Email OTP, then liveness check via Smile Identity for full verification."
+          },
+          {
+            "title": "Access patient histories",
+            "desc": "With consent, view records, update case notes, track patient progress."
+          }
+        ]
+      },
+      "hospital": {
+        "label": "Hospital",
+        "steps": [
+          {
+            "title": "Apply for integration",
+            "desc": "Submit hospital credentials and CAC registration for review."
+          },
+          {
+            "title": "Set up your dashboard",
+            "desc": "Configure patient flow, departments, and doctor accounts."
+          },
+          {
+            "title": "Go live",
+            "desc": "Begin tracking visits, managing records digitally, and collaborating."
+          }
+        ]
+      }
+    }
+  },
+  "trust": {
+    "title": "Built on trust",
+    "desc": "Security and privacy are foundational, not afterthoughts.",
+    "pillars": [
+      {
+        "title": "End-to-End Encrypted",
+        "desc": "Your health data is encrypted at rest and in transit. Nobody reads it without your explicit consent."
+      },
+      {
+        "title": "NDPR Compliant",
+        "desc": "Full compliance with the Nigeria Data Protection Regulation and global health data standards."
+      },
+      {
+        "title": "Patient-First Consent",
+        "desc": "You decide who sees your records. Every access request is logged and visible to you."
+      },
+      {
+        "title": "Always Available",
+        "desc": "Your records are accessible even during outages via WhatsApp and SMS. No single point of failure."
+      }
+    ]
+  },
+  "hospital": {
+    "badge": "For Healthcare Centres",
+    "title": "Integrate BetaCare into your hospital today",
+    "desc": "Give your clinical team instant access to complete patient histories. Reduce paperwork, improve care quality.",
+    "benefits": [
+      "Instant access to patient records at point of care",
+      "Reduce consultation time and duplicate testing",
+      "Real-time updates across departments and wards",
+      "Compliant with Nigerian health data regulations",
+      "Dedicated onboarding and 24/7 technical support"
+    ],
+    "cta": "Apply for Integration",
+    "dashboard": "Hospital Dashboard",
+    "statusAdmitted": "Admitted",
+    "statusOutpatient": "Outpatient",
+    "statusDischarged": "Discharged",
+    "active": "Active",
+    "appts": "Today's Appts"
+  },
+  "faq": {
+    "badge": "FAQ",
+    "title": "Frequently asked questions",
+    "desc": "Everything you need to know about BetaCare. Can't find your answer?",
+    "contactLink": "Reach out to us.",
+    "items": [
+      {
+        "q": "Is BetaCare free to use?",
+        "a": "Yes. BetaCare is completely free for patients — always. We charge hospitals and healthcare centres a subscription fee for integration. Patients will never pay."
+      },
+      {
+        "q": "How do I access my health records?",
+        "a": "You can access your records via our web dashboard, WhatsApp, or SMS. No app download required. Register once and your records are available wherever you are."
+      },
+      {
+        "q": "Is my health data safe?",
+        "a": "Absolutely. All data is end-to-end encrypted and stored on NDPR-compliant servers. We will never sell your data to third parties. You have full visibility of every access request."
+      },
+      {
+        "q": "Which hospitals support BetaCare?",
+        "a": "We are in active onboarding with hospitals across Lagos, Abuja, and Port Harcourt. Any hospital can apply for integration through our Hospital portal — the network grows every week."
+      },
+      {
+        "q": "How does doctor verification work?",
+        "a": "Doctors go through a three-step process: email OTP verification, MDCN licence number validation, and a liveness check via Smile Identity. Only licensed practitioners get access."
+      },
+      {
+        "q": "Can I use BetaCare without a smartphone?",
+        "a": "Yes. BetaCare works entirely over SMS for users without smartphones or internet access. Any phone with a working SIM card and airtime is enough."
+      },
+      {
+        "q": "What happens to my records if I switch hospitals?",
+        "a": "Your records belong to you, not the hospital. When you visit a new facility, you authorise them to view your BetaCare profile — your complete history is instantly available."
+      },
+      {
+        "q": "How does the AI health agent work?",
+        "a": "The AI builds a health profile from your records and interactions. It proactively sends reminders (drug schedules, upcoming appointments), flags unusual patterns, and answers basic health questions via WhatsApp."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Your health story deserves to be remembered",
+    "desc": "Join Nigerians who have taken control of their health records. Sign up free — no credit card, no app download required.",
+    "primary": "Get Started Free",
+    "secondary": "Talk to the Team"
+  },
+  "footer": {
+    "desc": "Digitizing Nigeria's healthcare records, one patient at a time.",
+    "product": "Product",
+    "portals": "Portals",
+    "company": "Company",
+    "legal": "Legal",
+    "productLinks": {
+      "howItWorks": "How It Works",
+      "features": "Features",
+      "security": "Security",
+      "pricing": "Pricing"
+    },
+    "portalsLinks": {
+      "patientLogin": "Patient Login",
+      "doctorLogin": "Doctor Login",
+      "hospitalLogin": "Hospital Login",
+      "register": "Register"
+    },
+    "companyLinks": {
+      "aboutUs": "About Us",
+      "blog": "Blog",
+      "careers": "Careers",
+      "press": "Press"
+    },
+    "legalLinks": {
+      "privacyPolicy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "ndpr": "NDPR Compliance"
+    },
+    "copyright": "© 2026 BetaCare Technologies Ltd. All rights reserved.",
+    "madeWithCare": "Made with care for Nigerians, by Nigerians."
   }
 }

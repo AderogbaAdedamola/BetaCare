@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Database, Smartphone, Brain, CheckCircle2 } from "lucide-react";
 import { TiltCard } from "../../../components/common/TiltCard";
+import { useTranslation } from "react-i18next";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -10,30 +11,29 @@ const fadeUp = {
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export function FeaturesSection() {
+  const { t } = useTranslation();
+  
   const features = [
     {
       icon: Database,
-      label: "Core Feature",
-      title: "Digitized Medical Records",
-      description:
-        "A secure, cloud-backed database preserving your complete medical history — diagnoses, prescriptions, lab results, and doctor notes.",
-      points: ["End-to-end encrypted storage", "Compliant with Nigeria data privacy laws", "Lifetime record retention"],
+      label: t('features.list.0.label'),
+      title: t('features.list.0.title'),
+      description: t('features.list.0.desc'),
+      points: t('features.list.0.points', { returnObjects: true }),
     },
     {
       icon: Smartphone,
-      label: "Core Feature",
-      title: "Nigerian-Friendly Interface",
-      description:
-        "BetaCare meets Nigerians on WhatsApp and SMS. No app download. No confusing dashboards. Just the tools they already use.",
-      points: ["WhatsApp integration", "SMS for low-connectivity areas", "Available in English & Pidgin"],
+      label: t('features.list.1.label'),
+      title: t('features.list.1.title'),
+      description: t('features.list.1.desc'),
+      points: t('features.list.1.points', { returnObjects: true }),
     },
     {
       icon: Brain,
-      label: "AI-Powered",
-      title: "Context-Aware Health Agent",
-      description:
-        "Our AI builds a health profile for each user — monitoring drug usage, reminding about appointments, and flagging health risks early.",
-      points: ["Drug adherence monitoring", "Personalised health tips", "Smart appointment reminders"],
+      label: t('features.list.2.label'),
+      title: t('features.list.2.title'),
+      description: t('features.list.2.desc'),
+      points: t('features.list.2.points', { returnObjects: true }),
     },
   ];
 
@@ -51,16 +51,16 @@ export function FeaturesSection() {
             variants={fadeUp}
             className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4"
           >
-            What BetaCare Does
+            {t('features.badge')}
           </motion.span>
           <h2
             className="text-4xl font-extrabold text-foreground mb-4"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Everything you need, one platform
+            {t('features.title')}
           </h2>
           <p className="text-muted-foreground text-lg">
-            Built specifically for the Nigerian healthcare context — reliable, secure, and genuinely easy to use.
+            {t('features.desc')}
           </p>
         </motion.div>
         <div className="grid md:grid-cols-3 gap-6">

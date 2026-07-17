@@ -1,54 +1,268 @@
 {
   "hero": {
-    "badge": "P\u00fcl\u00e1\u00e0t\u00edf\u00f3\u0300\u00f2m\u00f9 \u00c0k\u1ecd\u0301s\u00edl\u1eb9\u0300 \u00ccilera ti N\u00e0\u00ecj\u00edr\u00ed\u00e0",
-    "titlePart1": "\u00c0w\u1ecdn \u00c0k\u1ecd\u0301s\u00edl\u1eb9\u0300 \u00ccilera r\u1eb9,",
-    "titleHighlight": "W\u00e0 n\u00ed \u00e0r\u1ecdw\u00f3t\u00f3 n\u00edgb\u00e0 gbogbo.",
-    "desc": "BetaCare \u0144 s\u1ecd \u00e0k\u1ecd\u0301s\u00edl\u1eb9\u0300 \u00ec\u1e63\u00e8gun r\u1eb9 d\u00ed \u00e8y\u00ed t\u00ed a l\u00e8 r\u00ed l\u00f3r\u00ed \u1eb9\u0300r\u1ecd, n\u00edt\u00f3r\u00ed n\u00e1\u00e0 y\u00f3\u00f2 t\u1eb9\u0300l\u00e9 \u1ecd n\u00edbik\u00edbi t\u00ed \u00ecl\u00e8ra b\u00e1 gbe \u1ecd l\u1ecd \u2014 k\u00e1\u00e0kiri \u00e0w\u1ecdn il\u00e9 \u00ecw\u00f2s\u00e0n, \u00e0w\u1ecdn \u00ecl\u00fa \u0144l\u00e1, \u00e0ti k\u00e1\u00e0kiri N\u00e0\u00ecj\u00edr\u00ed\u00e0. K\u00f2 s\u00ed \u00e0k\u1ecd\u0301s\u00edl\u1eb9\u0300 t\u00ed y\u00f3\u00f2 s\u1ecd\u0301n\u00f9 m\u1ecd\u0301. K\u00f2 s\u00ed \u00ecb\u1eb9\u0300r\u1eb9\u0300 tuntun m\u1ecd\u0301.",
-    "ctaPrimary": "B\u1eb9\u0300r\u1eb9\u0300 l\u1ecdp\u1eb9\u0301",
-    "ctaSecondary": "W\u00f2 B\u00ed \u00d3 \u1e62e \u0143 \u1e62i\u1e63\u1eb9\u0301",
-    "patientBadge": "\u00c0k\u1ecd\u0301s\u00edl\u1eb9\u0300 Al\u00e1\u00ec\u0301s\u00e0n",
+    "badge": "Püláàtífó̀òmù Àkọ́sílẹ̀ Ìilera ti Nàìjíríà",
+    "titlePart1": "Àwọn Àkọ́sílẹ̀ Ìilera rẹ,",
+    "titleHighlight": "Wà ní àrọwótó nígbà gbogbo.",
+    "desc": "BetaCare ń sọ àkọ́sílẹ̀ ìṣègun rẹ dí èyí tí a lè rí lórí ẹ̀rọ, nítórí náà yóò tẹ̀lé ọ níbikíbi tí ìlèra bá gbe ọ lọ — káàkiri àwọn ilé ìwòsàn, àwọn ìlú ńlá, àti káàkiri Nàìjíríà. Kò sí àkọ́sílẹ̀ tí yóò sọ́nù mọ́. Kò sí ìbẹ̀rẹ̀ tuntun mọ́.",
+    "ctaPrimary": "Bẹ̀rẹ̀ lọpẹ́",
+    "ctaSecondary": "Wò Bí Ó Ṣe Ń Ṣiṣẹ́",
+    "patientBadge": "Àkọ́sílẹ̀ Aláì́sàn",
     "patientName": "Adaeze Okonkwo",
-    "bloodType": "\u1eb8\u0300y\u00e0 \u1eb8\u0300j\u1eb9\u0300",
-    "age": "\u1eccj\u1ecd\u0301 Or\u00ed",
-    "lastVisit": "\u00ccb\u1eb9\u0300w\u00f2 K\u1eb9\u0300h\u00ecn",
-    "nextAppt": "\u00ccp\u00e0d\u00e9 T\u00f3 \u0144 B\u1ecd\u0300",
-    "diagnoses": "\u00c0w\u1ecdn \u00c0\u00ec\u0301s\u00e0n T\u00ed W\u1ecdn \u1e62\u1eb9\u0300\u1e63\u1eb9\u0300 \u1e62\u00e0w\u00e1r\u00ed",
-    "statusTreated": "Ti \u1e62\u00e8t\u1ecdj\u00fa",
-    "statusOngoing": "\u00d3 \u0144 L\u1ecd L\u1ecdw\u1ecd\u0301",
-    "aiBadge": "A\u1e63oj\u00fa \u00ccilera AI",
-    "aiDesc": "\u00c0k\u00f3k\u00f2 f\u00fan \u00e0y\u1eb9\u0300w\u00f2 BP r\u1eb9!",
-    "encryptedBadge": "Ti Fipam\u1ecd\u0301",
+    "bloodType": "Ẹ̀yà Ẹ̀jẹ̀",
+    "age": "Ọjọ́ Orí",
+    "lastVisit": "Ìbẹ̀wò Kẹ̀hìn",
+    "nextAppt": "Ìpàdé Tó ń Bọ̀",
+    "diagnoses": "Àwọn Àì́sàn Tí Wọn Ṣẹ̀ṣẹ̀ Ṣàwárí",
+    "statusTreated": "Ti Ṣètọjú",
+    "statusOngoing": "Ó ń Lọ Lọwọ́",
+    "aiBadge": "Aṣojú Ìilera AI",
+    "aiDesc": "Àkókò fún àyẹ̀wò BP rẹ!",
+    "encryptedBadge": "Ti Fipamọ́",
     "marquee": [
-      "\u1ecc\u0301f\u1eb9\u0301 f\u00fan \u00e0w\u1ecdn al\u00e1\u00ec\u0301s\u00e0n",
-      "K\u00f2 s\u00ed \u00ecgb\u00e0l\u00e1il\u1eb9\u0300 \u00e8t\u00f2 (app)",
-      "\u00d3 \u0144 \u1e63i\u1e63\u1eb9\u0301 l\u00f3r\u00ed WhatsApp",
-      "\u00d3 \u0144 \u1e63i\u1e63\u1eb9\u0301 l\u00f3r\u00ed SMS",
-      "Ti \u00f3 b\u00e1 NDPR mu",
-      "Ti fipam\u1ecd\u0301 l\u00e1ti \u00ecb\u1eb9\u0300r\u1eb9\u0300 d\u00f3pin",
-      "Ti k\u1ecd\u0301 f\u00fan N\u00e0\u00ecj\u00edr\u00ed\u00e0",
-      "\u00cc\u1e63\u1ecdj\u00f3 \u00ecl\u00e8ra AI",
-      "\u00ccr\u00e1y\u00e8 \u00ecy\u00e1ras\u00e1r\u00e1 s\u00ed il\u00e9 \u00ecw\u00f2s\u00e0n",
-      "\u00c0w\u1ecdn \u00e0k\u1ecd\u0301s\u00edl\u1eb9\u0300 r\u1eb9, \u00ec\u1e63\u00e0k\u00f3so r\u1eb9"
+      "Ọ́fẹ́ fún àwọn aláì́sàn",
+      "Kò sí ìgbàláilẹ̀ ètò (app)",
+      "Ó ń ṣiṣẹ́ lórí WhatsApp",
+      "Ó ń ṣiṣẹ́ lórí SMS",
+      "Ti ó bá NDPR mu",
+      "Ti fipamọ́ láti ìbẹ̀rẹ̀ dópin",
+      "Ti kọ́ fún Nàìjíríà",
+      "Ìṣọjó ìlèra AI",
+      "Ìráyè ìyárasárá sí ilé ìwòsàn",
+      "Àwọn àkọ́sílẹ̀ rẹ, ìṣàkóso rẹ"
     ]
   },
   "problem": {
-    "badge": "\u00cc\u1e63\u00f2ro N\u00e1\u00e0",
-    "titlePart1": "\u00c0w\u1ecdn \u00e0k\u1ecd\u0301s\u00edl\u1eb9\u0300 \u00ecl\u00e8ra n\u00ed N\u00e0\u00ecj\u00edr\u00ed\u00e0 ti",
-    "titleHighlight": "b\u00e0j\u1eb9\u0301.",
-    "desc": "\u00c0w\u1ecdn il\u00e9 \u00ecw\u00f2s\u00e0n b\u00ed UCH \u0144 lo t\u00e1k\u00e0d\u00e1 \u1e63\u00ec \u0144 lo f\u00fan \u00e0k\u1ecd\u0301s\u00edl\u1eb9\u0300 al\u00e1\u00ec\u0301s\u00e0n. \u00c0w\u1ecdn ab\u00e1y\u1ecd r\u1eb9 l\u00e8 l\u00e9wu p\u00fa\u00fap\u1ecd\u0300.",
+    "badge": "Ìṣòro Náà",
+    "titlePart1": "Àwọn àkọ́sílẹ̀ ìlèra ní Nàìjíríà ti",
+    "titleHighlight": "bàjẹ́.",
+    "desc": "Àwọn ilé ìwòsàn bí UCH ń lo tákàdá ṣì ń lo fún àkọ́sílẹ̀ aláì́sàn. Àwọn abáyọ rẹ lè léwu púúpọ̀.",
     "problems": [
       {
-        "title": "T\u00e1k\u00e0d\u00e1 \u00e0k\u1ecd\u0301s\u00edl\u1eb9\u0300 m\u00e1a \u0144 s\u1ecd\u0301n\u00f9",
-        "description": "\u1ecc\u0300p\u1ecd\u0300l\u1ecdp\u1ecd\u0300 \u00e8y\u00e0n \u0144 d\u00e9 il\u00e9 \u00ecw\u00f2s\u00e0n k\u00ed w\u1ecdn t\u00f3 r\u00ed p\u00e9 \u00e0k\u1ecd\u0301s\u00edl\u1eb9\u0300 w\u1ecdn ti s\u1ecd\u0301n\u00f9 \u2014 \u00e8y\u00ed \u0144 m\u00fa k\u00ed w\u1ecdn b\u1eb9\u0300r\u1eb9\u0300 \u00ecl\u00e0n\u00e0 \u00e8t\u00f2 \u00ecl\u00e8ra l\u00e1ti \u00ecb\u1eb9\u0300r\u1eb9\u0300."
+        "title": "Tákàdá àkọ́sílẹ̀ máa ń sọ́nù",
+        "description": "Ọ̀pọ̀lọpọ̀ èyàn ń dé ilé ìwòsàn kí wọn tó rí pé àkọ́sílẹ̀ wọn ti sọ́nù — èyí ń mú kí wọn bẹ̀rẹ̀ ìlànà ètò ìlèra láti ìbẹ̀rẹ̀."
       },
       {
-        "title": "\u00ccb\u00e0j\u1eb9\u0301 t\u00ed k\u00f2 l\u00e8\u00e8 t\u00faj\u00e1",
-        "description": "In\u00e1, \u00e0k\u00fcnw\u1ecd\u0301s\u00ecn omi, \u00e0ti l\u00edl\u00f2 oj\u00faoj\u00fam\u1ecd\u0301 \u0144 ba \u00e0k\u1ecd\u0301s\u00edl\u1eb9\u0300 \u00ecl\u00e8ra j\u1eb9\u0301. K\u00f2 s\u00ed \u00e0d\u00e0k\u1ecd, k\u00f2 s\u00ed \u00ecm\u00fad\u00e0n\u00f2\u0301 y\u00e1ng\u00e1n."
+        "title": "Ìbàjẹ́ tí kò lèè tújá",
+        "description": "Iná, àkünwọ́sìn omi, àti lílò ojúojúmọ́ ń ba àkọ́sílẹ̀ ìlèra jẹ́. Kò sí àdàkọ, kò sí ìmúdànò́ yángán."
       },
       {
-        "title": "K\u00f2 s\u00ed \u00ec\u1e63\u00ecp\u1ecd\u0300 l\u00e1\u00e0r\u00ecn il\u00e9 \u00ecw\u00f2s\u00e0n",
-        "description": "\u00c0w\u1ecdn il\u00e9 \u00ecw\u00f2s\u00e0n \u1ecdt\u1ecd\u0300\u1ecdt\u1ecd\u0300 k\u00f2 n\u00ed \u00ecm\u1ecd\u0300 n\u00edpa \u00ecl\u00e0n\u00e0 \u00ecl\u00e8ra t\u00ed a ti \u1e63e t\u1eb9\u0301l\u1eb9\u0300 \u2014 \u00e8y\u00ed \u0144 m\u00fa k\u00ed a \u1e63e \u00e0w\u1ecdn \u00e0d\u00e0n\u00f2\u0301 \u00ec\u1e63\u00e8gun \u1eb9\u0300\u1eb9\u0301m\u00e9j\u00ec."
+        "title": "Kò sí ìṣìpọ̀ láàrìn ilé ìwòsàn",
+        "description": "Àwọn ilé ìwòsàn ọtọ̀ọtọ̀ kò ní ìmọ̀ nípa ìlànà ìlèra tí a ti ṣe tẹ́lẹ̀ — èyí ń mú kí a ṣe àwọn àdànò́ ìṣègun ẹ̀ẹ́méjì."
       }
     ]
+  },
+  "features": {
+    "badge": "Kí Ni BetaCare Ń Ṣe",
+    "title": "Ohun gbogbo tí o nílò lórí pẹpẹ kan",
+    "desc": "A kọ́ ọ fún ìtọ́jú ìlera ní Nàìjíríà — ó ṣe é gbẹ́kẹ̀lé, ó wà láìléwu, ó sì rọrùn láti lò.",
+    "list": [
+      {
+        "label": "Ohun Pàtàkì",
+        "title": "Àkọsílẹ̀ Ìlera Lórí Ẹ̀rọ",
+        "desc": "Ibùdó dárá tó wà lórí ìkùùkuu tí ń tọ́jú gbogbo ìtàn ìlera rẹ — àyẹ̀wò, oògùn, èsì yàrá, àti àkọsílẹ̀ dọ́kítà.",
+        "points": [
+          "Ìpamọ́ tí a fi gbé sẹ́yìn",
+          "Ní ìbámu pẹ̀lú òfin NDPR",
+          "Àkọsílẹ̀ fún ìgbà gbogbo"
+        ]
+      },
+      {
+        "label": "Ohun Pàtàkì",
+        "title": "Ìbágbépọ̀ Tí Ó Bá Nàìjíríà Mu",
+        "desc": "BetaCare ń bá àwọn ọmọ Nàìjíríà sọ̀rọ̀ lórí WhatsApp àti SMS. Kò sí app láti fa sísàlẹ̀. Kò sí pẹpẹ tí ó ta kókó. Kìkì àwọn ẹ̀rọ tí wọ́n ti ń lò.",
+        "points": [
+          "Ìsopọ̀ mọ́ WhatsApp",
+          "SMS fún àgbègbè tí kò ní nẹtiwọọki dáadáa",
+          "Ó wà ní Gẹ̀ẹ́sì & Pidgin"
+        ]
+      },
+      {
+        "label": "Agbára AI",
+        "title": "Aṣojú Ìlera Tí Ó Ní Òye",
+        "desc": "AI wa ń ṣe àkọsílẹ̀ ìlera fún gbogbo ènìyàn — ó ń ṣọ́ ìlò oògùn, ó ń rán ni létí nípa àdéhùn ìpàdé, ó sì ń tọ́ka sí ewu ìlera ní kùtùkùtù.",
+        "points": [
+          "Ìṣọ́ ìlò oògùn",
+          "Àmọ̀ràn ìlera fún ẹnìkan",
+          "Ìránnilétí ọlọ́gbọ́n fún ìpàdé"
+        ]
+      }
+    ]
+  },
+  "howItWorks": {
+    "badge": "Bí Ó Ṣe Ń Ṣiṣẹ́",
+    "title": "Rírọrùn fún gbogbo ènìyàn",
+    "desc": "Aláìsàn, dọ́kítà, tàbí ilé ìwòsàn — bẹrẹ kò ní ju iṣẹju díẹ̀ lọ.",
+    "tabs": {
+      "patient": {
+        "label": "Aláìsàn",
+        "steps": [
+          {
+            "title": "Ṣẹda àkọọlẹ rẹ",
+            "desc": "Ṣe ìforúkọsílẹ̀ pẹ̀lú orúkọ rẹ, nọmba tẹlifóònù, àti í-meèlì rẹ."
+          },
+          {
+            "title": "Ṣeto profaili ìlera rẹ",
+            "desc": "Dáhùn àwọn ìbéèrè díẹ̀, ki o sì gbe àkọsílẹ̀ àtijọ rẹ wọlé láti WhatsApp."
+          },
+          {
+            "title": "Ri àkọsílẹ̀ níbikíbi",
+            "desc": "Wo ìtàn rẹ, pin pẹ̀lú dọ́kítà kankan, gba ìránnilétí ìlera AI."
+          }
+        ]
+      },
+      "doctor": {
+        "label": "Dọ́kítà",
+        "steps": [
+          {
+            "title": "Forúkọsílẹ̀",
+            "desc": "Wọle pẹ̀lú orúkọ kíkún, í-meèlì, àti nọmba iwe aṣẹ MDCN."
+          },
+          {
+            "title": "Jẹrisi ẹni tí o jẹ́",
+            "desc": "Imeeli OTP, lẹhinna ṣayẹwo pẹ̀lú Smile Identity fún ijẹrisi kíkún."
+          },
+          {
+            "title": "Wo ìtàn aláìsàn",
+            "desc": "Pẹ̀lú àṣẹ, wo àkọsílẹ̀, ṣe imudojuiwọn, tọpa ìlọsíwájú aláìsàn."
+          }
+        ]
+      },
+      "hospital": {
+        "label": "Ilé Ìwòsàn",
+        "steps": [
+          {
+            "title": "Waye fún ìsopọ̀",
+            "desc": "Firanṣẹ àwọn iwe ilé ìwòsàn àti iforukọsilẹ CAC rẹ fún atunyẹwo."
+          },
+          {
+            "title": "Ṣeto pẹpẹ rẹ",
+            "desc": "Ṣeto bí aláìsàn ṣe ń wọlé, àwọn ẹ̀ka, àti àkọọlẹ dọ́kítà."
+          },
+          {
+            "title": "Bẹrẹ iṣẹ",
+            "desc": "Bẹrẹ kíkọ abẹwo, ṣakoso àkọsílẹ̀ lórí ẹ̀rọ, àti ṣiṣẹ papọ."
+          }
+        ]
+      }
+    }
+  },
+  "trust": {
+    "title": "Ti kọ́ lórí ìgbẹ́kẹ̀lé",
+    "desc": "Ààbò àti ìpamọ́ jẹ́ ìpìlẹ̀, kò ṣeé fi ṣeré.",
+    "pillars": [
+      {
+        "title": "Ti Fipamọ́",
+        "desc": "Alaye ìlera rẹ wà nípamọ́. Kò sẹni ti o le ka a láìsí àṣẹ rẹ."
+      },
+      {
+        "title": "Ni ibamu pẹ̀lú NDPR",
+        "desc": "A tẹ̀lé ofin aabo alaye ti Naijiria ati awọn ofin agbaye."
+      },
+      {
+        "title": "Àṣẹ Aláìsàn Ni Akọkọ",
+        "desc": "Ìwọ nìkan lóní àṣẹ láti pinnu ẹni tí ó ń wo àkọsílẹ̀ rẹ. O le ri ẹni tí o wò ó."
+      },
+      {
+        "title": "Wà Ní Ìgbà Gbogbo",
+        "desc": "Àwọn àkọsílẹ̀ rẹ wa ni ibaramu nipa WhatsApp ati SMS. Kò lẹ̀ dènà rẹ."
+      }
+    ]
+  },
+  "hospital": {
+    "badge": "Fún Àwọn Ilé Ìwòsàn",
+    "title": "Da BetaCare pọ̀ mọ́ ilé ìwòsàn rẹ lónìí",
+    "desc": "Fún àwọn oṣiṣẹ rẹ ni iraye lẹsẹkẹsẹ sí ìtàn aláìsàn ni kikun. Dín ìwé kù, mú ìtọjú dára síi.",
+    "benefits": [
+      "Iraye lẹsẹkẹsẹ sí àkọsílẹ̀ aláìsàn ni ibi itọju",
+      "Dín akoko ijumọsọrọ kù àti idanwo lẹẹmeji",
+      "Imudojuiwọn ni akoko gidi kọja àwọn ẹka",
+      "Ni ibamu pẹ̀lú àwọn ofin ilera Naijiria",
+      "Atilẹyin imọ-ẹrọ 24/7"
+    ],
+    "cta": "Waye fún Ìsopọ̀",
+    "dashboard": "Pẹpẹ Ilé Ìwòsàn",
+    "statusAdmitted": "Ti gbà wọlé",
+    "statusOutpatient": "Ara ita",
+    "statusDischarged": "Ti gba ominira",
+    "active": "Ṣiṣẹ",
+    "appts": "Awọn ìpàdé tónìí"
+  },
+  "faq": {
+    "badge": "FAQ",
+    "title": "Àwọn Ìbéèrè",
+    "desc": "Ohun gbogbo tí o nílò láti mọ nipa BetaCare. Kò rí ìdáhùn rẹ?",
+    "contactLink": "Bá wa sọ̀rọ̀.",
+    "items": [
+      {
+        "q": "Ṣe BetaCare jẹ́ ọ̀fẹ́?",
+        "a": "Bẹẹni. BetaCare jẹ́ ọ̀fẹ́ patapata fún àwọn aláìsàn — nigbagbogbo. A ń gba owo lọwọ àwọn ilé ìwòsàn fún isọpọ. Aláìsàn kò ni sanwo lae."
+      },
+      {
+        "q": "Bawo ni mo ṣe le ri àkọsílẹ̀ ilera mi?",
+        "a": "O le wọle sí àkọsílẹ̀ rẹ nipasẹ pẹpẹ wẹẹbu, WhatsApp, tabi SMS. Kò sí app láti fa sísàlẹ̀. Forúkọsílẹ̀ lẹẹkan ati pé àkọsílẹ̀ rẹ wà níbikíbi tí o bá wà."
+      },
+      {
+        "q": "Ṣe alaye ilera mi wa ni ailewu?",
+        "a": "Pátápátá. Gbogbo data ni a paroko ati pamọ lori àwọn olupin NDPR. A kò ni ta data rẹ fún ẹnikẹni. O ni hihan kikun ti gbogbo ibeere iraye."
+      },
+      {
+        "q": "Awọn ilé ìwòsàn wo ni o ṣe atilẹyin BetaCare?",
+        "a": "A ń ṣiṣẹ pẹ̀lú àwọn ilé ìwòsàn kọja Lagos, Abuja, ati Port Harcourt. Ilé ìwòsàn kankan le lo fún isọpọ — nẹtiwọọki wa ń dàgbà."
+      },
+      {
+        "q": "Bawo ni ijẹrisi dọ́kítà ṣe ń ṣiṣẹ?",
+        "a": "Awọn dọ́kítà nlo nipasẹ ilana igbesẹ mẹta: Imeeli OTP, ijẹrisi iwe-aṣẹ MDCN, àti ijẹrisi oju nipasẹ Smile Identity."
+      },
+      {
+        "q": "Ṣe mo le lo BetaCare laisi foonu alagbeka?",
+        "a": "Bẹẹni. BetaCare n ṣiṣẹ patapata lori SMS fún àwọn olumulo ti ko ni foonu alagbeka tàbí intanẹẹti. Foonu eyikeyi pẹ̀lú SIM card ti n ṣiṣẹ yóò ṣiṣẹ."
+      },
+      {
+        "q": "Kini yóò ṣẹlẹ sí àkọsílẹ̀ mi tí mo bá yi ilé ìwòsàn pada?",
+        "a": "Àkọsílẹ̀ rẹ jẹ tirẹ, kìí ṣe ti ilé ìwòsàn. Nígbà tí o bá ṣabẹwo sí ilé ìwòsàn titun, o gba wọ́n láàyè láti wo profaili BetaCare rẹ — ìtàn rẹ yóò wà lẹsẹkẹsẹ."
+      },
+      {
+        "q": "Bawo ni aṣoju ilera AI ṣe ń ṣiṣẹ?",
+        "a": "AI n ṣe profaili ilera lati àwọn àkọsílẹ̀ rẹ àti awọn ibaraẹnisọrọ rẹ. Ó ń fi ránṣẹ pẹ̀lú àwọn ìránnilétí (oògùn, ìpàdé), awọn àwòṣe dani, àti dáhùn àwọn ìbéèrè ìlera lórí WhatsApp."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ìtàn ìlera rẹ tọ́ sí ìrántí",
+    "desc": "Dapọ mọ àwọn ọmọ Nàìjíríà tí wọ́n ti gba àkọsílẹ̀ ìlera wọn. Forúkọsílẹ̀ lọfẹ — kò sí kaadi kirẹditi, kò sí app sísàlẹ̀.",
+    "primary": "Bẹ̀rẹ̀ Lọ́fẹ̀ẹ́",
+    "secondary": "Bá Ẹgbẹ́ Wa Sọ̀rọ̀"
+  },
+  "footer": {
+    "desc": "N ṣe àkọsílẹ̀ ìlera Nàìjíríà lórí ẹ̀rọ, aláìsàn kọọkan ni àkókò kan.",
+    "product": "Ọjà",
+    "portals": "Pẹpẹ",
+    "company": "Ilé iṣẹ́",
+    "legal": "Òfin",
+    "productLinks": {
+      "howItWorks": "Bí Ó Ṣe Ń Ṣiṣẹ́",
+      "features": "Àwọn Ẹ̀yà",
+      "security": "Ààbò",
+      "pricing": "Iye owó"
+    },
+    "portalsLinks": {
+      "patientLogin": "Wọlé Aláìsàn",
+      "doctorLogin": "Wọlé Dọ́kítà",
+      "hospitalLogin": "Wọlé Ilé Ìwòsàn",
+      "register": "Forúkọsílẹ̀"
+    },
+    "companyLinks": {
+      "aboutUs": "Nípa Wa",
+      "blog": "Búlọ́ọ̀gì",
+      "careers": "Isẹ́",
+      "press": "Ìròyìn"
+    },
+    "legalLinks": {
+      "privacyPolicy": "Ètò Ìpamọ́",
+      "terms": "Àdéhùn Lílò",
+      "ndpr": "Ìbámu NDPR"
+    },
+    "copyright": "© 2026 BetaCare Technologies Ltd. Gbogbo Ẹ̀tọ́ ni a fi pamọ́.",
+    "madeWithCare": "A ṣe é pẹ̀lú ìfẹ́ fún àwọn ọmọ Nàìjíríà, láti ọwọ́ Nàìjíríà."
   }
 }

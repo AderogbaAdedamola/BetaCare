@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Check, ArrowRight } from "lucide-react";
 import { MagneticButton } from "../../../components/common/MagneticButton";
+import { useTranslation } from "react-i18next";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -10,13 +11,9 @@ const fadeUp = {
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export function HospitalSection() {
-  const benefits = [
-    "Instant access to patient records at point of care",
-    "Reduce consultation time and duplicate testing",
-    "Real-time updates across departments and wards",
-    "Compliant with Nigerian health data regulations",
-    "Dedicated onboarding and 24/7 technical support",
-  ];
+  const { t } = useTranslation();
+
+  const benefits = t('hospital.benefits', { returnObjects: true });
 
   return (
     <section id="hospitals" className="py-24 bg-background overflow-hidden">
@@ -35,20 +32,19 @@ export function HospitalSection() {
                   variants={fadeUp}
                   className="inline-block px-3 py-1 bg-primary-foreground/15 text-primary-foreground rounded-full text-sm font-semibold mb-5"
                 >
-                  For Healthcare Centres
+                  {t('hospital.badge')}
                 </motion.span>
                 <h2
                   className="text-4xl font-extrabold text-primary-foreground mb-5 leading-tight"
                   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
-                  Integrate BetaCare into your hospital today
+                  {t('hospital.title')}
                 </h2>
                 <p className="text-primary-foreground/75 text-lg leading-relaxed mb-8">
-                  Give your clinical team instant access to complete patient histories. Reduce paperwork, improve care
-                  quality.
+                  {t('hospital.desc')}
                 </p>
                 <motion.ul variants={stagger} className="flex flex-col gap-3 mb-8">
-                  {benefits.map((b) => (
+                  {Array.isArray(benefits) && benefits.map((b) => (
                     <motion.li key={b} variants={fadeUp} className="flex items-start gap-3 text-primary-foreground/85 text-sm">
                       <Check size={16} className="text-accent mt-0.5 shrink-0" /> {b}
                     </motion.li>
@@ -59,7 +55,7 @@ export function HospitalSection() {
                     href="/hospital/register"
                     className="inline-flex items-center gap-2 px-6 py-3.5 bg-accent text-accent-foreground font-semibold rounded-xl hover:bg-accent/90 transition-colors"
                   >
-                    Apply for Integration <ArrowRight size={16} />
+                    {t('hospital.cta')} <ArrowRight size={16} />
                   </MagneticButton>
                 </motion.div>
               </motion.div>
@@ -78,7 +74,7 @@ export function HospitalSection() {
                     className="text-primary-foreground font-bold text-lg mb-4"
                     style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                   >
-                    Hospital Dashboard
+                    {t('hospital.dashboard')}
                   </p>
                   <div className="flex flex-col gap-3">
                     {[
@@ -113,14 +109,14 @@ export function HospitalSection() {
                               : "bg-primary-foreground/15 text-primary-foreground/80"
                           }`}
                         >
-                          {patient.status}
+                          {patient.status === "Admitted" ? t('hospital.statusAdmitted') : patient.status === "Discharged" ? t('hospital.statusDischarged') : t('hospital.statusOutpatient')}
                         </span>
                       </motion.div>
                     ))}
                   </div>
                   <div className="mt-4 pt-4 border-t border-primary-foreground/15 flex justify-between text-xs text-primary-foreground/60">
-                    <span>Active: 127</span>
-                    <span>Today&apos;s Appts: 43</span>
+                    <span>{t('hospital.active')}: 127</span>
+                    <span>{t('hospital.appts')}: 43</span>
                   </div>
                 </div>
               </motion.div>

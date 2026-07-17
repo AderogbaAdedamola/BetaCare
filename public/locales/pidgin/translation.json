@@ -3,7 +3,7 @@
     "badge": "Nigeria Healthcare Record Platform",
     "titlePart1": "Your Health Records,",
     "titleHighlight": "Dey Hand Always.",
-    "desc": "BetaCare dey digitize your medical history so e go follow you anywhere you go \u2014 for different hospitals, cities, and all over Naija. No more missing case notes. No more starting afresh.",
+    "desc": "BetaCare dey digitize your medical history so e go follow you anywhere you go — for different hospitals, cities, and all over Naija. No more missing case notes. No more starting afresh.",
     "ctaPrimary": "Start For Free",
     "ctaSecondary": "See How E Dey Work",
     "patientBadge": "Patient Record",
@@ -39,7 +39,7 @@
     "problems": [
       {
         "title": "Paper records dey loss",
-        "description": "Many people dey reach hospital make dem find say dem case notes don missing \u2014 e mean say dem go start from scratch."
+        "description": "Many people dey reach hospital make dem find say dem case notes don missing — e mean say dem go start from scratch."
       },
       {
         "title": "Damage no get reverse",
@@ -47,8 +47,222 @@
       },
       {
         "title": "No connection between hospitals",
-        "description": "Different hospitals no know wetin happen before \u2014 e dey make dem do double tests and cause danger."
+        "description": "Different hospitals no know wetin happen before — e dey make dem do double tests and cause danger."
       }
     ]
+  },
+  "features": {
+    "badge": "Wetin BetaCare Dey Do",
+    "title": "Everything you need, inside one place",
+    "desc": "We build am for Nigerian healthcare — e dey reliable, secure, and e easy to use no be small.",
+    "list": [
+      {
+        "label": "Main Thing",
+        "title": "Digital Medical Records",
+        "desc": "Secure cloud place to keep all your medical history — sickness, medicine, lab result, and doctor note.",
+        "points": [
+          "Storage wey nobody fit hack",
+          "E dey follow Nigeria data law",
+          "E keep your record for life"
+        ]
+      },
+      {
+        "label": "Main Thing",
+        "title": "Naija-Friendly Dashboard",
+        "desc": "BetaCare dey follow Nigerians yafun-yafun for WhatsApp and SMS. No app download. Just wetin dem already know.",
+        "points": [
+          "WhatsApp integration",
+          "SMS for place wey network bad",
+          "E dey English & Pidgin"
+        ]
+      },
+      {
+        "label": "AI Power",
+        "title": "Smart Health Agent",
+        "desc": "Our AI go study your health matter — e monitor your drug, remind you for hospital day, and tell you if danger dey.",
+        "points": [
+          "Drug monitoring",
+          "Better health tips",
+          "Smart reminders"
+        ]
+      }
+    ]
+  },
+  "howItWorks": {
+    "badge": "How E Dey Work",
+    "title": "E easy for everybody",
+    "desc": "Patient, doctor, or hospital — to start no go pass 2 minutes.",
+    "tabs": {
+      "patient": {
+        "label": "Patient",
+        "steps": [
+          {
+            "title": "Open account",
+            "desc": "Register with your name, number, and email sharply."
+          },
+          {
+            "title": "Arrange your health profile",
+            "desc": "Answer small questions and import your old records through WhatsApp."
+          },
+          {
+            "title": "See records anywhere",
+            "desc": "Check your history, share am with doctor safely, get AI health alerts."
+          }
+        ]
+      },
+      "doctor": {
+        "label": "Doctor",
+        "steps": [
+          {
+            "title": "Register & enter details",
+            "desc": "Sign up with full name, email, and MDCN licence number."
+          },
+          {
+            "title": "Prove your identity",
+            "desc": "Email OTP, then confirm your face with Smile Identity."
+          },
+          {
+            "title": "Check patient history",
+            "desc": "If dem gree, view records, update notes, check patient waka."
+          }
+        ]
+      },
+      "hospital": {
+        "label": "Hospital",
+        "steps": [
+          {
+            "title": "Apply to join",
+            "desc": "Submit hospital details and CAC for us to review."
+          },
+          {
+            "title": "Set up your system",
+            "desc": "Arrange how patients go move, departments, and doctor accounts."
+          },
+          {
+            "title": "Start work",
+            "desc": "Begin record visits, manage records digital, and work together."
+          }
+        ]
+      }
+    }
+  },
+  "trust": {
+    "title": "We built am on trust",
+    "desc": "Security and privacy no be play for us, na the main foundation.",
+    "pillars": [
+      {
+        "title": "End-to-End Encrypted",
+        "desc": "Your health data safe well well. Nobody fit read am without your permission."
+      },
+      {
+        "title": "NDPR Compliant",
+        "desc": "We dey follow Nigeria Data Protection Regulation and world health standard."
+      },
+      {
+        "title": "Patient First",
+        "desc": "Na you decide who go see your records. You go see everybody wey check am."
+      },
+      {
+        "title": "Always Available",
+        "desc": "Your records dey even if network fail via WhatsApp and SMS. E no dey ever crash."
+      }
+    ]
+  },
+  "hospital": {
+    "badge": "For Healthcare Centres",
+    "title": "Put BetaCare for your hospital today",
+    "desc": "Make your clinical team get instant access to patient history. Reduce paper work, improve care.",
+    "benefits": [
+      "Instant access to patient records when dem need am",
+      "Reduce doctor time and double tests",
+      "Quick updates across all departments",
+      "E dey follow Nigerian health laws",
+      "Good support team ready for you 24/7"
+    ],
+    "cta": "Apply to Join Us",
+    "dashboard": "Hospital Dashboard",
+    "statusAdmitted": "Admitted",
+    "statusOutpatient": "Outpatient",
+    "statusDischarged": "Discharged",
+    "active": "Active",
+    "appts": "Today Appts"
+  },
+  "faq": {
+    "badge": "FAQ",
+    "title": "Questions people dey ask",
+    "desc": "Everything you need to know about BetaCare. You no see your answer?",
+    "contactLink": "Talk to us.",
+    "items": [
+      {
+        "q": "BetaCare na free?",
+        "a": "Yes. BetaCare na totally free for patients. Na hospitals dey pay us subscription. Patient no go ever pay shishi."
+      },
+      {
+        "q": "How I go see my records?",
+        "a": "You fit see your records via web dashboard, WhatsApp, or SMS. No need to download app. Register once and your records dey with you anywhere."
+      },
+      {
+        "q": "My health data safe?",
+        "a": "Confirm. All data dey encrypted and store for NDPR servers. We no go ever sell your data. You go see who access your records."
+      },
+      {
+        "q": "Which hospitals dey use BetaCare?",
+        "a": "We dey work with hospitals for Lagos, Abuja, and Port Harcourt. Any hospital fit join us through our portal — our network dey grow everyday."
+      },
+      {
+        "q": "How doctor verification dey work?",
+        "a": "Doctors go do three things: email OTP, MDCN licence check, and face verification via Smile Identity. Na only real doctors fit enter."
+      },
+      {
+        "q": "I fit use BetaCare without smartphone?",
+        "a": "Yes. BetaCare works with SMS for people without smartphone or internet. Any phone with SIM card and small airtime go work."
+      },
+      {
+        "q": "Wetin go happen to my records if I change hospital?",
+        "a": "Your records na your own, no be hospital own. If you visit new hospital, you go give dem permission to see your BetaCare profile — your full history go show sharp sharp."
+      },
+      {
+        "q": "How the AI health agent dey work?",
+        "a": "The AI go check your records and how you dey use our app. E go remind you for medicine and appointment, tell you if danger dey, and answer simple health questions on WhatsApp."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Your health story deserve better keeping",
+    "desc": "Join Nigerians wey don take control of their health records. Sign up free — no credit card, no app download.",
+    "primary": "Start For Free",
+    "secondary": "Talk to the Team"
+  },
+  "footer": {
+    "desc": "We dey put Nigeria healthcare records on internet, one person at a time.",
+    "product": "Product",
+    "portals": "Portals",
+    "company": "Company",
+    "legal": "Legal",
+    "productLinks": {
+      "howItWorks": "How E Dey Work",
+      "features": "Features",
+      "security": "Security",
+      "pricing": "Pricing"
+    },
+    "portalsLinks": {
+      "patientLogin": "Patient Login",
+      "doctorLogin": "Doctor Login",
+      "hospitalLogin": "Hospital Login",
+      "register": "Register"
+    },
+    "companyLinks": {
+      "aboutUs": "About Us",
+      "blog": "Blog",
+      "careers": "Careers",
+      "press": "Press"
+    },
+    "legalLinks": {
+      "privacyPolicy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "ndpr": "NDPR Compliance"
+    },
+    "copyright": "© 2026 BetaCare Technologies Ltd. All rights reserved.",
+    "madeWithCare": "Na Nigerians make am for Nigerians with love."
   }
 }
